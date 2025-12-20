@@ -28,6 +28,7 @@ const About = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [content, setContent] = useState<AboutContent | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -38,12 +39,14 @@ const About = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [contentRes, skillsRes] = await Promise.all([
+      const [contentRes, skillsRes, settingsRes] = await Promise.all([
         supabase.from("about_content").select("*").limit(1).maybeSingle(),
         supabase.from("skills").select("*").order("order_index"),
+        supabase.from("site_settings").select("*").eq("key", "profile_image_url").maybeSingle()
       ]);
       if (contentRes.data) setContent(contentRes.data);
       if (skillsRes.data) setSkills(skillsRes.data);
+      if (settingsRes.data?.value) setProfileImageUrl(settingsRes.data.value);
     };
     fetchData();
   }, []);
@@ -82,7 +85,7 @@ const About = () => {
             <div className="relative">
               <div className="aspect-[3/4] overflow-hidden">
                 <img
-                  src={profilePhoto}
+                  src={profileImageUrl || profilePhoto}
                   alt="About Bukhari"
                   className="w-full h-full object-cover"
                 />

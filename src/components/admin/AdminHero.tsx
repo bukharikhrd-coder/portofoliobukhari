@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Save } from "lucide-react";
+import ImageUpload from "./ImageUpload";
 
 interface HeroContent {
   id: string;
@@ -17,8 +18,13 @@ interface HeroContent {
   brand_name: string | null;
 }
 
+interface SiteSettings {
+  profile_image_url: string | null;
+}
+
 const AdminHero = () => {
   const [content, setContent] = useState<HeroContent | null>(null);
+  const [profileImage, setProfileImage] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -27,16 +33,19 @@ const AdminHero = () => {
   }, []);
 
   const fetchContent = async () => {
-    const { data, error } = await supabase
-      .from("hero_content")
-      .select("*")
-      .limit(1)
-      .maybeSingle();
+    const [heroRes, settingsRes] = await Promise.all([
+      supabase.from("hero_content").select("*").limit(1).maybeSingle(),
+      supabase.from("site_settings").select("*").eq("key", "profile_image_url").maybeSingle()
+    ]);
 
-    if (error) {
+    if (heroRes.error) {
       toast.error("Failed to load hero content");
     } else {
-      setContent(data);
+      setContent(heroRes.data);
+    }
+    
+    if (settingsRes.data?.value) {
+      setProfileImage(settingsRes.data.value);
     }
     setLoading(false);
   };
@@ -45,9 +54,9 @@ const AdminHero = () => {
     if (!content) return;
     
     setSaving(true);
-    const { error } = await supabase
-      .from("hero_content")
-      .update({
+    
+    const [heroUpdate, settingsUpdate] = await Promise.all([
+      supabase.from("hero_content").update({
         headline_1: content.headline_1,
         headline_2: content.headline_2,
         subtitle: content.subtitle,
@@ -58,10 +67,14 @@ const AdminHero = () => {
         cta_secondary_link: content.cta_secondary_link,
         date_display: content.date_display,
         brand_name: content.brand_name,
-      })
-      .eq("id", content.id);
+      }).eq("id", content.id),
+      supabase.from("site_settings").upsert({
+        key: "profile_image_url",
+        value: profileImage
+      }, { onConflict: "key" })
+    ]);
 
-    if (error) {
+    if (heroUpdate.error || settingsUpdate.error) {
       toast.error("Failed to save changes");
     } else {
       toast.success("Hero content updated!");
@@ -102,6 +115,16 @@ const AdminHero = () => {
           {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
           Save Changes
         </button>
+      </div>
+
+      {/* Profile Image Upload */}
+      <div className="p-6 bg-secondary/50 border border-border">
+        <ImageUpload
+          currentImage={profileImage}
+          onImageChange={setProfileImage}
+          folder="profile"
+          label="Profile Image (Hero & About)"
+        />
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

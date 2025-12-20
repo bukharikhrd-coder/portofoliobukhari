@@ -12,6 +12,7 @@ import VideoPortfolio from "@/components/VideoPortfolio";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import BackToDashboard from "@/components/BackToDashboard";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
@@ -56,6 +57,7 @@ const Index = () => {
         </main>
         <Footer />
         <PWAInstallPrompt />
+        <BackToDashboard />
       </div>
     </>
   );
