@@ -16,7 +16,7 @@ import {
   Code,
   GraduationCap,
   Globe,
-  Video,
+  Wrench,
   Play,
   BarChart3,
   Images
@@ -30,12 +30,12 @@ import AdminTechStack from "@/components/admin/AdminTechStack";
 import AdminExperience from "@/components/admin/AdminExperience";
 import AdminEducation from "@/components/admin/AdminEducation";
 import AdminLanguages from "@/components/admin/AdminLanguages";
-import AdminVideoTools from "@/components/admin/AdminVideoTools";
+import AdminSoftwareTools from "@/components/admin/AdminSoftwareTools";
 import AdminVideoPortfolio from "@/components/admin/AdminVideoPortfolio";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminWorkJourneyGallery from "@/components/admin/AdminWorkJourneyGallery";
 
-type TabType = "hero" | "about" | "experience" | "education" | "languages" | "projects" | "contact" | "messages" | "techstack" | "videotools" | "videoportfolio" | "analytics" | "journeygallery";
+type TabType = "hero" | "about" | "experience" | "education" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -46,7 +46,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "languages", label: "Languages", icon: Globe },
   { id: "projects", label: "Projects", icon: FileText },
   { id: "techstack", label: "Tech Stack", icon: Code },
-  { id: "videotools", label: "Video Tools", icon: Video },
+  { id: "softwaretools", label: "Tools & Software", icon: Wrench },
   { id: "videoportfolio", label: "Video Portfolio", icon: Play },
   { id: "journeygallery", label: "Work Journey", icon: Images },
   { id: "contact", label: "Contact Info", icon: FileText },
@@ -121,8 +121,8 @@ const Admin = () => {
         return <AdminProjects onUpdate={fetchStats} />;
       case "techstack":
         return <AdminTechStack />;
-      case "videotools":
-        return <AdminVideoTools />;
+      case "softwaretools":
+        return <AdminSoftwareTools />;
       case "videoportfolio":
         return <AdminVideoPortfolio />;
       case "journeygallery":
