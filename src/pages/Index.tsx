@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Experience from "@/components/Experience";
 import Education from "@/components/Education";
+import Trainings from "@/components/Trainings";
 import Languages from "@/components/Languages";
 import Works from "@/components/Works";
 import TechStack from "@/components/TechStack";
@@ -49,6 +50,7 @@ const Index = () => {
           <About />
           <Experience />
           <Education />
+          <Trainings />
           <Languages />
           <Works />
           <TechStack />
