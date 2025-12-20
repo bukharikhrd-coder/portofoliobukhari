@@ -1,30 +1,53 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { 
-  Code2, 
-  Palette, 
-  Database, 
-  Globe, 
-  Terminal, 
-  Figma,
-  Layers,
-  Zap
-} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Loader2, Code2 } from "lucide-react";
 
-const technologies = [
-  { name: "React", icon: Code2, category: "Frontend" },
-  { name: "TypeScript", icon: Terminal, category: "Language" },
-  { name: "Next.js", icon: Globe, category: "Framework" },
-  { name: "Node.js", icon: Zap, category: "Backend" },
-  { name: "Tailwind CSS", icon: Layers, category: "Styling" },
-  { name: "Figma", icon: Figma, category: "Design" },
-  { name: "PostgreSQL", icon: Database, category: "Database" },
-  { name: "UI/UX Design", icon: Palette, category: "Design" },
-];
+interface TechItem {
+  id: string;
+  name: string;
+  category: string | null;
+  icon_name: string | null;
+  order_index: number | null;
+}
 
 const TechStack = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const { data: technologies, isLoading } = useQuery({
+    queryKey: ["tech_stack"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tech_stack")
+        .select("*")
+        .order("category")
+        .order("order_index");
+      
+      if (error) throw error;
+      return data as TechItem[];
+    }
+  });
+
+  const getIcon = (iconName: string | null): LucideIcon => {
+    if (!iconName) return Code2;
+    const icon = (LucideIcons as Record<string, unknown>)[iconName];
+    if (typeof icon === 'function' || (icon && typeof icon === 'object' && '$$typeof' in icon)) {
+      return icon as LucideIcon;
+    }
+    return Code2;
+  };
+
+  if (isLoading) {
+    return (
+      <section className="py-32 flex items-center justify-center">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </section>
+    );
+  }
 
   return (
     <section id="tech" className="py-32">
@@ -49,38 +72,42 @@ const TechStack = () => {
 
         {/* Tech Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {technologies.map((tech, index) => (
-            <motion.div
-              key={tech.name}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 * index }}
-              className="group"
-            >
-              <div className="relative p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover">
-                {/* Icon */}
-                <div className="mb-6">
-                  <tech.icon 
-                    size={40} 
-                    className="text-muted-foreground group-hover:text-primary transition-colors duration-300" 
-                  />
-                </div>
-                
-                {/* Content */}
-                <div className="space-y-1">
-                  <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-300">
-                    {tech.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground tracking-wide uppercase">
-                    {tech.category}
-                  </p>
-                </div>
+          {technologies?.map((tech, index) => {
+            const IconComponent = getIcon(tech.icon_name);
+            
+            return (
+              <motion.div
+                key={tech.id}
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.1 * Math.min(index, 7) }}
+                className="group"
+              >
+                <div className="relative p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover">
+                  {/* Icon */}
+                  <div className="mb-6">
+                    <IconComponent 
+                      size={40} 
+                      className="text-muted-foreground group-hover:text-primary transition-colors duration-300" 
+                    />
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="space-y-1">
+                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-300">
+                      {tech.name}
+                    </h3>
+                    <p className="text-xs text-muted-foreground tracking-wide uppercase">
+                      {tech.category}
+                    </p>
+                  </div>
 
-                {/* Decorative corner */}
-                <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-t-primary/0 border-l-[40px] border-l-transparent group-hover:border-t-primary/20 transition-all duration-500" />
-              </div>
-            </motion.div>
-          ))}
+                  {/* Decorative corner */}
+                  <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-t-primary/0 border-l-[40px] border-l-transparent group-hover:border-t-primary/20 transition-all duration-500" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Additional info */}
