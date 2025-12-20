@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Edit2, X, Save } from "lucide-react";
+import { Loader2, Plus, Trash2, Edit2, X, Save, Upload, Image } from "lucide-react";
 
 interface Project {
   id: string;
@@ -30,6 +30,8 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
   const [isCreating, setIsCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [newTag, setNewTag] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const emptyProject: Omit<Project, "id"> = {
     title: "",
@@ -272,9 +274,63 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground">Image URL</label>
+                <label className="text-sm text-muted-foreground">Project Image</label>
+                <div className="flex gap-4">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+
+                      setUploading(true);
+                      const fileExt = file.name.split(".").pop();
+                      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                      
+                      const { data, error } = await supabase.storage
+                        .from("project-images")
+                        .upload(fileName, file);
+
+                      if (error) {
+                        toast.error("Failed to upload image");
+                        setUploading(false);
+                        return;
+                      }
+
+                      const { data: publicUrl } = supabase.storage
+                        .from("project-images")
+                        .getPublicUrl(data.path);
+
+                      setEditingProject({ ...editingProject!, image_url: publicUrl.publicUrl });
+                      setUploading(false);
+                      toast.success("Image uploaded!");
+                    }}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="flex-1 px-4 py-3 border border-dashed border-border hover:border-primary transition-colors flex items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
+                  >
+                    {uploading ? (
+                      <>
+                        <Loader2 className="animate-spin" size={18} />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={18} />
+                        Upload Image
+                      </>
+                    )}
+                  </button>
+                </div>
+                <div className="text-xs text-muted-foreground">Or enter URL manually:</div>
                 <input
                   type="text"
+                  placeholder="https://..."
                   value={editingProject.image_url || ""}
                   onChange={(e) =>
                     setEditingProject({ ...editingProject, image_url: e.target.value })
@@ -282,15 +338,24 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
                   className="w-full px-4 py-3 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
                 />
                 {editingProject.image_url && (
-                  <img
-                    src={editingProject.image_url}
-                    alt="Preview"
-                    className="w-full h-32 object-cover mt-2 border border-border"
-                  />
+                  <div className="relative">
+                    <img
+                      src={editingProject.image_url}
+                      alt="Preview"
+                      className="w-full h-40 object-cover border border-border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setEditingProject({ ...editingProject, image_url: "" })}
+                      className="absolute top-2 right-2 p-1 bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 )}
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm text-muted-foreground">Year</label>
                   <input
@@ -315,7 +380,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <label className="text-sm text-muted-foreground">GitHub URL</label>
                   <input
                     type="text"
@@ -327,6 +392,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
                   />
                 </div>
               </div>
+
 
               {/* Tags */}
               <div className="space-y-2">
