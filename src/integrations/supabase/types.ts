@@ -577,6 +577,39 @@ export type Database = {
         }
         Relationships: []
       }
+      work_journey_gallery: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          order_index: number | null
+          title: string
+          updated_at: string
+          year: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          order_index?: number | null
+          title: string
+          updated_at?: string
+          year?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          order_index?: number | null
+          title?: string
+          updated_at?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

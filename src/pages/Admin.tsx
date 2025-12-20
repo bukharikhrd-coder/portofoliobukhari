@@ -18,7 +18,8 @@ import {
   Globe,
   Video,
   Play,
-  BarChart3
+  BarChart3,
+  Images
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -32,8 +33,9 @@ import AdminLanguages from "@/components/admin/AdminLanguages";
 import AdminVideoTools from "@/components/admin/AdminVideoTools";
 import AdminVideoPortfolio from "@/components/admin/AdminVideoPortfolio";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
+import AdminWorkJourneyGallery from "@/components/admin/AdminWorkJourneyGallery";
 
-type TabType = "hero" | "about" | "experience" | "education" | "languages" | "projects" | "contact" | "messages" | "techstack" | "videotools" | "videoportfolio" | "analytics";
+type TabType = "hero" | "about" | "experience" | "education" | "languages" | "projects" | "contact" | "messages" | "techstack" | "videotools" | "videoportfolio" | "analytics" | "journeygallery";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -46,6 +48,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "techstack", label: "Tech Stack", icon: Code },
   { id: "videotools", label: "Video Tools", icon: Video },
   { id: "videoportfolio", label: "Video Portfolio", icon: Play },
+  { id: "journeygallery", label: "Work Journey", icon: Images },
   { id: "contact", label: "Contact Info", icon: FileText },
   { id: "messages", label: "Messages", icon: Mail },
 ];
@@ -122,6 +125,8 @@ const Admin = () => {
         return <AdminVideoTools />;
       case "videoportfolio":
         return <AdminVideoPortfolio />;
+      case "journeygallery":
+        return <AdminWorkJourneyGallery />;
       case "contact":
         return <AdminContact />;
       case "messages":
