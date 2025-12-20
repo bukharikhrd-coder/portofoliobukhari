@@ -6,30 +6,31 @@ import Works from "@/components/Works";
 import TechStack from "@/components/TechStack";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Bukhari S.Kom | Creative Developer & Designer</title>
+        <title>Bukhari, S.Kom | Creative Developer & Designer</title>
         <meta
           name="description"
-          content="Personal portfolio of Bukhari S.Kom - Creative Developer & Designer specializing in web development, UI/UX design, and digital solutions."
+          content="Portfolio personal Bukhari, S.Kom - Creative Developer & Designer. Menampilkan karya desain grafis, website, tools, dan project kreatif."
         />
         <meta
           name="keywords"
-          content="web developer, designer, portfolio, React, UI/UX, creative developer"
+          content="web developer, designer, portfolio, React, UI/UX, creative developer, Bukhari, WIXBIHUB"
         />
-        <meta property="og:title" content="Bukhari S.Kom | Creative Developer & Designer" />
+        <meta property="og:title" content="Bukhari, S.Kom | Creative Developer & Designer" />
         <meta
           property="og:description"
-          content="Personal portfolio showcasing web development, design, and creative projects."
+          content="Portfolio personal menampilkan karya desain, website, dan project kreatif."
         />
         <meta property="og:type" content="website" />
         <link rel="canonical" href="https://bukhari.dev" />
       </Helmet>
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Navbar />
         <main>
           <div id="home">
@@ -41,6 +42,7 @@ const Index = () => {
           <Contact />
         </main>
         <Footer />
+        <PWAInstallPrompt />
       </div>
     </>
   );

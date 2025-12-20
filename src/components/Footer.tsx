@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -10,17 +11,15 @@ const Footer = () => {
     <footer className="py-12 border-t border-border">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Logo & Copyright */}
           <div className="flex items-center gap-8">
-            <span className="font-display text-2xl tracking-tight">
-              BUKHARI<span className="text-primary">.</span>
-            </span>
+            <Link to="/" className="font-display text-2xl tracking-tight">
+              BUKHARI<span className="text-gradient">, S.KOM</span>
+            </Link>
             <p className="text-muted-foreground text-sm">
-              © 2025 All Rights Reserved
+              © {new Date().getFullYear()} All Rights Reserved
             </p>
           </div>
 
-          {/* Back to top */}
           <motion.button
             onClick={scrollToTop}
             whileHover={{ y: -4 }}
