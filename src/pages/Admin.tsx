@@ -9,12 +9,16 @@ import {
   Briefcase, 
   User, 
   Mail, 
-  Settings, 
   LogOut,
   Menu,
   X,
   Home,
-  Code
+  Code,
+  GraduationCap,
+  Globe,
+  Video,
+  Play,
+  BarChart3
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -22,14 +26,26 @@ import AdminProjects from "@/components/admin/AdminProjects";
 import AdminContact from "@/components/admin/AdminContact";
 import AdminMessages from "@/components/admin/AdminMessages";
 import AdminTechStack from "@/components/admin/AdminTechStack";
+import AdminExperience from "@/components/admin/AdminExperience";
+import AdminEducation from "@/components/admin/AdminEducation";
+import AdminLanguages from "@/components/admin/AdminLanguages";
+import AdminVideoTools from "@/components/admin/AdminVideoTools";
+import AdminVideoPortfolio from "@/components/admin/AdminVideoPortfolio";
+import AdminAnalytics from "@/components/admin/AdminAnalytics";
 
-type TabType = "hero" | "about" | "projects" | "contact" | "messages" | "techstack";
+type TabType = "hero" | "about" | "experience" | "education" | "languages" | "projects" | "contact" | "messages" | "techstack" | "videotools" | "videoportfolio" | "analytics";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "hero", label: "Hero Section", icon: Home },
   { id: "about", label: "About Me", icon: User },
-  { id: "projects", label: "Projects", icon: Briefcase },
+  { id: "experience", label: "Experience", icon: Briefcase },
+  { id: "education", label: "Education", icon: GraduationCap },
+  { id: "languages", label: "Languages", icon: Globe },
+  { id: "projects", label: "Projects", icon: FileText },
   { id: "techstack", label: "Tech Stack", icon: Code },
+  { id: "videotools", label: "Video Tools", icon: Video },
+  { id: "videoportfolio", label: "Video Portfolio", icon: Play },
   { id: "contact", label: "Contact Info", icon: FileText },
   { id: "messages", label: "Messages", icon: Mail },
 ];
@@ -37,7 +53,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabType>("hero");
+  const [activeTab, setActiveTab] = useState<TabType>("analytics");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState({
     projects: 0,
@@ -86,14 +102,26 @@ const Admin = () => {
 
   const renderContent = () => {
     switch (activeTab) {
+      case "analytics":
+        return <AdminAnalytics />;
       case "hero":
         return <AdminHero />;
       case "about":
         return <AdminAbout />;
+      case "experience":
+        return <AdminExperience />;
+      case "education":
+        return <AdminEducation />;
+      case "languages":
+        return <AdminLanguages />;
       case "projects":
         return <AdminProjects onUpdate={fetchStats} />;
       case "techstack":
         return <AdminTechStack />;
+      case "videotools":
+        return <AdminVideoTools />;
+      case "videoportfolio":
+        return <AdminVideoPortfolio />;
       case "contact":
         return <AdminContact />;
       case "messages":

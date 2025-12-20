@@ -2,13 +2,21 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import Experience from "@/components/Experience";
+import Education from "@/components/Education";
+import Languages from "@/components/Languages";
 import Works from "@/components/Works";
 import TechStack from "@/components/TechStack";
+import VideoTools from "@/components/VideoTools";
+import VideoPortfolio from "@/components/VideoPortfolio";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
+  useVisitorTracking();
+
   return (
     <>
       <Helmet>
@@ -37,8 +45,13 @@ const Index = () => {
             <Hero />
           </div>
           <About />
+          <Experience />
+          <Education />
+          <Languages />
           <Works />
           <TechStack />
+          <VideoTools />
+          <VideoPortfolio />
           <Contact />
         </main>
         <Footer />
