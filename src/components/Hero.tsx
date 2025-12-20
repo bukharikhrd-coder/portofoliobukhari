@@ -59,16 +59,21 @@ const Hero = () => {
     <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/20" />
       
-      {/* Background text - BUKHARI S.KOM */}
+      {/* Background text - BUKHARI S.KOM with outline effect */}
       <motion.div 
         className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
         style={{ y }}
       >
         <motion.h1
           initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 0.15, scale: 1 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="font-display text-[clamp(4rem,20vw,18rem)] font-bold tracking-tighter whitespace-nowrap text-foreground/20"
+          className="font-display text-[clamp(5rem,18vw,16rem)] font-black tracking-tighter whitespace-nowrap select-none"
+          style={{
+            WebkitTextStroke: '2px hsl(var(--foreground) / 0.4)',
+            WebkitTextFillColor: 'transparent',
+            textShadow: '0 0 80px hsl(var(--primary) / 0.15)',
+          }}
         >
           {heroData.headline_1} {heroData.headline_2}
         </motion.h1>
@@ -137,19 +142,28 @@ const Hero = () => {
           {/* Center - Profile Image (in front of background text) */}
           <div className="lg:col-span-4 relative order-1 lg:order-2">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="relative z-10"
               style={{ y: useTransform(scrollYProgress, [0, 1], [0, -50]) }}
             >
-              <div className="relative aspect-[3/4] overflow-hidden mx-auto max-w-[350px] lg:max-w-[400px]">
-                <img
-                  src={profileImageUrl || profilePhoto}
-                  alt="Bukhari S.Kom - Creative Developer"
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
+              <div className="relative aspect-[3/4] mx-auto max-w-[320px] lg:max-w-[380px]">
+                {/* Photo with blend mode for transparent effect */}
+                <div className="relative w-full h-full overflow-hidden">
+                  <img
+                    src={profileImageUrl || profilePhoto}
+                    alt="Bukhari S.Kom - Creative Developer"
+                    className="w-full h-full object-cover object-top mix-blend-luminosity hover:mix-blend-normal transition-all duration-700"
+                    style={{
+                      filter: 'contrast(1.1) brightness(0.95)',
+                    }}
+                  />
+                  {/* Gradient overlays for blending with background */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-l from-background/30 via-transparent to-background/30" />
+                </div>
               </div>
             </motion.div>
           </div>
