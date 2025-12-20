@@ -59,44 +59,18 @@ const Hero = () => {
     <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary/20" />
       
-      {/* Background text - BUKHARI S.KOM with outline effect */}
-      <motion.div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
-        style={{ y }}
-      >
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="font-display text-[clamp(5rem,18vw,16rem)] font-black tracking-tighter whitespace-nowrap select-none"
-          style={{
-            WebkitTextStroke: '2px hsl(var(--foreground) / 0.4)',
-            WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 80px hsl(var(--primary) / 0.15)',
-          }}
-        >
-          {heroData.headline_1} {heroData.headline_2}
-        </motion.h1>
+      <motion.div className="absolute inset-0 opacity-5" style={{ y }}>
+        <div className="absolute left-1/4 top-0 bottom-0 w-px bg-foreground" />
+        <div className="absolute left-2/4 top-0 bottom-0 w-px bg-foreground" />
+        <div className="absolute left-3/4 top-0 bottom-0 w-px bg-foreground" />
       </motion.div>
 
       <motion.div 
         className="container mx-auto px-6 lg:px-12 relative z-10"
         style={{ opacity, scale }}
       >
-        {/* Date and brand - top right */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="absolute top-8 right-6 lg:right-12 text-right z-20"
-        >
-          <p className="text-muted-foreground text-sm tracking-[0.2em]">{heroData.date_display}</p>
-          <p className="text-foreground font-medium mt-1">{heroData.brand_name}</p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-12 gap-8 items-center min-h-screen py-20">
-          {/* Left text content */}
-          <div className="lg:col-span-4 space-y-6 order-2 lg:order-1">
+        <div className="grid lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 space-y-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -109,11 +83,22 @@ const Hero = () => {
               </span>
             </motion.div>
 
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <h1 className="font-display text-[clamp(3rem,12vw,10rem)] leading-[0.85] tracking-tight">
+                <span className="block text-foreground">{heroData.headline_1}</span>
+                <span className="block text-gradient">{heroData.headline_2}</span>
+              </h1>
+            </motion.div>
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-muted-foreground text-sm lg:text-base leading-relaxed"
+              className="text-muted-foreground text-lg max-w-md leading-relaxed"
             >
               {heroData.description}
             </motion.p>
@@ -122,63 +107,50 @@ const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-wrap gap-3 pt-4"
+              className="flex flex-wrap gap-4 pt-4"
             >
               <a
                 href={heroData.cta_primary_link || "#works"}
-                className="px-6 py-3 bg-primary text-primary-foreground text-sm font-medium tracking-wide hover:bg-primary/90 transition-all duration-300"
+                className="px-8 py-4 bg-primary text-primary-foreground font-medium tracking-wide hover:bg-primary/90 transition-all duration-300"
               >
                 {heroData.cta_primary_text}
               </a>
               <a
                 href={heroData.cta_secondary_link || "#contact"}
-                className="px-6 py-3 border border-border text-foreground text-sm font-medium tracking-wide hover:border-primary hover:text-primary transition-all duration-300"
+                className="px-8 py-4 border border-border text-foreground font-medium tracking-wide hover:border-primary hover:text-primary transition-all duration-300"
               >
                 {heroData.cta_secondary_text}
               </a>
             </motion.div>
           </div>
 
-          {/* Center - Profile Image (in front of background text) */}
-          <div className="lg:col-span-4 relative order-1 lg:order-2">
+          <div className="lg:col-span-5 relative">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="absolute -top-8 right-0 lg:top-0 lg:right-0 text-right z-20"
+            >
+              <p className="text-muted-foreground text-sm tracking-[0.2em]">{heroData.date_display}</p>
+              <p className="text-foreground font-medium mt-1">{heroData.brand_name}</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative z-10"
+              className="relative mt-16 lg:mt-12"
               style={{ y: useTransform(scrollYProgress, [0, 1], [0, -50]) }}
             >
-              <div className="relative aspect-[3/4] mx-auto max-w-[320px] lg:max-w-[380px]">
-                {/* Photo with blend mode for transparent effect */}
-                <div className="relative w-full h-full overflow-hidden">
-                  <img
-                    src={profileImageUrl || profilePhoto}
-                    alt="Bukhari S.Kom - Creative Developer"
-                    className="w-full h-full object-cover object-top mix-blend-luminosity hover:mix-blend-normal transition-all duration-700"
-                    style={{
-                      filter: 'contrast(1.1) brightness(0.95)',
-                    }}
-                  />
-                  {/* Gradient overlays for blending with background */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-transparent to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-l from-background/30 via-transparent to-background/30" />
-                </div>
+              <div className="relative aspect-[4/5] overflow-hidden">
+                <img
+                  src={profileImageUrl || profilePhoto}
+                  alt="Bukhari S.Kom - Creative Developer"
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
               </div>
-            </motion.div>
-          </div>
-
-          {/* Right text content - empty for balance or add more info */}
-          <div className="lg:col-span-4 order-3 hidden lg:block">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="text-right"
-            >
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Crafting digital experiences through clean code, thoughtful design, and creative innovation. Building the future, one project at a time.
-              </p>
+              <div className="absolute -bottom-4 -right-4 w-full h-full border border-primary/30 -z-10" />
             </motion.div>
           </div>
         </div>
