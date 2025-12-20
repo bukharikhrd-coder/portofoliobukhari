@@ -83,6 +83,27 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_summary: {
+        Row: {
+          id: string
+          last_updated: string
+          total_pageviews: number | null
+          total_unique_visitors: number | null
+        }
+        Insert: {
+          id?: string
+          last_updated?: string
+          total_pageviews?: number | null
+          total_unique_visitors?: number | null
+        }
+        Update: {
+          id?: string
+          last_updated?: string
+          total_pageviews?: number | null
+          total_unique_visitors?: number | null
+        }
+        Relationships: []
+      }
       contact_content: {
         Row: {
           created_at: string
@@ -158,6 +179,51 @@ export type Database = {
         }
         Relationships: []
       }
+      education: {
+        Row: {
+          created_at: string
+          degree: string
+          description: string | null
+          end_year: string | null
+          field_of_study: string | null
+          id: string
+          institution: string
+          is_current: boolean | null
+          location: string | null
+          order_index: number | null
+          start_year: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          degree: string
+          description?: string | null
+          end_year?: string | null
+          field_of_study?: string | null
+          id?: string
+          institution: string
+          is_current?: boolean | null
+          location?: string | null
+          order_index?: number | null
+          start_year: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          degree?: string
+          description?: string | null
+          end_year?: string | null
+          field_of_study?: string | null
+          id?: string
+          institution?: string
+          is_current?: boolean | null
+          location?: string | null
+          order_index?: number | null
+          start_year?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hero_content: {
         Row: {
           brand_name: string | null
@@ -203,6 +269,30 @@ export type Database = {
           id?: string
           subtitle?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      language_skills: {
+        Row: {
+          created_at: string
+          id: string
+          language_name: string
+          order_index: number | null
+          proficiency_level: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          language_name: string
+          order_index?: number | null
+          proficiency_level?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          language_name?: string
+          order_index?: number | null
+          proficiency_level?: string
         }
         Relationships: []
       }
@@ -349,6 +439,141 @@ export type Database = {
           id?: string
           name?: string
           order_index?: number | null
+        }
+        Relationships: []
+      }
+      video_portfolio: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          order_index: number | null
+          platform: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number | null
+          platform?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number | null
+          platform?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
+      video_tools: {
+        Row: {
+          created_at: string
+          icon_name: string | null
+          id: string
+          name: string
+          order_index: number | null
+          proficiency_level: string | null
+        }
+        Insert: {
+          created_at?: string
+          icon_name?: string | null
+          id?: string
+          name: string
+          order_index?: number | null
+          proficiency_level?: string | null
+        }
+        Update: {
+          created_at?: string
+          icon_name?: string | null
+          id?: string
+          name?: string
+          order_index?: number | null
+          proficiency_level?: string | null
+        }
+        Relationships: []
+      }
+      visitor_analytics: {
+        Row: {
+          country: string | null
+          created_at: string
+          id: string
+          page_path: string
+          referrer: string | null
+          user_agent: string | null
+          visitor_id: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          page_path?: string
+          referrer?: string | null
+          user_agent?: string | null
+          visitor_id: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          page_path?: string
+          referrer?: string | null
+          user_agent?: string | null
+          visitor_id?: string
+        }
+        Relationships: []
+      }
+      work_experience: {
+        Row: {
+          company_name: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_current: boolean | null
+          location: string | null
+          order_index: number | null
+          position: string
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          order_index?: number | null
+          position: string
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_current?: boolean | null
+          location?: string | null
+          order_index?: number | null
+          position?: string
+          start_date?: string
+          updated_at?: string
         }
         Relationships: []
       }
