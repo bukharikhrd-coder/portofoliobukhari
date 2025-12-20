@@ -28,6 +28,7 @@ interface Skill {
 const AdminAbout = () => {
   const [content, setContent] = useState<AboutContent | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [aboutImage, setAboutImage] = useState<string>("");
   const [newSkill, setNewSkill] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -37,13 +38,15 @@ const AdminAbout = () => {
   }, []);
 
   const fetchData = async () => {
-    const [contentRes, skillsRes] = await Promise.all([
+    const [contentRes, skillsRes, settingsRes] = await Promise.all([
       supabase.from("about_content").select("*").limit(1).maybeSingle(),
       supabase.from("skills").select("*").order("order_index"),
+      supabase.from("site_settings").select("*").eq("key", "about_image_url").maybeSingle()
     ]);
 
     if (contentRes.data) setContent(contentRes.data);
     if (skillsRes.data) setSkills(skillsRes.data);
+    if (settingsRes.data?.value) setAboutImage(settingsRes.data.value);
     setLoading(false);
   };
 
@@ -51,24 +54,30 @@ const AdminAbout = () => {
     if (!content) return;
     
     setSaving(true);
-    const { error } = await supabase
-      .from("about_content")
-      .update({
-        section_label: content.section_label,
-        headline_1: content.headline_1,
-        headline_2: content.headline_2,
-        description_1: content.description_1,
-        description_2: content.description_2,
-        stat_1_number: content.stat_1_number,
-        stat_1_label: content.stat_1_label,
-        stat_2_number: content.stat_2_number,
-        stat_2_label: content.stat_2_label,
-        stat_3_number: content.stat_3_number,
-        stat_3_label: content.stat_3_label,
-      })
-      .eq("id", content.id);
+    const [contentUpdate, settingsUpdate] = await Promise.all([
+      supabase
+        .from("about_content")
+        .update({
+          section_label: content.section_label,
+          headline_1: content.headline_1,
+          headline_2: content.headline_2,
+          description_1: content.description_1,
+          description_2: content.description_2,
+          stat_1_number: content.stat_1_number,
+          stat_1_label: content.stat_1_label,
+          stat_2_number: content.stat_2_number,
+          stat_2_label: content.stat_2_label,
+          stat_3_number: content.stat_3_number,
+          stat_3_label: content.stat_3_label,
+        })
+        .eq("id", content.id),
+      supabase.from("site_settings").upsert({
+        key: "about_image_url",
+        value: aboutImage
+      }, { onConflict: "key" })
+    ]);
 
-    if (error) {
+    if (contentUpdate.error || settingsUpdate.error) {
       toast.error("Failed to save changes");
     } else {
       toast.success("About content updated!");
@@ -134,6 +143,16 @@ const AdminAbout = () => {
           {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
           Save Changes
         </button>
+      </div>
+
+      {/* About Image Upload */}
+      <div className="p-6 bg-secondary/50 border border-border">
+        <ImageUpload
+          currentImage={aboutImage}
+          onImageChange={setAboutImage}
+          folder="about"
+          label="About Section Image"
+        />
       </div>
 
       {content && (

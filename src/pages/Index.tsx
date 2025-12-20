@@ -9,6 +9,7 @@ import Works from "@/components/Works";
 import TechStack from "@/components/TechStack";
 import VideoTools from "@/components/VideoTools";
 import VideoPortfolio from "@/components/VideoPortfolio";
+import WorkJourneyGallery from "@/components/WorkJourneyGallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
@@ -53,6 +54,7 @@ const Index = () => {
           <TechStack />
           <VideoTools />
           <VideoPortfolio />
+          <WorkJourneyGallery />
           <Contact />
         </main>
         <Footer />

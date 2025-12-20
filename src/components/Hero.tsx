@@ -34,7 +34,7 @@ const Hero = () => {
     const fetchContent = async () => {
       const [heroRes, settingsRes] = await Promise.all([
         supabase.from("hero_content").select("*").limit(1).maybeSingle(),
-        supabase.from("site_settings").select("*").eq("key", "profile_image_url").maybeSingle()
+        supabase.from("site_settings").select("*").eq("key", "hero_image_url").maybeSingle()
       ]);
       if (heroRes.data) setContent(heroRes.data);
       if (settingsRes.data?.value) setProfileImageUrl(settingsRes.data.value);

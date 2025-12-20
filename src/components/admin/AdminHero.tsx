@@ -35,7 +35,7 @@ const AdminHero = () => {
   const fetchContent = async () => {
     const [heroRes, settingsRes] = await Promise.all([
       supabase.from("hero_content").select("*").limit(1).maybeSingle(),
-      supabase.from("site_settings").select("*").eq("key", "profile_image_url").maybeSingle()
+      supabase.from("site_settings").select("*").eq("key", "hero_image_url").maybeSingle()
     ]);
 
     if (heroRes.error) {
@@ -69,7 +69,7 @@ const AdminHero = () => {
         brand_name: content.brand_name,
       }).eq("id", content.id),
       supabase.from("site_settings").upsert({
-        key: "profile_image_url",
+        key: "hero_image_url",
         value: profileImage
       }, { onConflict: "key" })
     ]);
@@ -117,13 +117,13 @@ const AdminHero = () => {
         </button>
       </div>
 
-      {/* Profile Image Upload */}
+      {/* Hero Image Upload */}
       <div className="p-6 bg-secondary/50 border border-border">
         <ImageUpload
           currentImage={profileImage}
           onImageChange={setProfileImage}
-          folder="profile"
-          label="Profile Image (Hero & About)"
+          folder="hero"
+          label="Hero Section Image"
         />
       </div>
 

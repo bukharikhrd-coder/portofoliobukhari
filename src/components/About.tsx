@@ -42,7 +42,7 @@ const About = () => {
       const [contentRes, skillsRes, settingsRes] = await Promise.all([
         supabase.from("about_content").select("*").limit(1).maybeSingle(),
         supabase.from("skills").select("*").order("order_index"),
-        supabase.from("site_settings").select("*").eq("key", "profile_image_url").maybeSingle()
+        supabase.from("site_settings").select("*").eq("key", "about_image_url").maybeSingle()
       ]);
       if (contentRes.data) setContent(contentRes.data);
       if (skillsRes.data) setSkills(skillsRes.data);
