@@ -44,7 +44,8 @@ const AdminExperience = () => {
           .eq("id", id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("work_experience").insert(data);
+        const { id, ...insertData } = data;
+        const { error } = await supabase.from("work_experience").insert([insertData as any]);
         if (error) throw error;
       }
     },

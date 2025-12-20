@@ -42,7 +42,8 @@ const AdminEducation = () => {
         const { error } = await supabase.from("education").update(updateData).eq("id", id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("education").insert(data);
+        const { id, ...insertData } = data;
+        const { error } = await supabase.from("education").insert([insertData as any]);
         if (error) throw error;
       }
     },
