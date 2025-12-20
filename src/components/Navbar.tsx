@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Settings, Sun, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -31,6 +31,26 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    
+    if (href === "#") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const element = document.querySelector(href);
+    if (element) {
+      const navHeight = 80;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - navHeight,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -42,16 +62,22 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
-          <a href="#" className="font-display text-2xl tracking-tight">
+          <a 
+            href="#" 
+            onClick={(e) => handleSmoothScroll(e, "#")}
+            className="font-display text-2xl tracking-tight"
+          >
             BUKHARI<span className="text-gradient">, S.KOM</span>
           </a>
 
-          <div className="hidden md:flex items-center gap-6">
+          {/* Desktop & Tablet Navigation - hidden only on small phones */}
+          <div className="hidden sm:flex items-center gap-4 lg:gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
+                onClick={(e) => handleSmoothScroll(e, link.href)}
+                className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
               >
                 {link.label}
               </a>
@@ -90,7 +116,8 @@ const Navbar = () => {
             </button>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          {/* Mobile Menu Button - only on small phones */}
+          <div className="flex items-center gap-2 sm:hidden">
             <button
               onClick={toggleTheme}
               className="p-2 text-foreground"
@@ -116,7 +143,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-background border-b border-border"
+            className="sm:hidden bg-background border-b border-border"
           >
             <div className="container mx-auto px-6 py-6 space-y-4">
               {navLinks.map((link, index) => (
@@ -125,8 +152,8 @@ const Navbar = () => {
                   href={link.href}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => setIsOpen(false)}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
                   className="block text-lg text-muted-foreground hover:text-foreground transition-colors duration-300"
                 >
                   {link.label}
