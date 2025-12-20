@@ -19,7 +19,8 @@ import {
   Wrench,
   Play,
   BarChart3,
-  Images
+  Images,
+  Award
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -34,8 +35,9 @@ import AdminSoftwareTools from "@/components/admin/AdminSoftwareTools";
 import AdminVideoPortfolio from "@/components/admin/AdminVideoPortfolio";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminWorkJourneyGallery from "@/components/admin/AdminWorkJourneyGallery";
+import AdminTrainings from "@/components/admin/AdminTrainings";
 
-type TabType = "hero" | "about" | "experience" | "education" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -43,6 +45,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "about", label: "About Me", icon: User },
   { id: "experience", label: "Experience", icon: Briefcase },
   { id: "education", label: "Education", icon: GraduationCap },
+  { id: "trainings", label: "Training & Certifications", icon: Award },
   { id: "languages", label: "Languages", icon: Globe },
   { id: "projects", label: "Projects", icon: FileText },
   { id: "techstack", label: "Tech Stack", icon: Code },
@@ -115,6 +118,8 @@ const Admin = () => {
         return <AdminExperience />;
       case "education":
         return <AdminEducation />;
+      case "trainings":
+        return <AdminTrainings />;
       case "languages":
         return <AdminLanguages />;
       case "projects":

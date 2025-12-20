@@ -442,6 +442,42 @@ export type Database = {
         }
         Relationships: []
       }
+      trainings: {
+        Row: {
+          certificate_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          order_index: number | null
+          organization: string | null
+          title: string
+          updated_at: string
+          year: string | null
+        }
+        Insert: {
+          certificate_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number | null
+          organization?: string | null
+          title: string
+          updated_at?: string
+          year?: string | null
+        }
+        Update: {
+          certificate_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_index?: number | null
+          organization?: string | null
+          title?: string
+          updated_at?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
       video_portfolio: {
         Row: {
           created_at: string
