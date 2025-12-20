@@ -8,8 +8,12 @@ import { useTheme } from "@/contexts/ThemeContext";
 const navLinks = [
   { href: "#", label: "Home" },
   { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#education", label: "Education" },
+  { href: "#languages", label: "Languages" },
   { href: "#works", label: "Works" },
   { href: "#techstack", label: "Tech" },
+  { href: "#video-tools", label: "Video" },
   { href: "#contact", label: "Contact" },
 ];
 
