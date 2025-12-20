@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Settings } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
-  { href: "#home", label: "Home" },
+  { href: "#", label: "Home" },
   { href: "#about", label: "About" },
   { href: "#works", label: "Works" },
-  { href: "#tech", label: "Tech" },
+  { href: "#techstack", label: "Tech" },
   { href: "#contact", label: "Contact" },
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,12 +36,10 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <a href="#home" className="font-display text-2xl tracking-tight">
-            BUKHARI<span className="text-primary">.</span>
+          <a href="#" className="font-display text-2xl tracking-tight">
+            BUKHARI<span className="text-gradient">, S.KOM</span>
           </a>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
@@ -49,9 +50,25 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+            {user && isAdmin && (
+              <Link
+                to="/admin"
+                className="flex items-center gap-2 text-primary hover:text-primary/80 text-sm tracking-wide transition-colors duration-300"
+              >
+                <Settings size={16} />
+                Admin
+              </Link>
+            )}
+            {!user && (
+              <Link
+                to="/auth"
+                className="text-muted-foreground hover:text-foreground text-sm tracking-wide transition-colors duration-300"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
-          {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 text-foreground"
@@ -62,7 +79,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -86,6 +102,37 @@ const Navbar = () => {
                   {link.label}
                 </motion.a>
               ))}
+              {user && isAdmin && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navLinks.length * 0.1 }}
+                >
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 text-primary text-lg"
+                  >
+                    <Settings size={18} />
+                    Admin
+                  </Link>
+                </motion.div>
+              )}
+              {!user && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navLinks.length * 0.1 }}
+                >
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsOpen(false)}
+                    className="block text-lg text-muted-foreground hover:text-foreground"
+                  >
+                    Login
+                  </Link>
+                </motion.div>
+              )}
             </div>
           </motion.div>
         )}
