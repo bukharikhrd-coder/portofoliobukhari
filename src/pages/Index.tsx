@@ -7,7 +7,7 @@ import Education from "@/components/Education";
 import Languages from "@/components/Languages";
 import Works from "@/components/Works";
 import TechStack from "@/components/TechStack";
-import VideoTools from "@/components/VideoTools";
+import SoftwareTools from "@/components/SoftwareTools";
 import VideoPortfolio from "@/components/VideoPortfolio";
 import WorkJourneyGallery from "@/components/WorkJourneyGallery";
 import Contact from "@/components/Contact";
@@ -52,7 +52,7 @@ const Index = () => {
           <Languages />
           <Works />
           <TechStack />
-          <VideoTools />
+          <SoftwareTools />
           <VideoPortfolio />
           <WorkJourneyGallery />
           <Contact />
