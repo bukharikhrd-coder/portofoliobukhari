@@ -19,6 +19,7 @@ interface HeroContent {
 const Hero = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState<HeroContent | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -31,8 +32,12 @@ const Hero = () => {
 
   useEffect(() => {
     const fetchContent = async () => {
-      const { data } = await supabase.from("hero_content").select("*").limit(1).maybeSingle();
-      if (data) setContent(data);
+      const [heroRes, settingsRes] = await Promise.all([
+        supabase.from("hero_content").select("*").limit(1).maybeSingle(),
+        supabase.from("site_settings").select("*").eq("key", "profile_image_url").maybeSingle()
+      ]);
+      if (heroRes.data) setContent(heroRes.data);
+      if (settingsRes.data?.value) setProfileImageUrl(settingsRes.data.value);
     };
     fetchContent();
   }, []);
@@ -139,7 +144,7 @@ const Hero = () => {
             >
               <div className="relative aspect-[4/5] overflow-hidden">
                 <img
-                  src={profilePhoto}
+                  src={profileImageUrl || profilePhoto}
                   alt="Bukhari S.Kom - Creative Developer"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                 />
