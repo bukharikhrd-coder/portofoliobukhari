@@ -4,6 +4,7 @@ import { Menu, X, Settings, Sun, Moon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const navLinks = [
   { href: "#", label: "Home" },
@@ -100,6 +101,9 @@ const Navbar = () => {
               </Link>
             )}
             
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+            
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -117,7 +121,8 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button - only on small phones */}
-          <div className="flex items-center gap-2 sm:hidden">
+          <div className="flex items-center gap-1 sm:hidden">
+            <LanguageSwitcher />
             <button
               onClick={toggleTheme}
               className="p-2 text-foreground"
