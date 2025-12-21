@@ -3,6 +3,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { Mail, MapPin, Send, Github, Linkedin, Instagram, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { TranslatedText } from "@/components/TranslatedText";
 
 interface ContactContent {
   section_label: string | null;
@@ -96,19 +97,19 @@ const Contact = () => {
             className="space-y-8"
           >
             <div>
-              <span className="text-primary text-sm tracking-[0.3em] uppercase">
-                {contactData.section_label}
-              </span>
+              <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
+                {contactData.section_label || "Get in Touch"}
+              </TranslatedText>
               <h2 className="font-display text-5xl md:text-6xl mt-4 leading-tight">
-                {contactData.headline_1}
+                <TranslatedText>{contactData.headline_1 || ""}</TranslatedText>
                 <br />
-                <span className="text-gradient">{contactData.headline_2}</span>
+                <TranslatedText className="text-gradient">{contactData.headline_2 || ""}</TranslatedText>
               </h2>
             </div>
 
-            <p className="text-muted-foreground text-lg leading-relaxed max-w-md">
-              {contactData.description}
-            </p>
+            <TranslatedText as="p" className="text-muted-foreground text-lg leading-relaxed max-w-md">
+              {contactData.description || ""}
+            </TranslatedText>
 
             <div className="space-y-4">
               <a
@@ -152,7 +153,7 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm text-muted-foreground tracking-wide">Your Name *</label>
+                  <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Your Name *</TranslatedText>
                   <input
                     type="text"
                     placeholder="John Doe"
@@ -162,7 +163,7 @@ const Contact = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-muted-foreground tracking-wide">Your Email *</label>
+                  <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Your Email *</TranslatedText>
                   <input
                     type="email"
                     placeholder="john@example.com"
@@ -174,7 +175,7 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground tracking-wide">Subject</label>
+                <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Subject</TranslatedText>
                 <input
                   type="text"
                   placeholder="Project Discussion"
@@ -185,7 +186,7 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-muted-foreground tracking-wide">Message *</label>
+                <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Message *</TranslatedText>
                 <textarea
                   rows={6}
                   placeholder="Tell me about your project..."
@@ -201,7 +202,7 @@ const Contact = () => {
                 className="w-full md:w-auto px-8 py-4 bg-primary text-primary-foreground font-medium tracking-wide flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
               >
                 {sending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
-                {sending ? "SENDING..." : "SEND MESSAGE"}
+                <TranslatedText>{sending ? "SENDING..." : "SEND MESSAGE"}</TranslatedText>
               </button>
             </form>
           </motion.div>

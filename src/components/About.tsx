@@ -3,6 +3,7 @@ import { useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import profilePhoto from "@/assets/profile-photo.png";
+import { TranslatedText, useTranslatedContent } from "@/components/TranslatedText";
 
 interface AboutContent {
   section_label: string | null;
@@ -51,6 +52,8 @@ const About = () => {
     fetchData();
   }, []);
 
+  const { items: translatedSkills } = useTranslatedContent(skills, ["name"]);
+
   const aboutData = content || {
     section_label: "About Me",
     headline_1: "PASSIONATE ABOUT",
@@ -66,9 +69,9 @@ const About = () => {
   };
 
   const stats = [
-    { number: aboutData.stat_1_number, label: aboutData.stat_1_label },
-    { number: aboutData.stat_2_number, label: aboutData.stat_2_label },
-    { number: aboutData.stat_3_number, label: aboutData.stat_3_label },
+    { number: aboutData.stat_1_number, label: aboutData.stat_1_label || "" },
+    { number: aboutData.stat_2_number, label: aboutData.stat_2_label || "" },
+    { number: aboutData.stat_3_number, label: aboutData.stat_3_label || "" },
   ];
 
   return (
@@ -101,11 +104,13 @@ const About = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <span className="text-primary text-sm tracking-[0.3em] uppercase">{aboutData.section_label}</span>
+              <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
+                {aboutData.section_label || "About Me"}
+              </TranslatedText>
               <h2 className="font-display text-5xl md:text-6xl mt-4 leading-tight">
-                {aboutData.headline_1}
+                <TranslatedText>{aboutData.headline_1 || ""}</TranslatedText>
                 <br />
-                <span className="text-gradient">{aboutData.headline_2}</span>
+                <TranslatedText className="text-gradient">{aboutData.headline_2 || ""}</TranslatedText>
               </h2>
             </motion.div>
 
@@ -115,12 +120,12 @@ const About = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="space-y-4"
             >
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                {aboutData.description_1}
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                {aboutData.description_2}
-              </p>
+              <TranslatedText as="p" className="text-muted-foreground text-lg leading-relaxed">
+                {aboutData.description_1 || ""}
+              </TranslatedText>
+              <TranslatedText as="p" className="text-muted-foreground leading-relaxed">
+                {aboutData.description_2 || ""}
+              </TranslatedText>
             </motion.div>
 
             <motion.div
@@ -128,9 +133,11 @@ const About = () => {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.6 }}
             >
-              <h3 className="text-foreground font-medium mb-4">Skills & Expertise</h3>
+              <h3 className="text-foreground font-medium mb-4">
+                <TranslatedText>Skills & Expertise</TranslatedText>
+              </h3>
               <div className="flex flex-wrap gap-3">
-                {skills.map((skill, index) => (
+                {translatedSkills.map((skill, index) => (
                   <motion.span
                     key={skill.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -153,7 +160,9 @@ const About = () => {
               {stats.map((stat) => (
                 <div key={stat.label}>
                   <p className="font-display text-4xl text-primary">{stat.number}</p>
-                  <p className="text-muted-foreground text-sm mt-1">{stat.label}</p>
+                  <TranslatedText as="p" className="text-muted-foreground text-sm mt-1">
+                    {stat.label}
+                  </TranslatedText>
                 </div>
               ))}
             </motion.div>

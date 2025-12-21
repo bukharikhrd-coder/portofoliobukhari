@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import { Award, Calendar, Building2, ExternalLink } from "lucide-react";
+import { TranslatedText, useTranslatedContent } from "@/components/TranslatedText";
 
 const Trainings = () => {
   const { data: trainings, isLoading } = useQuery({
@@ -16,6 +17,11 @@ const Trainings = () => {
       return data;
     }
   });
+
+  const { items: translatedTrainings } = useTranslatedContent(
+    trainings,
+    ["title", "description"]
+  );
 
   if (isLoading) {
     return (
@@ -44,16 +50,16 @@ const Trainings = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium tracking-widest text-primary mb-4 block">
+          <TranslatedText className="text-sm font-medium tracking-widest text-primary mb-4 block">
             PROFESSIONAL DEVELOPMENT
-          </span>
+          </TranslatedText>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            TRAINING & <span className="text-primary">CERTIFICATIONS</span>
+            <TranslatedText>TRAINING &</TranslatedText> <span className="text-primary"><TranslatedText>CERTIFICATIONS</TranslatedText></span>
           </h2>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {trainings?.map((training, index) => (
+          {translatedTrainings?.map((training, index) => (
             <motion.div
               key={training.id}
               initial={{ opacity: 0, y: 20 }}
@@ -100,7 +106,7 @@ const Trainings = () => {
                       className="inline-flex items-center gap-1.5 mt-3 text-sm text-primary hover:underline"
                     >
                       <ExternalLink className="w-4 h-4" />
-                      View Certificate
+                      <TranslatedText>View Certificate</TranslatedText>
                     </a>
                   )}
                 </div>

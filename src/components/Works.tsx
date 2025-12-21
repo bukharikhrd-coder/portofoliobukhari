@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { TranslatedText, useTranslatedContent } from "@/components/TranslatedText";
 
 type Category = "all" | "design" | "website" | "tools" | "project";
 
@@ -61,7 +62,12 @@ const Works = () => {
     fetchProjects();
   }, []);
 
-  const filteredProjects = projects.filter(
+  const { items: translatedProjects } = useTranslatedContent(
+    projects,
+    ["title", "description"]
+  );
+
+  const filteredProjects = translatedProjects.filter(
     (project) => activeCategory === "all" || project.category === activeCategory
   );
 
@@ -82,9 +88,9 @@ const Works = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">Portfolio</span>
+          <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">Portfolio</TranslatedText>
           <h2 className="font-display text-5xl md:text-7xl mt-4">
-            SELECTED <span className="text-gradient">WORKS</span>
+            <TranslatedText>SELECTED</TranslatedText> <span className="text-gradient"><TranslatedText>WORKS</TranslatedText></span>
           </h2>
         </motion.div>
 
@@ -105,7 +111,7 @@ const Works = () => {
                   : "bg-transparent border border-border text-muted-foreground hover:border-primary hover:text-primary"
               }`}
             >
-              {cat.label}
+              <TranslatedText>{cat.label}</TranslatedText>
             </button>
           ))}
         </motion.div>

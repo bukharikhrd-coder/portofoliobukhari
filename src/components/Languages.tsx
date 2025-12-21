@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Globe } from "lucide-react";
+import { TranslatedText, useTranslatedContent } from "@/components/TranslatedText";
 
 const proficiencyColors: Record<string, string> = {
   Native: "bg-primary text-primary-foreground",
@@ -23,6 +24,11 @@ const Languages = () => {
       return data;
     },
   });
+
+  const { items: translatedLanguages } = useTranslatedContent(
+    languages,
+    ["proficiency_level"]
+  );
 
   if (isLoading) {
     return (
@@ -48,16 +54,16 @@ const Languages = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">
+          <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
             Languages
-          </span>
+          </TranslatedText>
           <h2 className="font-display text-4xl md:text-5xl mt-4">
-            LANGUAGE <span className="text-gradient">SKILLS</span>
+            <TranslatedText>LANGUAGE</TranslatedText> <span className="text-gradient"><TranslatedText>SKILLS</TranslatedText></span>
           </h2>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {languages?.map((lang, index) => (
+          {translatedLanguages?.map((lang, index) => (
             <motion.div
               key={lang.id}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -74,7 +80,7 @@ const Languages = () => {
               </div>
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                  proficiencyColors[lang.proficiency_level] || proficiencyColors.Intermediate
+                  proficiencyColors[languages?.find(l => l.id === lang.id)?.proficiency_level || ""] || proficiencyColors.Intermediate
                 }`}
               >
                 {lang.proficiency_level}
