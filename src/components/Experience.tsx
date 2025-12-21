@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Briefcase, MapPin, Calendar } from "lucide-react";
+import { TranslatedText, useTranslatedContent } from "@/components/TranslatedText";
 
 const Experience = () => {
   const { data: experiences, isLoading } = useQuery({
@@ -15,6 +16,11 @@ const Experience = () => {
       return data;
     },
   });
+
+  const { items: translatedExperiences } = useTranslatedContent(
+    experiences,
+    ["position", "description"]
+  );
 
   if (isLoading) {
     return (
@@ -40,11 +46,11 @@ const Experience = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">
+          <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
             Career
-          </span>
+          </TranslatedText>
           <h2 className="font-display text-4xl md:text-5xl mt-4">
-            WORK <span className="text-gradient">EXPERIENCE</span>
+            <TranslatedText>WORK</TranslatedText> <span className="text-gradient"><TranslatedText>EXPERIENCE</TranslatedText></span>
           </h2>
         </motion.div>
 
@@ -53,7 +59,7 @@ const Experience = () => {
           <div className="absolute left-4 md:left-8 top-0 bottom-0 w-px bg-border" />
 
           <div className="space-y-12">
-            {experiences?.map((exp, index) => (
+            {translatedExperiences?.map((exp, index) => (
               <motion.div
                 key={exp.id}
                 initial={{ opacity: 0, x: -20 }}
@@ -72,7 +78,7 @@ const Experience = () => {
                     </h3>
                     <span className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar size={14} />
-                      {exp.start_date} - {exp.is_current ? "Present" : exp.end_date}
+                      {exp.start_date} - {exp.is_current ? <TranslatedText>Present</TranslatedText> : exp.end_date}
                     </span>
                   </div>
 

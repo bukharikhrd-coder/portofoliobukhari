@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { GraduationCap, MapPin, Calendar } from "lucide-react";
+import { TranslatedText, useTranslatedContent } from "@/components/TranslatedText";
 
 const Education = () => {
   const { data: educations, isLoading } = useQuery({
@@ -15,6 +16,11 @@ const Education = () => {
       return data;
     },
   });
+
+  const { items: translatedEducations } = useTranslatedContent(
+    educations,
+    ["degree", "field_of_study", "description"]
+  );
 
   if (isLoading) {
     return (
@@ -40,16 +46,16 @@ const Education = () => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">
+          <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
             Education
-          </span>
+          </TranslatedText>
           <h2 className="font-display text-4xl md:text-5xl mt-4">
-            ACADEMIC <span className="text-gradient">BACKGROUND</span>
+            <TranslatedText>ACADEMIC</TranslatedText> <span className="text-gradient"><TranslatedText>BACKGROUND</TranslatedText></span>
           </h2>
         </motion.div>
 
         <div className="grid gap-6">
-          {educations?.map((edu, index) => (
+          {translatedEducations?.map((edu, index) => (
             <motion.div
               key={edu.id}
               initial={{ opacity: 0, y: 20 }}
@@ -70,7 +76,7 @@ const Education = () => {
                     </h3>
                     <span className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar size={14} />
-                      {edu.start_year} - {edu.is_current ? "Present" : edu.end_year}
+                      {edu.start_year} - {edu.is_current ? <TranslatedText>Present</TranslatedText> : edu.end_year}
                     </span>
                   </div>
 

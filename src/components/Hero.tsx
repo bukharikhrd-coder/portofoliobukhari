@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import profilePhoto from "@/assets/profile-photo.png";
+import { TranslatedText } from "@/components/TranslatedText";
 
 interface HeroContent {
   headline_1: string;
@@ -78,9 +79,9 @@ const Hero = () => {
               className="flex items-center gap-4"
             >
               <div className="w-12 h-px bg-primary" />
-              <span className="text-muted-foreground text-sm tracking-[0.3em] uppercase">
+              <TranslatedText className="text-muted-foreground text-sm tracking-[0.3em] uppercase">
                 {heroData.subtitle}
-              </span>
+              </TranslatedText>
             </motion.div>
 
             <motion.div
@@ -94,14 +95,15 @@ const Hero = () => {
               </h1>
             </motion.div>
 
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-muted-foreground text-lg max-w-md leading-relaxed"
             >
-              {heroData.description}
-            </motion.p>
+              <TranslatedText as="p" className="text-muted-foreground text-lg max-w-md leading-relaxed">
+                {heroData.description || ""}
+              </TranslatedText>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -113,13 +115,13 @@ const Hero = () => {
                 href={heroData.cta_primary_link || "#works"}
                 className="px-8 py-4 bg-primary text-primary-foreground font-medium tracking-wide hover:bg-primary/90 transition-all duration-300"
               >
-                {heroData.cta_primary_text}
+                <TranslatedText>{heroData.cta_primary_text || "VIEW WORKS"}</TranslatedText>
               </a>
               <a
                 href={heroData.cta_secondary_link || "#contact"}
                 className="px-8 py-4 border border-border text-foreground font-medium tracking-wide hover:border-primary hover:text-primary transition-all duration-300"
               >
-                {heroData.cta_secondary_text}
+                <TranslatedText>{heroData.cta_secondary_text || "GET IN TOUCH"}</TranslatedText>
               </a>
             </motion.div>
           </div>
@@ -162,7 +164,7 @@ const Hero = () => {
           className="absolute bottom-12 left-1/2 -translate-x-1/2"
         >
           <div className="flex flex-col items-center gap-2">
-            <span className="text-muted-foreground text-xs tracking-[0.2em] uppercase">Scroll</span>
+            <TranslatedText className="text-muted-foreground text-xs tracking-[0.2em] uppercase">Scroll</TranslatedText>
             <div className="w-px h-12 bg-gradient-to-b from-primary to-transparent" />
           </div>
         </motion.div>

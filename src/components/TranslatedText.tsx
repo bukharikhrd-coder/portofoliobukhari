@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { useState, useEffect, ElementType } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -7,7 +7,7 @@ const translationCache = new Map<string, string>();
 
 interface TranslatedTextProps {
   children: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
   className?: string;
 }
 
