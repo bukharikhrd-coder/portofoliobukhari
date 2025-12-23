@@ -259,11 +259,11 @@ const AdminWorkJourneyGallery = () => {
               </div>
             ) : (
               <>
-                <div className="aspect-video overflow-hidden">
+                <div className="aspect-video overflow-hidden bg-secondary/50">
                   <img
                     src={item.image_url}
                     alt={item.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
                 <div className="p-4">
