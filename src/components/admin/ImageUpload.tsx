@@ -156,7 +156,7 @@ const ImageUpload = ({
                 <img
                   src={currentImage}
                   alt="Current"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground">
@@ -187,7 +187,7 @@ const ImageUpload = ({
                   <img
                     src={previewUrl}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                   <div className="absolute inset-0 bg-primary/10" />
                 </div>

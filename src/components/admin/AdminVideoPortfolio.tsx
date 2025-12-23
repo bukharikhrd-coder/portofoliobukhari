@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Play } from "lucide-react";
+import ImageUpload from "./ImageUpload";
 
 const platforms = ["youtube", "vimeo"];
 
@@ -10,7 +11,14 @@ const AdminVideoPortfolio = () => {
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState({ title: "", description: "", video_url: "", thumbnail_url: "", platform: "youtube", order_index: 0 });
+  const [formData, setFormData] = useState({ 
+    title: "", 
+    description: "", 
+    video_url: "", 
+    thumbnail_url: "", 
+    platform: "youtube", 
+    order_index: 0 
+  });
 
   const { data: videos, isLoading } = useQuery({
     queryKey: ["admin_video_portfolio"],
@@ -65,7 +73,20 @@ const AdminVideoPortfolio = () => {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-display">Video Portfolio</h2>
-        <button onClick={() => { setIsAdding(true); setFormData({ title: "", description: "", video_url: "", thumbnail_url: "", platform: "youtube", order_index: (videos?.length || 0) + 1 }); }} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground">
+        <button 
+          onClick={() => { 
+            setIsAdding(true); 
+            setFormData({ 
+              title: "", 
+              description: "", 
+              video_url: "", 
+              thumbnail_url: "", 
+              platform: "youtube", 
+              order_index: (videos?.length || 0) + 1 
+            }); 
+          }} 
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground"
+        >
           <Plus size={18} /> Add Video
         </button>
       </div>
@@ -74,13 +95,44 @@ const AdminVideoPortfolio = () => {
         {isAdding && (
           <div className="bg-card border border-primary p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="Title *" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-              <select value={formData.platform} onChange={(e) => setFormData({ ...formData, platform: e.target.value })} className="px-4 py-3 bg-background border border-border">
+              <input 
+                type="text" 
+                placeholder="Title *" 
+                value={formData.title} 
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })} 
+                className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" 
+              />
+              <select 
+                value={formData.platform} 
+                onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
+                className="px-4 py-3 bg-background border border-border"
+              >
                 {platforms.map((p) => <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
               </select>
             </div>
-            <input type="text" placeholder="Video URL * (YouTube or Vimeo)" value={formData.video_url} onChange={(e) => setFormData({ ...formData, video_url: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-            <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none min-h-[80px]" />
+            <input 
+              type="text" 
+              placeholder="Video URL * (YouTube or Vimeo)" 
+              value={formData.video_url} 
+              onChange={(e) => setFormData({ ...formData, video_url: e.target.value })} 
+              className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" 
+            />
+            
+            {/* Custom Thumbnail Upload */}
+            <ImageUpload
+              currentImage={formData.thumbnail_url || null}
+              onImageChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
+              folder="video-thumbnails"
+              label="Custom Thumbnail (Optional - leave empty for auto-generated)"
+              aspectRatio={16/9}
+            />
+            
+            <textarea 
+              placeholder="Description" 
+              value={formData.description} 
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
+              className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none min-h-[80px]" 
+            />
             <div className="flex gap-2">
               <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground"><Save size={18} /> Save</button>
               <button onClick={() => setIsAdding(false)} className="flex items-center gap-2 px-4 py-2 border border-border"><X size={18} /> Cancel</button>
@@ -93,21 +145,64 @@ const AdminVideoPortfolio = () => {
             {editingId === video.id ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <select value={formData.platform} onChange={(e) => setFormData({ ...formData, platform: e.target.value })} className="px-4 py-3 bg-background border border-border">
+                  <input 
+                    type="text" 
+                    value={formData.title} 
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })} 
+                    className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" 
+                  />
+                  <select 
+                    value={formData.platform} 
+                    onChange={(e) => setFormData({ ...formData, platform: e.target.value })} 
+                    className="px-4 py-3 bg-background border border-border"
+                  >
                     {platforms.map((p) => <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
                   </select>
                 </div>
-                <input type="text" value={formData.video_url} onChange={(e) => setFormData({ ...formData, video_url: e.target.value })} className="w-full px-4 py-3 bg-background border border-border" />
-                <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-4 py-3 bg-background border border-border min-h-[80px]" />
+                <input 
+                  type="text" 
+                  value={formData.video_url} 
+                  onChange={(e) => setFormData({ ...formData, video_url: e.target.value })} 
+                  className="w-full px-4 py-3 bg-background border border-border" 
+                />
+                
+                {/* Custom Thumbnail Upload for Edit */}
+                <ImageUpload
+                  currentImage={formData.thumbnail_url || null}
+                  onImageChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
+                  folder="video-thumbnails"
+                  label="Custom Thumbnail (Optional)"
+                  aspectRatio={16/9}
+                />
+                
+                <textarea 
+                  value={formData.description} 
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })} 
+                  className="w-full px-4 py-3 bg-background border border-border min-h-[80px]" 
+                />
                 <div className="flex gap-2">
                   <button onClick={() => saveMutation.mutate({ ...formData, id: video.id })} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground"><Save size={18} /> Save</button>
                   <button onClick={() => setEditingId(null)} className="flex items-center gap-2 px-4 py-2 border border-border"><X size={18} /> Cancel</button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-start justify-between">
-                <div>
+              <div className="flex items-start gap-4">
+                {/* Thumbnail Preview */}
+                <div className="relative w-32 h-20 bg-secondary flex-shrink-0 overflow-hidden">
+                  {video.thumbnail_url ? (
+                    <img 
+                      src={video.thumbnail_url} 
+                      alt={video.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      <Play size={24} />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex-1">
                   <h3 className="text-lg font-semibold">{video.title}</h3>
                   <p className="text-muted-foreground text-sm">{video.platform} • {video.video_url}</p>
                   {video.description && <p className="text-sm text-muted-foreground mt-2">{video.description}</p>}
