@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Loader2, Code2 } from "lucide-react";
+import { TranslatedText, useTranslatedContent } from "./TranslatedText";
 
 interface TechItem {
   id: string;
@@ -32,6 +33,9 @@ const TechStack = () => {
     }
   });
 
+  // Translate categories
+  const { items: translatedTech } = useTranslatedContent(technologies, ["category"]);
+
   const getIcon = (iconName: string | null): LucideIcon => {
     if (!iconName) return Code2;
     const icon = (LucideIcons as Record<string, unknown>)[iconName];
@@ -43,36 +47,38 @@ const TechStack = () => {
 
   if (isLoading) {
     return (
-      <section className="py-32 flex items-center justify-center">
+      <section className="py-24 flex items-center justify-center">
         <Loader2 className="animate-spin text-primary" size={32} />
       </section>
     );
   }
 
+  if (!technologies || technologies.length === 0) return null;
+
   return (
-    <section id="tech" className="py-32">
+    <section id="tech" className="py-24">
       <div className="container mx-auto px-6 lg:px-12" ref={ref}>
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
           <span className="text-primary text-sm tracking-[0.3em] uppercase">
-            Technologies
+            <TranslatedText>Technologies</TranslatedText>
           </span>
-          <h2 className="font-display text-5xl md:text-7xl mt-4">
-            TOOLS & <span className="text-gradient">STACK</span>
+          <h2 className="font-display text-5xl md:text-6xl mt-4">
+            <TranslatedText>SKILLS</TranslatedText> & <span className="text-gradient"><TranslatedText>STACK</TranslatedText></span>
           </h2>
           <p className="text-muted-foreground mt-6 max-w-2xl mx-auto">
-            Technologies and tools I use to bring ideas to life
+            <TranslatedText>Technologies and tools I use to bring ideas to life</TranslatedText>
           </p>
         </motion.div>
 
         {/* Tech Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {technologies?.map((tech, index) => {
+          {translatedTech?.map((tech, index) => {
             const IconComponent = getIcon(tech.icon_name);
             
             return (
@@ -115,10 +121,10 @@ const TechStack = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-20 text-center"
+          className="mt-16 text-center"
         >
           <p className="text-muted-foreground">
-            Always learning and exploring new technologies to deliver the best solutions
+            <TranslatedText>Always learning and exploring new technologies to deliver the best solutions</TranslatedText>
           </p>
         </motion.div>
       </div>
