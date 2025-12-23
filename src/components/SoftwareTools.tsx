@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Loader2, Wrench } from "lucide-react";
+import { TranslatedText, useTranslatedContent } from "./TranslatedText";
 
 interface ToolItem {
   id: string;
@@ -29,6 +30,9 @@ const SoftwareTools = () => {
       return data as ToolItem[];
     },
   });
+
+  // Translate proficiency levels
+  const { items: translatedTools } = useTranslatedContent(tools, ["proficiency_level"]);
 
   const getIcon = (iconName: string | null): LucideIcon => {
     if (!iconName) return Wrench;
@@ -69,6 +73,11 @@ const SoftwareTools = () => {
     }
   };
 
+  // Find original proficiency to get correct color
+  const getOriginalProficiency = (toolId: string) => {
+    return tools?.find(t => t.id === toolId)?.proficiency_level || null;
+  };
+
   if (isLoading) {
     return (
       <section className="py-24 px-6 bg-muted/30 flex items-center justify-center">
@@ -89,19 +98,20 @@ const SoftwareTools = () => {
           className="mb-16"
         >
           <span className="text-primary text-sm tracking-[0.3em] uppercase">
-            Software Mastery
+            <TranslatedText>Software Mastery</TranslatedText>
           </span>
           <h2 className="font-display text-4xl md:text-5xl mt-4">
-            TOOLS & <span className="text-gradient">SOFTWARE</span>
+            <TranslatedText>TOOLS</TranslatedText> & <span className="text-gradient"><TranslatedText>SOFTWARE</TranslatedText></span>
           </h2>
           <p className="text-muted-foreground mt-4 max-w-2xl">
-            Professional tools and software I use for design, development, and multimedia production
+            <TranslatedText>Professional tools and software I use for design, development, and multimedia production</TranslatedText>
           </p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {tools?.map((tool, index) => {
+          {translatedTools?.map((tool, index) => {
             const IconComponent = getIcon(tool.icon_name);
+            const originalProficiency = getOriginalProficiency(tool.id);
             
             return (
               <motion.div
@@ -111,7 +121,7 @@ const SoftwareTools = () => {
                 transition={{ duration: 0.5, delay: index * 0.08 }}
                 className="group"
               >
-                <div className={`relative bg-gradient-to-br ${getProficiencyColor(tool.proficiency_level)} backdrop-blur-sm border rounded-xl p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>
+                <div className={`relative bg-gradient-to-br ${getProficiencyColor(originalProficiency)} backdrop-blur-sm border rounded-xl p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>
                   {/* Icon */}
                   <div className="w-14 h-14 mx-auto mb-4 bg-background/80 rounded-xl flex items-center justify-center shadow-inner group-hover:shadow-md transition-all">
                     <IconComponent className="text-foreground group-hover:text-primary transition-colors" size={28} />
@@ -123,7 +133,7 @@ const SoftwareTools = () => {
                   </h3>
                   
                   {/* Proficiency Badge */}
-                  <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full border ${getProficiencyBadgeColor(tool.proficiency_level)}`}>
+                  <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full border ${getProficiencyBadgeColor(originalProficiency)}`}>
                     {tool.proficiency_level}
                   </span>
                 </div>

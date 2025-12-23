@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TranslatedText } from "./TranslatedText";
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -16,7 +17,7 @@ const Footer = () => {
               BUKHARI<span className="text-gradient">, S.KOM</span>
             </Link>
             <p className="text-muted-foreground text-sm">
-              © {new Date().getFullYear()} All Rights Reserved
+              © {new Date().getFullYear()} <TranslatedText>All Rights Reserved</TranslatedText>
             </p>
           </div>
 
@@ -25,7 +26,7 @@ const Footer = () => {
             whileHover={{ y: -4 }}
             className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors duration-300"
           >
-            <span className="text-sm tracking-wide">Back to Top</span>
+            <span className="text-sm tracking-wide"><TranslatedText>Back to Top</TranslatedText></span>
             <ArrowUp size={16} />
           </motion.button>
         </div>
