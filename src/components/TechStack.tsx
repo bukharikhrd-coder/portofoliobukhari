@@ -33,8 +33,14 @@ const TechStack = () => {
     }
   });
 
-  // Translate categories
-  const { items: translatedTech } = useTranslatedContent(technologies, ["category"]);
+  // Translate categories - only when technologies are loaded
+  const { items: translatedTech } = useTranslatedContent(
+    technologies && technologies.length > 0 ? technologies : undefined, 
+    ["category"]
+  );
+
+  // Use translated tech if available, otherwise use original
+  const displayTech = translatedTech.length > 0 ? translatedTech : (technologies || []);
 
   const getIcon = (iconName: string | null): LucideIcon => {
     if (!iconName) return Code2;
@@ -47,8 +53,10 @@ const TechStack = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
+      <section id="tech" className="py-24">
+        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-center min-h-[300px]">
+          <Loader2 className="animate-spin text-primary" size={32} />
+        </div>
       </section>
     );
   }
@@ -78,7 +86,7 @@ const TechStack = () => {
 
         {/* Tech Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {translatedTech?.map((tech, index) => {
+          {displayTech.map((tech, index) => {
             const IconComponent = getIcon(tech.icon_name);
             
             return (
@@ -89,7 +97,7 @@ const TechStack = () => {
                 transition={{ duration: 0.5, delay: 0.1 * Math.min(index, 7) }}
                 className="group"
               >
-                <div className="relative p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover">
+                <div className="relative p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover rounded-lg">
                   {/* Icon */}
                   <div className="mb-6">
                     <IconComponent 

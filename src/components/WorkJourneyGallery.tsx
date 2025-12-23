@@ -1,7 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, X, Loader2 } from "lucide-react";
 import { TranslatedText, useTranslatedContent } from "./TranslatedText";
 
 interface JourneyItem {
@@ -17,22 +17,33 @@ const WorkJourneyGallery = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [items, setItems] = useState<JourneyItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<JourneyItem | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchItems = async () => {
-      const { data } = await supabase
+      setLoading(true);
+      const { data, error } = await supabase
         .from("work_journey_gallery")
         .select("*")
         .order("order_index");
-      if (data) setItems(data);
+      if (data && !error) {
+        setItems(data);
+      }
+      setLoading(false);
     };
     fetchItems();
   }, []);
 
-  // Translate titles and descriptions
-  const { items: translatedItems } = useTranslatedContent(items, ["title", "description"]);
+  // Translate titles and descriptions - only when items are loaded
+  const { items: translatedItems, isTranslating } = useTranslatedContent(
+    items.length > 0 ? items : undefined, 
+    ["title", "description"]
+  );
+
+  // Use translated items if available, otherwise use original items
+  const displayItems = translatedItems.length > 0 ? translatedItems : items;
 
   const openLightbox = (item: JourneyItem, index: number) => {
     setSelectedImage(item);
@@ -58,9 +69,22 @@ const WorkJourneyGallery = () => {
   // Get translated version of selected image
   const getTranslatedSelected = () => {
     if (!selectedImage) return null;
-    return translatedItems.find(i => i.id === selectedImage.id) || selectedImage;
+    const translated = displayItems.find(i => i.id === selectedImage.id);
+    return translated || selectedImage;
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <section id="journey" className="py-24 relative overflow-hidden bg-secondary/30">
+        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-center min-h-[300px]">
+          <Loader2 className="animate-spin text-primary" size={32} />
+        </div>
+      </section>
+    );
+  }
+
+  // Don't render if no items
   if (items.length === 0) return null;
 
   const translatedSelected = getTranslatedSelected();
@@ -85,13 +109,13 @@ const WorkJourneyGallery = () => {
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {translatedItems.map((item, index) => (
+          {displayItems.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative aspect-square overflow-hidden cursor-pointer bg-secondary/50"
+              transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.8) }}
+              className="group relative aspect-square overflow-hidden cursor-pointer bg-secondary/50 rounded-lg"
               onClick={() => openLightbox(items[index], index)}
             >
               <img
@@ -134,7 +158,7 @@ const WorkJourneyGallery = () => {
 
           <button
             onClick={(e) => { e.stopPropagation(); prevImage(); }}
-            className="absolute left-6 p-3 bg-secondary/80 text-foreground hover:bg-primary transition-colors"
+            className="absolute left-6 p-3 bg-secondary/80 text-foreground hover:bg-primary transition-colors rounded-lg"
           >
             <ChevronLeft size={24} />
           </button>
@@ -146,7 +170,7 @@ const WorkJourneyGallery = () => {
             <img
               src={selectedImage.image_url}
               alt={translatedSelected.title}
-              className="max-w-full max-h-[70vh] object-contain mx-auto"
+              className="max-w-full max-h-[70vh] object-contain mx-auto rounded-lg"
             />
             <div className="text-center mt-6">
               <h3 className="font-display text-2xl text-foreground">
@@ -168,7 +192,7 @@ const WorkJourneyGallery = () => {
 
           <button
             onClick={(e) => { e.stopPropagation(); nextImage(); }}
-            className="absolute right-6 p-3 bg-secondary/80 text-foreground hover:bg-primary transition-colors"
+            className="absolute right-6 p-3 bg-secondary/80 text-foreground hover:bg-primary transition-colors rounded-lg"
           >
             <ChevronRight size={24} />
           </button>

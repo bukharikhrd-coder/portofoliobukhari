@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Play, X } from "lucide-react";
+import { Play, X, Loader2 } from "lucide-react";
 import { TranslatedText, useTranslatedContent } from "./TranslatedText";
 
 interface VideoItem {
@@ -30,8 +30,14 @@ const VideoPortfolio = () => {
     },
   });
 
-  // Translate descriptions
-  const { items: translatedVideos } = useTranslatedContent(videos, ["description"]);
+  // Translate descriptions - only when videos are loaded
+  const { items: translatedVideos } = useTranslatedContent(
+    videos && videos.length > 0 ? videos : undefined, 
+    ["description"]
+  );
+
+  // Use translated videos if available, otherwise use original
+  const displayVideos = translatedVideos.length > 0 ? translatedVideos : (videos || []);
 
   const getEmbedUrl = (url: string, platform: string) => {
     if (platform === "youtube") {
@@ -57,13 +63,9 @@ const VideoPortfolio = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 px-6 bg-background">
-        <div className="max-w-6xl mx-auto">
-          <div className="animate-pulse grid md:grid-cols-2 gap-8">
-            {[1, 2].map((i) => (
-              <div key={i} className="aspect-video bg-muted rounded-lg" />
-            ))}
-          </div>
+      <section id="video-portfolio" className="py-24 px-6 bg-background">
+        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[300px]">
+          <Loader2 className="animate-spin text-primary" size={32} />
         </div>
       </section>
     );
@@ -90,7 +92,7 @@ const VideoPortfolio = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {translatedVideos?.map((video, index) => {
+          {displayVideos.map((video, index) => {
             const thumbnailUrl = getThumbnailUrl(video);
             
             return (
