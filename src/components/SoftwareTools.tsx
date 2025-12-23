@@ -31,8 +31,14 @@ const SoftwareTools = () => {
     },
   });
 
-  // Translate proficiency levels
-  const { items: translatedTools } = useTranslatedContent(tools, ["proficiency_level"]);
+  // Translate proficiency levels - only when tools are loaded
+  const { items: translatedTools } = useTranslatedContent(
+    tools && tools.length > 0 ? tools : undefined, 
+    ["proficiency_level"]
+  );
+
+  // Use translated tools if available, otherwise use original
+  const displayTools = translatedTools.length > 0 ? translatedTools : (tools || []);
 
   const getIcon = (iconName: string | null): LucideIcon => {
     if (!iconName) return Wrench;
@@ -44,7 +50,9 @@ const SoftwareTools = () => {
   };
 
   const getProficiencyColor = (level: string | null) => {
-    switch (level) {
+    // Check original level for styling
+    const originalLevel = tools?.find(t => t.proficiency_level === level)?.proficiency_level || level;
+    switch (originalLevel) {
       case "Expert":
         return "from-emerald-500/20 to-emerald-500/5 border-emerald-500/30";
       case "Advanced":
@@ -59,7 +67,8 @@ const SoftwareTools = () => {
   };
 
   const getProficiencyBadgeColor = (level: string | null) => {
-    switch (level) {
+    const originalLevel = tools?.find(t => t.proficiency_level === level)?.proficiency_level || level;
+    switch (originalLevel) {
       case "Expert":
         return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
       case "Advanced":
@@ -80,8 +89,10 @@ const SoftwareTools = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 px-6 bg-muted/30 flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
+      <section id="software-tools" className="py-24 px-6 bg-muted/30">
+        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[300px]">
+          <Loader2 className="animate-spin text-primary" size={32} />
+        </div>
       </section>
     );
   }
@@ -109,7 +120,7 @@ const SoftwareTools = () => {
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {translatedTools?.map((tool, index) => {
+          {displayTools.map((tool, index) => {
             const IconComponent = getIcon(tool.icon_name);
             const originalProficiency = getOriginalProficiency(tool.id);
             
@@ -118,7 +129,7 @@ const SoftwareTools = () => {
                 key={tool.id}
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
+                transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.6) }}
                 className="group"
               >
                 <div className={`relative bg-gradient-to-br ${getProficiencyColor(originalProficiency)} backdrop-blur-sm border rounded-xl p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>
