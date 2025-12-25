@@ -8,7 +8,7 @@ interface TranslatedTextProps {
   className?: string;
 }
 
-// Debounce translations to batch multiple requests
+// Global debounce for translations - collect texts for 300ms before sending
 const pendingTranslations = new Map<string, {
   texts: Set<string>;
   callbacks: Map<string, ((translation: string) => void)[]>;
@@ -17,6 +17,13 @@ const pendingTranslations = new Map<string, {
 
 const debouncedTranslate = (text: string, language: string, callback: (translation: string) => void) => {
   const key = language;
+  
+  // Check cache first
+  const cacheKey = `${language}:${text}`;
+  if (translationCache.has(cacheKey)) {
+    callback(translationCache.get(cacheKey)!);
+    return;
+  }
   
   if (!pendingTranslations.has(key)) {
     pendingTranslations.set(key, {
@@ -34,7 +41,7 @@ const debouncedTranslate = (text: string, language: string, callback: (translati
   }
   pending.callbacks.get(text)!.push(callback);
 
-  // Clear existing timer and set new one
+  // Clear existing timer and set new one with longer delay
   if (pending.timer) {
     clearTimeout(pending.timer);
   }
@@ -53,8 +60,6 @@ const debouncedTranslate = (text: string, language: string, callback: (translati
       
       textsToTranslate.forEach((originalText, idx) => {
         const translated = translations[idx] || originalText;
-        translationCache.set(`${language}:${originalText}`, translated);
-        
         const textCallbacks = callbacksMap.get(originalText) || [];
         textCallbacks.forEach(cb => cb(translated));
       });
@@ -66,7 +71,7 @@ const debouncedTranslate = (text: string, language: string, callback: (translati
         textCallbacks.forEach(cb => cb(originalText));
       });
     }
-  }, 150); // Wait 150ms to batch multiple requests
+  }, 500); // Wait 500ms to batch multiple requests
 };
 
 export const TranslatedText = ({ children, as: Component = "span", className }: TranslatedTextProps) => {
