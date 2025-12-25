@@ -20,7 +20,8 @@ import {
   Play,
   BarChart3,
   Images,
-  Award
+  Award,
+  Layers
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -36,11 +37,13 @@ import AdminVideoPortfolio from "@/components/admin/AdminVideoPortfolio";
 import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminWorkJourneyGallery from "@/components/admin/AdminWorkJourneyGallery";
 import AdminTrainings from "@/components/admin/AdminTrainings";
+import AdminSectionOrder from "@/components/admin/AdminSectionOrder";
 
-type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "sectionorder", label: "Section Order", icon: Layers },
   { id: "hero", label: "Hero Section", icon: Home },
   { id: "about", label: "About Me", icon: User },
   { id: "experience", label: "Experience", icon: Briefcase },
@@ -110,6 +113,8 @@ const Admin = () => {
     switch (activeTab) {
       case "analytics":
         return <AdminAnalytics />;
+      case "sectionorder":
+        return <AdminSectionOrder />;
       case "hero":
         return <AdminHero />;
       case "about":
