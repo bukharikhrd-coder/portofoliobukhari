@@ -1,5 +1,5 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Calendar, ChevronLeft, ChevronRight, X, Loader2 } from "lucide-react";
 import { TranslatedText, useTranslatedContent } from "./TranslatedText";
@@ -14,8 +14,6 @@ interface JourneyItem {
 }
 
 const WorkJourneyGallery = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [items, setItems] = useState<JourneyItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<JourneyItem | null>(null);
@@ -37,7 +35,7 @@ const WorkJourneyGallery = () => {
   }, []);
 
   // Translate titles and descriptions - only when items are loaded
-  const { items: translatedItems, isTranslating } = useTranslatedContent(
+  const { items: translatedItems } = useTranslatedContent(
     items.length > 0 ? items : undefined, 
     ["title", "description"]
   );
@@ -76,8 +74,8 @@ const WorkJourneyGallery = () => {
   // Show loading state
   if (loading) {
     return (
-      <section id="journey" className="py-24 relative overflow-hidden bg-secondary/30">
-        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-center min-h-[300px]">
+      <section id="journey" className="py-20 relative overflow-hidden bg-secondary/30">
+        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-center min-h-[200px]">
           <Loader2 className="animate-spin text-primary" size={32} />
         </div>
       </section>
@@ -90,13 +88,14 @@ const WorkJourneyGallery = () => {
   const translatedSelected = getTranslatedSelected();
 
   return (
-    <section id="journey" className="py-24 relative overflow-hidden bg-secondary/30">
-      <div className="container mx-auto px-6 lg:px-12" ref={ref}>
+    <section id="journey" className="py-20 relative overflow-hidden bg-secondary/30">
+      <div className="container mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-50px" }}
+          className="text-center mb-12"
         >
           <span className="text-primary text-sm tracking-[0.3em] uppercase">
             <TranslatedText>My Collection</TranslatedText>
@@ -113,8 +112,9 @@ const WorkJourneyGallery = () => {
             <motion.div
               key={item.id}
               initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.5, delay: Math.min(index * 0.1, 0.8) }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }}
+              viewport={{ once: true, margin: "-20px" }}
               className="group relative aspect-square overflow-hidden cursor-pointer bg-secondary/50 rounded-lg"
               onClick={() => openLightbox(items[index], index)}
             >
