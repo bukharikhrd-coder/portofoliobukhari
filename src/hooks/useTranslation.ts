@@ -1,9 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
-
-// In-memory cache for translations
-const translationCache = new Map<string, string>();
+import { translationCache, translationQueue } from "@/lib/translationQueue";
 
 const getCacheKey = (text: string, targetLang: Language): string => {
   return `${targetLang}:${text}`;
@@ -12,7 +9,6 @@ const getCacheKey = (text: string, targetLang: Language): string => {
 export const useTranslation = () => {
   const { language } = useLanguage();
   const [isTranslating, setIsTranslating] = useState(false);
-  const pendingTranslations = useRef<Map<string, Promise<string>>>(new Map());
 
   const translateText = useCallback(async (text: string): Promise<string> => {
     if (!text || language === "en") return text;
@@ -24,78 +20,28 @@ export const useTranslation = () => {
       return translationCache.get(cacheKey)!;
     }
 
-    // Check if translation is already pending
-    if (pendingTranslations.current.has(cacheKey)) {
-      return pendingTranslations.current.get(cacheKey)!;
+    try {
+      const translations = await translationQueue.addRequest([text], language);
+      return translations[0] || text;
+    } catch (err) {
+      console.error("Translation error:", err);
+      return text;
     }
-
-    // Create translation promise
-    const translationPromise = (async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke("translate", {
-          body: { texts: [text], targetLanguage: language },
-        });
-
-        if (error) throw error;
-
-        const translated = data?.translations?.[0] || text;
-        translationCache.set(cacheKey, translated);
-        return translated;
-      } catch (err) {
-        console.error("Translation error:", err);
-        return text;
-      } finally {
-        pendingTranslations.current.delete(cacheKey);
-      }
-    })();
-
-    pendingTranslations.current.set(cacheKey, translationPromise);
-    return translationPromise;
   }, [language]);
 
   const translateTexts = useCallback(async (texts: string[]): Promise<string[]> => {
     if (!texts.length || language === "en") return texts;
 
-    const results: string[] = [];
-    const textsToTranslate: { index: number; text: string }[] = [];
-
-    // Check cache for each text
-    for (let i = 0; i < texts.length; i++) {
-      const cacheKey = getCacheKey(texts[i], language);
-      if (translationCache.has(cacheKey)) {
-        results[i] = translationCache.get(cacheKey)!;
-      } else {
-        textsToTranslate.push({ index: i, text: texts[i] });
-        results[i] = texts[i]; // placeholder
-      }
-    }
-
-    if (textsToTranslate.length === 0) return results;
-
     setIsTranslating(true);
     try {
-      const { data, error } = await supabase.functions.invoke("translate", {
-        body: { 
-          texts: textsToTranslate.map(t => t.text), 
-          targetLanguage: language 
-        },
-      });
-
-      if (error) throw error;
-
-      const translations = data?.translations || [];
-      textsToTranslate.forEach((item, idx) => {
-        const translated = translations[idx] || item.text;
-        translationCache.set(getCacheKey(item.text, language), translated);
-        results[item.index] = translated;
-      });
+      const translations = await translationQueue.addRequest(texts, language);
+      return translations;
     } catch (err) {
       console.error("Batch translation error:", err);
+      return texts;
     } finally {
       setIsTranslating(false);
     }
-
-    return results;
   }, [language]);
 
   return {
@@ -110,7 +56,6 @@ export const useTranslation = () => {
 export const useTranslatedText = (originalText: string): string => {
   const { language } = useLanguage();
   const [translatedText, setTranslatedText] = useState(originalText);
-  const { translateText } = useTranslation();
 
   useEffect(() => {
     if (language === "en") {
@@ -124,8 +69,10 @@ export const useTranslatedText = (originalText: string): string => {
       return;
     }
 
-    translateText(originalText).then(setTranslatedText);
-  }, [originalText, language, translateText]);
+    translationQueue.addRequest([originalText], language)
+      .then(([translated]) => setTranslatedText(translated || originalText))
+      .catch(() => setTranslatedText(originalText));
+  }, [originalText, language]);
 
   return translatedText;
 };
