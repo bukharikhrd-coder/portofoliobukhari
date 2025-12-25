@@ -508,6 +508,30 @@ export type Database = {
         }
         Relationships: []
       }
+      translations: {
+        Row: {
+          created_at: string
+          id: string
+          original_text: string
+          target_language: string
+          translated_text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          original_text: string
+          target_language: string
+          translated_text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          original_text?: string
+          target_language?: string
+          translated_text?: string
+        }
+        Relationships: []
+      }
       video_portfolio: {
         Row: {
           created_at: string

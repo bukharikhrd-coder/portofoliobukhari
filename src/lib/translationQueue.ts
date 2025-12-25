@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-// Simple in-memory cache
+// Simple in-memory cache (session-only)
 export const translationCache = new Map<string, string>();
 
 // Request queue for rate limiting
@@ -11,52 +11,132 @@ interface QueuedRequest {
   reject: (error: Error) => void;
 }
 
+// Load translations from database into memory cache
+const loadFromDatabase = async (texts: string[], language: string): Promise<Map<string, string>> => {
+  const results = new Map<string, string>();
+  
+  if (texts.length === 0) return results;
+  
+  try {
+    const { data, error } = await supabase
+      .from("translations")
+      .select("original_text, translated_text")
+      .eq("target_language", language)
+      .in("original_text", texts);
+
+    if (!error && data) {
+      data.forEach((row) => {
+        results.set(row.original_text, row.translated_text);
+        // Also update memory cache
+        translationCache.set(`${language}:${row.original_text}`, row.translated_text);
+      });
+    }
+  } catch (err) {
+    console.error("Error loading translations from database:", err);
+  }
+  
+  return results;
+};
+
+// Save translations to database
+const saveToDatabase = async (translations: { original: string; translated: string }[], language: string) => {
+  if (translations.length === 0) return;
+  
+  try {
+    const records = translations.map((t) => ({
+      original_text: t.original,
+      translated_text: t.translated,
+      target_language: language,
+    }));
+
+    // Use upsert to avoid duplicates
+    await supabase
+      .from("translations")
+      .upsert(records, { 
+        onConflict: "original_text,target_language",
+        ignoreDuplicates: true 
+      });
+  } catch (err) {
+    console.error("Error saving translations to database:", err);
+  }
+};
+
 class TranslationQueue {
   private queue: QueuedRequest[] = [];
   private isProcessing = false;
   private lastRequestTime = 0;
-  private minInterval = 2000; // Min 2s between requests
-  private retryDelay = 5000; // Wait 5s before retry on rate limit
+  private minInterval = 2000;
+  private retryDelay = 5000;
   private consecutiveErrors = 0;
   private backoffMultiplier = 1;
 
   async addRequest(texts: string[], language: string): Promise<string[]> {
-    // Filter out texts that are already cached
+    // Step 1: Check memory cache
     const uncachedTexts: string[] = [];
-    const cachedResults: Map<number, string> = new Map();
+    const memCachedResults: Map<number, string> = new Map();
     
     texts.forEach((text, idx) => {
       const cacheKey = `${language}:${text}`;
       if (translationCache.has(cacheKey)) {
-        cachedResults.set(idx, translationCache.get(cacheKey)!);
+        memCachedResults.set(idx, translationCache.get(cacheKey)!);
       } else {
         uncachedTexts.push(text);
       }
     });
 
-    // If all texts are cached, return immediately
+    // If all in memory cache, return immediately
     if (uncachedTexts.length === 0) {
-      return texts.map((text, idx) => cachedResults.get(idx) || text);
+      return texts.map((text, idx) => memCachedResults.get(idx) || text);
     }
 
+    // Step 2: Check database cache for uncached texts
+    const dbCached = await loadFromDatabase(uncachedTexts, language);
+    
+    // Update what we still need to translate
+    const stillUncached: string[] = [];
+    uncachedTexts.forEach((text) => {
+      if (!dbCached.has(text)) {
+        stillUncached.push(text);
+      }
+    });
+
+    // If all found in database, return results
+    if (stillUncached.length === 0) {
+      return texts.map((text, idx) => {
+        if (memCachedResults.has(idx)) return memCachedResults.get(idx)!;
+        const cacheKey = `${language}:${text}`;
+        return translationCache.get(cacheKey) || text;
+      });
+    }
+
+    // Step 3: Queue API request for remaining texts
     return new Promise((resolve) => {
       this.queue.push({ 
-        texts: uncachedTexts, 
+        texts: stillUncached, 
         language, 
-        resolve: (translations) => {
-          // Merge cached and new translations
+        resolve: (apiTranslations) => {
+          // Combine all results
           const result: string[] = [];
           let uncachedIdx = 0;
+          let apiIdx = 0;
+          
           texts.forEach((text, idx) => {
-            if (cachedResults.has(idx)) {
-              result.push(cachedResults.get(idx)!);
+            if (memCachedResults.has(idx)) {
+              result.push(memCachedResults.get(idx)!);
             } else {
-              result.push(translations[uncachedIdx++] || text);
+              const cacheKey = `${language}:${text}`;
+              if (translationCache.has(cacheKey)) {
+                result.push(translationCache.get(cacheKey)!);
+              } else if (stillUncached.includes(text)) {
+                result.push(apiTranslations[apiIdx++] || text);
+              } else {
+                result.push(text);
+              }
             }
           });
           resolve(result);
         }, 
-        reject: () => resolve(texts) // Fallback to original on error
+        reject: () => resolve(texts)
       });
       this.processQueue();
     });
@@ -67,7 +147,6 @@ class TranslationQueue {
 
     this.isProcessing = true;
 
-    // Apply exponential backoff based on consecutive errors
     const currentInterval = this.minInterval * this.backoffMultiplier;
     const now = Date.now();
     const timeSinceLastRequest = now - this.lastRequestTime;
@@ -76,7 +155,6 @@ class TranslationQueue {
       await this.sleep(currentInterval - timeSinceLastRequest);
     }
 
-    // Get all pending requests for the same language and batch them together
     const currentLanguage = this.queue[0]?.language;
     const batchRequests: QueuedRequest[] = [];
     const remainingQueue: QueuedRequest[] = [];
@@ -96,7 +174,6 @@ class TranslationQueue {
       return;
     }
 
-    // Combine all texts from batched requests
     const allTexts: string[] = [];
     const textIndexMap: { requestIndex: number; startIndex: number; count: number }[] = [];
 
@@ -109,7 +186,6 @@ class TranslationQueue {
       allTexts.push(...req.texts);
     });
 
-    // Limit batch size to prevent timeout
     const maxBatchSize = 30;
     const textsToSend = allTexts.slice(0, maxBatchSize);
 
@@ -127,7 +203,6 @@ class TranslationQueue {
           this.consecutiveErrors++;
           this.backoffMultiplier = Math.min(8, Math.pow(2, this.consecutiveErrors));
           
-          // Requeue all requests
           this.queue = [...batchRequests, ...this.queue];
           await this.sleep(this.retryDelay * this.backoffMultiplier);
           this.isProcessing = false;
@@ -137,17 +212,23 @@ class TranslationQueue {
         throw error;
       }
 
-      // Success - reset backoff
       this.consecutiveErrors = 0;
       this.backoffMultiplier = 1;
 
       const translations = data?.translations || textsToSend;
 
-      // Cache all translations
+      // Save to database and memory cache
+      const toSave: { original: string; translated: string }[] = [];
       textsToSend.forEach((text, idx) => {
         const translated = translations[idx] || text;
         translationCache.set(`${currentLanguage}:${text}`, translated);
+        if (translated !== text) {
+          toSave.push({ original: text, translated });
+        }
       });
+
+      // Save to database in background
+      saveToDatabase(toSave, currentLanguage);
 
       // Distribute translations back to original requests
       textIndexMap.forEach(({ requestIndex, startIndex, count }) => {
@@ -167,14 +248,11 @@ class TranslationQueue {
       console.error("Translation queue error:", error);
       this.consecutiveErrors++;
       this.backoffMultiplier = Math.min(8, Math.pow(2, this.consecutiveErrors));
-      
-      // Return original texts on error
       batchRequests.forEach(req => req.resolve(req.texts));
     }
 
     this.isProcessing = false;
 
-    // Process remaining queue with delay
     if (this.queue.length > 0) {
       setTimeout(() => this.processQueue(), this.minInterval);
     }
