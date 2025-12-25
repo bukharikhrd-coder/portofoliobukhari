@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
@@ -16,9 +15,6 @@ interface ToolItem {
 }
 
 const SoftwareTools = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   const { data: tools, isLoading } = useQuery({
     queryKey: ["video_tools"],
     queryFn: async () => {
@@ -50,9 +46,7 @@ const SoftwareTools = () => {
   };
 
   const getProficiencyColor = (level: string | null) => {
-    // Check original level for styling
-    const originalLevel = tools?.find(t => t.proficiency_level === level)?.proficiency_level || level;
-    switch (originalLevel) {
+    switch (level) {
       case "Expert":
         return "from-emerald-500/20 to-emerald-500/5 border-emerald-500/30";
       case "Advanced":
@@ -67,8 +61,7 @@ const SoftwareTools = () => {
   };
 
   const getProficiencyBadgeColor = (level: string | null) => {
-    const originalLevel = tools?.find(t => t.proficiency_level === level)?.proficiency_level || level;
-    switch (originalLevel) {
+    switch (level) {
       case "Expert":
         return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
       case "Advanced":
@@ -89,8 +82,8 @@ const SoftwareTools = () => {
 
   if (isLoading) {
     return (
-      <section id="software-tools" className="py-24 px-6 bg-muted/30">
-        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[300px]">
+      <section id="software-tools" className="py-20 px-6 bg-muted/30">
+        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[200px]">
           <Loader2 className="animate-spin text-primary" size={32} />
         </div>
       </section>
@@ -100,13 +93,14 @@ const SoftwareTools = () => {
   if (!tools || tools.length === 0) return null;
 
   return (
-    <section id="software-tools" className="py-24 px-6 bg-muted/30">
-      <div className="max-w-6xl mx-auto" ref={ref}>
+    <section id="software-tools" className="py-20 px-6 bg-muted/30">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-16"
+          viewport={{ once: true, margin: "-50px" }}
+          className="mb-12"
         >
           <span className="text-primary text-sm tracking-[0.3em] uppercase">
             <TranslatedText>Software Mastery</TranslatedText>
@@ -128,8 +122,9 @@ const SoftwareTools = () => {
               <motion.div
                 key={tool.id}
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.6) }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }}
+                viewport={{ once: true, margin: "-20px" }}
                 className="group"
               >
                 <div className={`relative bg-gradient-to-br ${getProficiencyColor(originalProficiency)} backdrop-blur-sm border rounded-xl p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>

@@ -63,8 +63,8 @@ const VideoPortfolio = () => {
 
   if (isLoading) {
     return (
-      <section id="video-portfolio" className="py-24 px-6 bg-background">
-        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[300px]">
+      <section id="video-portfolio" className="py-20 px-6 bg-background">
+        <div className="max-w-6xl mx-auto flex items-center justify-center min-h-[200px]">
           <Loader2 className="animate-spin text-primary" size={32} />
         </div>
       </section>
@@ -74,14 +74,14 @@ const VideoPortfolio = () => {
   if (!videos?.length) return null;
 
   return (
-    <section id="video-portfolio" className="py-24 px-6 bg-background">
+    <section id="video-portfolio" className="py-20 px-6 bg-background">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-16"
+          viewport={{ once: true, margin: "-50px" }}
+          className="mb-12"
         >
           <span className="text-primary text-sm tracking-[0.3em] uppercase">
             <TranslatedText>Showreel</TranslatedText>

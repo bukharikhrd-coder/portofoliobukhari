@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
@@ -16,9 +15,6 @@ interface TechItem {
 }
 
 const TechStack = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   const { data: technologies, isLoading } = useQuery({
     queryKey: ["tech_stack"],
     queryFn: async () => {
@@ -53,8 +49,8 @@ const TechStack = () => {
 
   if (isLoading) {
     return (
-      <section id="tech" className="py-24">
-        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-center min-h-[300px]">
+      <section id="tech" className="py-20">
+        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-center min-h-[200px]">
           <Loader2 className="animate-spin text-primary" size={32} />
         </div>
       </section>
@@ -64,14 +60,15 @@ const TechStack = () => {
   if (!technologies || technologies.length === 0) return null;
 
   return (
-    <section id="tech" className="py-24">
-      <div className="container mx-auto px-6 lg:px-12" ref={ref}>
+    <section id="tech" className="py-20">
+      <div className="container mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-50px" }}
+          className="text-center mb-12"
         >
           <span className="text-primary text-sm tracking-[0.3em] uppercase">
             <TranslatedText>Technologies</TranslatedText>
@@ -93,8 +90,9 @@ const TechStack = () => {
               <motion.div
                 key={tech.id}
                 initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.1 * Math.min(index, 7) }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }}
+                viewport={{ once: true, margin: "-20px" }}
                 className="group"
               >
                 <div className="relative p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover rounded-lg">
@@ -127,9 +125,10 @@ const TechStack = () => {
         {/* Additional info */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-16 text-center"
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="mt-12 text-center"
         >
           <p className="text-muted-foreground">
             <TranslatedText>Always learning and exploring new technologies to deliver the best solutions</TranslatedText>
