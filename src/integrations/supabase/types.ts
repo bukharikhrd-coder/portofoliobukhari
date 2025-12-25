@@ -370,6 +370,36 @@ export type Database = {
         }
         Relationships: []
       }
+      section_config: {
+        Row: {
+          created_at: string
+          id: string
+          is_visible: boolean
+          order_index: number
+          section_key: string
+          section_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          order_index?: number
+          section_key: string
+          section_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          order_index?: number
+          section_key?: string
+          section_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string

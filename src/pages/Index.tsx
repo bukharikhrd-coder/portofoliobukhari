@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useSectionConfig } from "@/hooks/useSectionConfig";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
@@ -17,8 +18,54 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import BackToDashboard from "@/components/BackToDashboard";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
+// Map section keys to their components
+const sectionComponents: Record<string, React.ComponentType> = {
+  about: About,
+  techstack: TechStack,
+  experience: Experience,
+  education: Education,
+  trainings: Trainings,
+  languages: Languages,
+  works: Works,
+  videoportfolio: VideoPortfolio,
+  softwaretools: SoftwareTools,
+  workjourney: WorkJourneyGallery,
+  contact: Contact,
+};
+
 const Index = () => {
   useVisitorTracking();
+  const { data: sections, isLoading } = useSectionConfig();
+
+  // Render sections based on config order and visibility
+  const renderSections = () => {
+    if (isLoading || !sections) {
+      // Fallback to default order while loading
+      return (
+        <>
+          <About />
+          <Experience />
+          <Education />
+          <Trainings />
+          <Languages />
+          <Works />
+          <TechStack />
+          <SoftwareTools />
+          <VideoPortfolio />
+          <WorkJourneyGallery />
+          <Contact />
+        </>
+      );
+    }
+
+    return sections
+      .filter((section) => section.is_visible)
+      .map((section) => {
+        const Component = sectionComponents[section.section_key];
+        if (!Component) return null;
+        return <Component key={section.section_key} />;
+      });
+  };
 
   return (
     <>
@@ -47,17 +94,7 @@ const Index = () => {
           <div id="home">
             <Hero />
           </div>
-          <About />
-          <Experience />
-          <Education />
-          <Trainings />
-          <Languages />
-          <Works />
-          <TechStack />
-          <SoftwareTools />
-          <VideoPortfolio />
-          <WorkJourneyGallery />
-          <Contact />
+          {renderSections()}
         </main>
         <Footer />
         <PWAInstallPrompt />
