@@ -15,6 +15,7 @@ interface Project {
   github_url: string | null;
   is_featured: boolean | null;
   order_index: number | null;
+  show_link: boolean | null;
   tags?: string[];
 }
 
@@ -44,6 +45,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
     github_url: "",
     is_featured: false,
     order_index: 0,
+    show_link: true,
     tags: [],
   };
 
@@ -113,6 +115,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
           demo_url: projectData.demo_url,
           github_url: projectData.github_url,
           is_featured: projectData.is_featured,
+          show_link: projectData.show_link,
           order_index: projects.length,
         })
         .select()
@@ -144,6 +147,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
           demo_url: projectData.demo_url,
           github_url: projectData.github_url,
           is_featured: projectData.is_featured,
+          show_link: projectData.show_link,
         })
         .eq("id", projectData.id);
 
@@ -451,19 +455,36 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="featured"
-                  checked={editingProject.is_featured || false}
-                  onChange={(e) =>
-                    setEditingProject({ ...editingProject, is_featured: e.target.checked })
-                  }
-                  className="w-4 h-4 accent-primary"
-                />
-                <label htmlFor="featured" className="text-sm text-muted-foreground">
-                  Featured Project
-                </label>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="featured"
+                    checked={editingProject.is_featured || false}
+                    onChange={(e) =>
+                      setEditingProject({ ...editingProject, is_featured: e.target.checked })
+                    }
+                    className="w-4 h-4 accent-primary"
+                  />
+                  <label htmlFor="featured" className="text-sm text-muted-foreground">
+                    Featured Project
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="show_link"
+                    checked={editingProject.show_link !== false}
+                    onChange={(e) =>
+                      setEditingProject({ ...editingProject, show_link: e.target.checked })
+                    }
+                    className="w-4 h-4 accent-primary"
+                  />
+                  <label htmlFor="show_link" className="text-sm text-muted-foreground">
+                    Show Link Button
+                  </label>
+                </div>
               </div>
             </div>
 

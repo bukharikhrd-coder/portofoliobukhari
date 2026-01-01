@@ -16,6 +16,7 @@ interface Project {
   year: string | null;
   demo_url: string | null;
   github_url: string | null;
+  show_link: boolean | null;
 }
 
 const categories: { value: Category; label: string }[] = [
@@ -135,16 +136,18 @@ const Works = () => {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
-                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                  <a 
-                    href={project.demo_url || project.github_url || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 bg-primary flex items-center justify-center"
-                  >
-                    <ArrowUpRight className="text-primary-foreground" size={24} />
-                  </a>
-                </div>
+                {project.show_link !== false && (project.demo_url || project.github_url) && (
+                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                    <a 
+                      href={project.demo_url || project.github_url || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 bg-primary flex items-center justify-center"
+                    >
+                      <ArrowUpRight className="text-primary-foreground" size={24} />
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">

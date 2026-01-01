@@ -224,6 +224,39 @@ export type Database = {
         }
         Relationships: []
       }
+      footer_social_links: {
+        Row: {
+          created_at: string
+          icon_name: string | null
+          id: string
+          is_active: boolean
+          order_index: number | null
+          platform: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          order_index?: number | null
+          platform: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean
+          order_index?: number | null
+          platform?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       hero_content: {
         Row: {
           brand_name: string | null
@@ -336,6 +369,7 @@ export type Database = {
           image_url: string | null
           is_featured: boolean | null
           order_index: number | null
+          show_link: boolean | null
           title: string
           updated_at: string
           year: string | null
@@ -350,6 +384,7 @@ export type Database = {
           image_url?: string | null
           is_featured?: boolean | null
           order_index?: number | null
+          show_link?: boolean | null
           title: string
           updated_at?: string
           year?: string | null
@@ -364,6 +399,7 @@ export type Database = {
           image_url?: string | null
           is_featured?: boolean | null
           order_index?: number | null
+          show_link?: boolean | null
           title?: string
           updated_at?: string
           year?: string | null
