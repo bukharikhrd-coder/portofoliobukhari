@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Edit2, X, Check, GripVertical } from "lucide-react";
+import { Loader2, Plus, Trash2, Edit2, X, Check } from "lucide-react";
 import ImageUpload from "./ImageUpload";
+import { SortableList } from "./SortableList";
 
 interface JourneyItem {
   id: string;
@@ -42,6 +43,24 @@ const AdminWorkJourneyGallery = () => {
       setItems(data || []);
     }
     setLoading(false);
+  };
+
+  const handleReorder = async (reorderedItems: JourneyItem[]) => {
+    setItems(reorderedItems);
+    
+    const updates = reorderedItems.map((item, index) => ({
+      id: item.id,
+      order_index: index,
+    }));
+
+    for (const update of updates) {
+      await supabase
+        .from("work_journey_gallery")
+        .update({ order_index: update.order_index })
+        .eq("id", update.id);
+    }
+    
+    toast.success("Order updated!");
   };
 
   const handleAdd = async () => {
@@ -207,12 +226,11 @@ const AdminWorkJourneyGallery = () => {
       )}
 
       {/* Gallery Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="group relative bg-secondary/50 border border-border overflow-hidden"
-          >
+      <SortableList
+        items={items}
+        onReorder={handleReorder}
+        renderItem={(item) => (
+          <div className="group relative bg-secondary/50 border border-border overflow-hidden">
             {editingId === item.id && editItem ? (
               <div className="p-4 space-y-4">
                 <ImageUpload
@@ -292,8 +310,8 @@ const AdminWorkJourneyGallery = () => {
               </>
             )}
           </div>
-        ))}
-      </div>
+        )}
+      />
 
       {items.length === 0 && !isAdding && (
         <div className="text-center py-16 text-muted-foreground">
