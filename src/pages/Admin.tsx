@@ -21,7 +21,8 @@ import {
   BarChart3,
   Images,
   Award,
-  Layers
+  Layers,
+  Share2
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -38,8 +39,9 @@ import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import AdminWorkJourneyGallery from "@/components/admin/AdminWorkJourneyGallery";
 import AdminTrainings from "@/components/admin/AdminTrainings";
 import AdminSectionOrder from "@/components/admin/AdminSectionOrder";
+import AdminFooterSocial from "@/components/admin/AdminFooterSocial";
 
-type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -56,6 +58,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "videoportfolio", label: "Video Portfolio", icon: Play },
   { id: "journeygallery", label: "Work Journey", icon: Images },
   { id: "contact", label: "Contact Info", icon: FileText },
+  { id: "footersocial", label: "Footer Social Links", icon: Share2 },
   { id: "messages", label: "Messages", icon: Mail },
 ];
 
@@ -139,6 +142,8 @@ const Admin = () => {
         return <AdminWorkJourneyGallery />;
       case "contact":
         return <AdminContact />;
+      case "footersocial":
+        return <AdminFooterSocial />;
       case "messages":
         return <AdminMessages onUpdate={fetchStats} />;
       default:
