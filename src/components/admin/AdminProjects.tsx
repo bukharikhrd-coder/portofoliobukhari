@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Edit2, X, Save, Upload, Image } from "lucide-react";
+import { Loader2, Plus, Trash2, Edit2, X, Save, Upload } from "lucide-react";
+import { SortableList } from "./SortableList";
 
 interface Project {
   id: string;
@@ -74,6 +75,24 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
 
     setProjects(projectsWithTags);
     setLoading(false);
+  };
+
+  const handleReorder = async (reorderedProjects: Project[]) => {
+    setProjects(reorderedProjects);
+    
+    const updates = reorderedProjects.map((project, index) => ({
+      id: project.id,
+      order_index: index,
+    }));
+
+    for (const update of updates) {
+      await supabase
+        .from("projects")
+        .update({ order_index: update.order_index })
+        .eq("id", update.id);
+    }
+    
+    toast.success("Order updated!");
   };
 
   const handleSave = async () => {
@@ -472,12 +491,11 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
       )}
 
       {/* Projects Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <div
-            key={project.id}
-            className="bg-card border border-border overflow-hidden group"
-          >
+      <SortableList
+        items={projects}
+        onReorder={handleReorder}
+        renderItem={(project) => (
+          <div className="bg-card border border-border overflow-hidden group">
             {project.image_url && (
               <div className="aspect-video overflow-hidden">
                 <img
@@ -522,8 +540,8 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        )}
+      />
     </div>
   );
 };
