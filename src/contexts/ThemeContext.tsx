@@ -1,44 +1,83 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-type Theme = "dark" | "light";
+type ThemeMode = "dark" | "light" | "system";
+type ResolvedTheme = "dark" | "light";
 
 interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: () => void;
+  theme: ResolvedTheme;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+function getSystemTheme(): ResolvedTheme {
+  if (typeof window !== "undefined") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return "dark";
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("theme") as Theme;
-      if (stored) return stored;
-      return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      const stored = localStorage.getItem("themeMode") as ThemeMode;
+      if (stored && ["dark", "light", "system"].includes(stored)) {
+        return stored;
+      }
     }
-    return "dark";
+    return "dark"; // Default to dark theme
   });
 
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
+    if (themeMode === "system") {
+      return getSystemTheme();
+    }
+    return themeMode as ResolvedTheme;
+  });
+
+  // Listen for system theme changes
+  useEffect(() => {
+    if (themeMode !== "system") return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      setResolvedTheme(e.matches ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [themeMode]);
+
+  // Update resolved theme when mode changes
+  useEffect(() => {
+    if (themeMode === "system") {
+      setResolvedTheme(getSystemTheme());
+    } else {
+      setResolvedTheme(themeMode as ResolvedTheme);
+    }
+  }, [themeMode]);
+
+  // Apply theme to document
   useEffect(() => {
     const root = document.documentElement;
     
-    if (theme === "light") {
+    if (resolvedTheme === "light") {
       root.classList.add("light");
       root.classList.remove("dark");
     } else {
       root.classList.add("dark");
       root.classList.remove("light");
     }
-    
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  }, [resolvedTheme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  const setThemeMode = (mode: ThemeMode) => {
+    setThemeModeState(mode);
+    localStorage.setItem("themeMode", mode);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, setThemeMode }}>
       {children}
     </ThemeContext.Provider>
   );
