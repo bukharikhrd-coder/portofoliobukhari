@@ -511,14 +511,14 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
         </div>
       )}
 
-      {/* Projects Grid */}
+      {/* Projects Grid - Compact Layout */}
       <SortableList
         items={projects}
         onReorder={handleReorder}
         renderItem={(project) => (
-          <div className="bg-card border border-border overflow-hidden group">
+          <div className="bg-card border border-border overflow-hidden group flex gap-3 p-3">
             {project.image_url && (
-              <div className="aspect-video overflow-hidden">
+              <div className="w-20 h-14 flex-shrink-0 overflow-hidden bg-muted">
                 <img
                   src={project.image_url}
                   alt={project.title}
@@ -526,37 +526,44 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
                 />
               </div>
             )}
-            <div className="p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-primary text-xs tracking-wide uppercase">
-                  {project.category}
-                </span>
-                <span className="text-muted-foreground text-sm">{project.year}</span>
-              </div>
-              <h3 className="font-medium text-lg">{project.title}</h3>
-              <p className="text-muted-foreground text-sm line-clamp-2">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {(project.tags || []).slice(0, 3).map((tag) => (
-                  <span key={tag} className="text-xs text-muted-foreground px-2 py-0.5 bg-muted">
-                    {tag}
+            <div className="flex-1 min-w-0 flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-medium text-sm truncate">{project.title}</h3>
+                  <span className="text-primary text-[10px] tracking-wide uppercase flex-shrink-0">
+                    {project.category}
                   </span>
-                ))}
+                  {project.year && (
+                    <span className="text-muted-foreground text-xs flex-shrink-0">{project.year}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  {project.description && (
+                    <p className="text-muted-foreground text-xs truncate max-w-[200px]">
+                      {project.description}
+                    </p>
+                  )}
+                  <div className="flex gap-1 flex-shrink-0">
+                    {(project.tags || []).slice(0, 2).map((tag) => (
+                      <span key={tag} className="text-[10px] text-muted-foreground px-1.5 py-0.5 bg-muted">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-1 flex-shrink-0">
                 <button
                   onClick={() => setEditingProject(project)}
-                  className="flex-1 py-2 border border-border text-sm hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-2"
+                  className="p-1.5 border border-border text-xs hover:border-primary hover:text-primary transition-colors"
                 >
-                  <Edit2 size={14} />
-                  Edit
+                  <Edit2 size={12} />
                 </button>
                 <button
                   onClick={() => handleDelete(project.id)}
-                  className="py-2 px-4 border border-border text-sm hover:border-destructive hover:text-destructive transition-colors"
+                  className="p-1.5 border border-border text-xs hover:border-destructive hover:text-destructive transition-colors"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={12} />
                 </button>
               </div>
             </div>
