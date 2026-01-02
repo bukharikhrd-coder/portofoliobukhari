@@ -225,89 +225,105 @@ const AdminWorkJourneyGallery = () => {
         </div>
       )}
 
-      {/* Gallery Grid */}
+      {/* Gallery List - Compact View */}
       <SortableList
         items={items}
         onReorder={handleReorder}
         renderItem={(item) => (
           <div className="group relative bg-secondary/50 border border-border overflow-hidden">
             {editingId === item.id && editItem ? (
-              <div className="p-4 space-y-4">
-                <ImageUpload
-                  currentImage={editItem.image_url}
-                  onImageChange={(url) => setEditItem({ ...editItem, image_url: url })}
-                  folder="journey"
-                  label="Gallery Image"
-                />
-                <input
-                  type="text"
-                  value={editItem.title}
-                  onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
-                  placeholder="Title"
-                />
-                <input
-                  type="text"
-                  value={editItem.year || ""}
-                  onChange={(e) => setEditItem({ ...editItem, year: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
-                  placeholder="Year"
-                />
-                <textarea
-                  rows={2}
-                  value={editItem.description || ""}
-                  onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
-                  className="w-full px-4 py-2 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors resize-none"
-                  placeholder="Description"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleSaveEdit}
-                    className="flex-1 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => { setEditingId(null); setEditItem(null); }}
-                    className="flex-1 px-4 py-2 border border-border text-foreground text-sm font-medium hover:border-primary transition-colors"
-                  >
-                    Cancel
-                  </button>
+              <div className="p-4 space-y-3">
+                <div className="flex gap-4">
+                  <div className="w-24 h-24 flex-shrink-0">
+                    <ImageUpload
+                      currentImage={editItem.image_url}
+                      onImageChange={(url) => setEditItem({ ...editItem, image_url: url })}
+                      folder="journey"
+                      label=""
+                      compact
+                    />
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <input
+                      type="text"
+                      value={editItem.title}
+                      onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                      className="w-full px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
+                      placeholder="Title"
+                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={editItem.year || ""}
+                        onChange={(e) => setEditItem({ ...editItem, year: e.target.value })}
+                        className="w-24 px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
+                        placeholder="Year"
+                      />
+                      <input
+                        type="text"
+                        value={editItem.description || ""}
+                        onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                        className="flex-1 px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
+                        placeholder="Description"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSaveEdit}
+                        className="px-4 py-1.5 bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => { setEditingId(null); setEditItem(null); }}
+                        className="px-4 py-1.5 border border-border text-foreground text-xs font-medium hover:border-primary transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : (
-              <>
-                <div className="aspect-video overflow-hidden bg-secondary/50">
+              <div className="flex items-center gap-4 p-3">
+                {/* Thumbnail */}
+                <div className="w-16 h-16 flex-shrink-0 bg-secondary/50 overflow-hidden rounded">
                   <img
                     src={item.image_url}
                     alt={item.title}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-4">
-                  <h3 className="font-medium text-foreground">{item.title}</h3>
-                  {item.year && (
-                    <p className="text-muted-foreground text-sm mt-1">{item.year}</p>
-                  )}
-                  {item.description && (
-                    <p className="text-muted-foreground text-sm mt-2 line-clamp-2">{item.description}</p>
-                  )}
+                
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-foreground text-sm truncate">{item.title}</h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {item.year && (
+                      <span className="text-primary text-xs">{item.year}</span>
+                    )}
+                    {item.description && (
+                      <span className="text-muted-foreground text-xs truncate">{item.description}</span>
+                    )}
+                  </div>
                 </div>
-                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                
+                {/* Actions */}
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="p-2 bg-background/80 text-foreground hover:bg-primary transition-colors"
+                    className="p-1.5 bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground transition-colors rounded"
                   >
-                    <Edit2 size={16} />
+                    <Edit2 size={14} />
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 bg-background/80 text-foreground hover:bg-destructive transition-colors"
+                    className="p-1.5 bg-background/80 text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors rounded"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
-              </>
+              </div>
             )}
           </div>
         )}

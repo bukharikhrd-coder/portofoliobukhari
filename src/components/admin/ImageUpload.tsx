@@ -11,6 +11,7 @@ interface ImageUploadProps {
   folder?: string;
   label?: string;
   aspectRatio?: number;
+  compact?: boolean;
 }
 
 const ImageUpload = ({
@@ -20,6 +21,7 @@ const ImageUpload = ({
   folder = "profile",
   label = "Profile Image",
   aspectRatio = 1,
+  compact = false,
 }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -132,6 +134,72 @@ const ImageUpload = ({
   const handleRemove = () => {
     onImageChange("");
   };
+
+  // Compact mode for inline editing
+  if (compact) {
+    return (
+      <>
+        {showCropper && originalImageUrl && (
+          <ImageCropper
+            imageSrc={originalImageUrl}
+            onCropComplete={handleCropComplete}
+            onCancel={handleCropCancel}
+            aspectRatio={aspectRatio}
+          />
+        )}
+        
+        <div className="relative w-full h-full bg-secondary border border-border overflow-hidden group">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+            disabled={uploading}
+          />
+          
+          {previewUrl ? (
+            <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+          ) : currentImage ? (
+            <img src={currentImage} alt="Current" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+              <ImageIcon size={20} />
+            </div>
+          )}
+          
+          <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+            {previewUrl ? (
+              <>
+                <button
+                  onClick={handleConfirmUpload}
+                  disabled={uploading}
+                  className="p-1.5 bg-primary text-primary-foreground rounded text-xs"
+                >
+                  {uploading ? <Loader2 className="animate-spin" size={12} /> : <Check size={12} />}
+                </button>
+                <button
+                  onClick={handleCancelPreview}
+                  disabled={uploading}
+                  className="p-1.5 bg-secondary text-foreground border border-border rounded text-xs"
+                >
+                  <X size={12} />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="p-1.5 bg-secondary text-foreground border border-border rounded text-xs"
+              >
+                <Upload size={12} />
+              </button>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
