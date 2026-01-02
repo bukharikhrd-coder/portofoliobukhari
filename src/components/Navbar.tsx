@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Settings, Sun, Moon } from "lucide-react";
+import { Menu, X, Settings, Sun, Moon, Monitor } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { href: "#", label: "Home" },
@@ -22,7 +28,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, isAdmin } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, themeMode, setThemeMode } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +57,11 @@ const Navbar = () => {
       });
     }
   }, []);
+
+  const ThemeIcon = () => {
+    if (themeMode === "system") return <Monitor size={18} />;
+    return theme === "dark" ? <Sun size={18} /> : <Moon size={18} />;
+  };
 
   return (
     <motion.nav
@@ -104,32 +115,78 @@ const Navbar = () => {
             {/* Language Switcher */}
             <LanguageSwitcher />
             
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-300"
-              aria-label="Toggle theme"
-            >
-              <motion.div
-                initial={false}
-                animate={{ rotate: theme === "dark" ? 0 : 180 }}
-                transition={{ duration: 0.3 }}
-              >
-                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-              </motion.div>
-            </button>
+            {/* Theme Toggle Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-300"
+                  aria-label="Toggle theme"
+                >
+                  <ThemeIcon />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[120px]">
+                <DropdownMenuItem 
+                  onClick={() => setThemeMode("dark")}
+                  className={themeMode === "dark" ? "bg-accent" : ""}
+                >
+                  <Moon size={14} className="mr-2" />
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setThemeMode("light")}
+                  className={themeMode === "light" ? "bg-accent" : ""}
+                >
+                  <Sun size={14} className="mr-2" />
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setThemeMode("system")}
+                  className={themeMode === "system" ? "bg-accent" : ""}
+                >
+                  <Monitor size={14} className="mr-2" />
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu Button - only on small phones */}
           <div className="flex items-center gap-1 sm:hidden">
             <LanguageSwitcher />
-            <button
-              onClick={toggleTheme}
-              className="p-2 text-foreground"
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="p-2 text-foreground"
+                  aria-label="Toggle theme"
+                >
+                  <ThemeIcon />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[120px]">
+                <DropdownMenuItem 
+                  onClick={() => setThemeMode("dark")}
+                  className={themeMode === "dark" ? "bg-accent" : ""}
+                >
+                  <Moon size={14} className="mr-2" />
+                  Dark
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setThemeMode("light")}
+                  className={themeMode === "light" ? "bg-accent" : ""}
+                >
+                  <Sun size={14} className="mr-2" />
+                  Light
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setThemeMode("system")}
+                  className={themeMode === "system" ? "bg-accent" : ""}
+                >
+                  <Monitor size={14} className="mr-2" />
+                  System
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-foreground"
