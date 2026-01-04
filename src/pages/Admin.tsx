@@ -22,7 +22,8 @@ import {
   Images,
   Award,
   Layers,
-  Share2
+  Share2,
+  FileUp
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -40,11 +41,13 @@ import AdminWorkJourneyGallery from "@/components/admin/AdminWorkJourneyGallery"
 import AdminTrainings from "@/components/admin/AdminTrainings";
 import AdminSectionOrder from "@/components/admin/AdminSectionOrder";
 import AdminFooterSocial from "@/components/admin/AdminFooterSocial";
+import AdminCVManager from "@/components/admin/AdminCVManager";
 
-type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "cvmanager", label: "CV Manager", icon: FileUp },
   { id: "sectionorder", label: "Section Order", icon: Layers },
   { id: "hero", label: "Hero Section", icon: Home },
   { id: "about", label: "About Me", icon: User },
@@ -116,6 +119,8 @@ const Admin = () => {
     switch (activeTab) {
       case "analytics":
         return <AdminAnalytics />;
+      case "cvmanager":
+        return <AdminCVManager />;
       case "sectionorder":
         return <AdminSectionOrder />;
       case "hero":
