@@ -58,9 +58,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, [themeMode]);
 
-  // Apply theme to document
+  // Apply theme to document with smooth transition
   useEffect(() => {
     const root = document.documentElement;
+    
+    // Remove no-transition class to enable smooth transitions
+    requestAnimationFrame(() => {
+      root.classList.remove("no-transition");
+    });
     
     if (resolvedTheme === "light") {
       root.classList.add("light");
@@ -70,6 +75,19 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.classList.remove("light");
     }
   }, [resolvedTheme]);
+
+  // Add no-transition class on initial load to prevent flash
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add("no-transition");
+    
+    // Remove it after a short delay
+    const timer = setTimeout(() => {
+      root.classList.remove("no-transition");
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const setThemeMode = (mode: ThemeMode) => {
     setThemeModeState(mode);

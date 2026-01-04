@@ -104,6 +104,27 @@
     scroll-behavior: smooth;
   }
 
+  /* Smooth theme transitions */
+  html,
+  html *,
+  html *::before,
+  html *::after {
+    transition: background-color 0.4s ease, 
+                border-color 0.4s ease, 
+                color 0.3s ease,
+                box-shadow 0.4s ease,
+                fill 0.3s ease,
+                stroke 0.3s ease;
+  }
+
+  /* Disable transition during initial load */
+  html.no-transition,
+  html.no-transition *,
+  html.no-transition *::before,
+  html.no-transition *::after {
+    transition: none !important;
+  }
+
   body {
     @apply bg-background text-foreground font-body antialiased;
     font-family: var(--font-body);
@@ -121,6 +142,7 @@
     opacity: 0.03;
     pointer-events: none;
     z-index: 1000;
+    transition: none;
   }
 }
 
