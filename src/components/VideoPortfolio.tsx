@@ -74,24 +74,24 @@ const VideoPortfolio = () => {
   if (!videos?.length) return null;
 
   return (
-    <section id="video-portfolio" className="py-20 px-6 bg-background">
+    <section id="video-portfolio" className="py-12 md:py-20 px-4 md:px-6 bg-background">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="mb-12"
+          className="mb-8 md:mb-12"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">
+          <span className="text-primary text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase">
             <TranslatedText>Showreel</TranslatedText>
           </span>
-          <h2 className="font-display text-4xl md:text-5xl mt-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 md:mt-4">
             <TranslatedText>VIDEO</TranslatedText> <span className="text-gradient"><TranslatedText>PORTFOLIO</TranslatedText></span>
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
           {displayVideos.map((video, index) => {
             const thumbnailUrl = getThumbnailUrl(video);
             
@@ -105,7 +105,7 @@ const VideoPortfolio = () => {
                 className="group"
               >
                 <div 
-                  className="relative aspect-video bg-muted rounded-lg overflow-hidden mb-4 cursor-pointer"
+                  className="relative aspect-video bg-muted rounded-lg overflow-hidden mb-3 md:mb-4 cursor-pointer"
                   onClick={() => setActiveVideo(video.id)}
                 >
                   {thumbnailUrl ? (
@@ -116,18 +116,18 @@ const VideoPortfolio = () => {
                     />
                   ) : (
                     <div className="w-full h-full bg-secondary flex items-center justify-center">
-                      <Play size={48} className="text-muted-foreground" />
+                      <Play size={36} className="text-muted-foreground" />
                     </div>
                   )}
                   
                   {/* Play overlay */}
                   <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
-                      <Play size={28} className="text-primary-foreground ml-1" />
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary flex items-center justify-center">
+                      <Play size={22} className="text-primary-foreground ml-1" />
                     </div>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 md:mb-2">
                   {video.title}
                 </h3>
                 {video.description && (

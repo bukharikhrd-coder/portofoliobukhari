@@ -93,27 +93,27 @@ const SoftwareTools = () => {
   if (!tools || tools.length === 0) return null;
 
   return (
-    <section id="software-tools" className="py-20 px-6 bg-muted/30">
+    <section id="software-tools" className="py-12 md:py-20 px-4 md:px-6 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="mb-12"
+          className="mb-8 md:mb-12"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">
+          <span className="text-primary text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase">
             <TranslatedText>Software Mastery</TranslatedText>
           </span>
-          <h2 className="font-display text-4xl md:text-5xl mt-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 md:mt-4">
             <TranslatedText>TOOLS</TranslatedText> & <span className="text-gradient"><TranslatedText>SOFTWARE</TranslatedText></span>
           </h2>
-          <p className="text-muted-foreground mt-4 max-w-2xl">
+          <p className="text-muted-foreground mt-3 md:mt-4 max-w-2xl text-sm md:text-base">
             <TranslatedText>Professional tools and software I use for design, development, and multimedia production</TranslatedText>
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
           {displayTools.map((tool, index) => {
             const IconComponent = getIcon(tool.icon_name);
             const originalProficiency = getOriginalProficiency(tool.id);
@@ -127,19 +127,19 @@ const SoftwareTools = () => {
                 viewport={{ once: true, margin: "-20px" }}
                 className="group"
               >
-                <div className={`relative bg-gradient-to-br ${getProficiencyColor(originalProficiency)} backdrop-blur-sm border rounded-xl p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>
+                <div className={`relative bg-gradient-to-br ${getProficiencyColor(originalProficiency)} backdrop-blur-sm border rounded-xl p-4 md:p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>
                   {/* Icon */}
-                  <div className="w-14 h-14 mx-auto mb-4 bg-background/80 rounded-xl flex items-center justify-center shadow-inner group-hover:shadow-md transition-all">
-                    <IconComponent className="text-foreground group-hover:text-primary transition-colors" size={28} />
+                  <div className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-background/80 rounded-xl flex items-center justify-center shadow-inner group-hover:shadow-md transition-all">
+                    <IconComponent className="text-foreground group-hover:text-primary transition-colors w-5 h-5 md:w-7 md:h-7" />
                   </div>
                   
                   {/* Name */}
-                  <h3 className="font-medium text-foreground mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="font-medium text-foreground mb-2 md:mb-3 group-hover:text-primary transition-colors text-sm md:text-base">
                     {tool.name}
                   </h3>
                   
                   {/* Proficiency Badge */}
-                  <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full border ${getProficiencyBadgeColor(originalProficiency)}`}>
+                  <span className={`inline-block px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium rounded-full border ${getProficiencyBadgeColor(originalProficiency)}`}>
                     {tool.proficiency_level}
                   </span>
                 </div>

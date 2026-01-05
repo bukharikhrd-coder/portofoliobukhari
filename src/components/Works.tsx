@@ -73,7 +73,7 @@ const Works = () => {
   );
 
   return (
-    <section id="works" className="py-32 bg-secondary/30 relative overflow-hidden">
+    <section id="works" className="py-16 md:py-32 bg-secondary/30 relative overflow-hidden">
       <motion.div 
         className="absolute inset-0 opacity-5"
         style={{ y }}
@@ -82,15 +82,15 @@ const Works = () => {
         <div className="absolute left-0 bottom-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
       </motion.div>
 
-      <div className="container mx-auto px-6 lg:px-12" ref={ref}>
+      <div className="container mx-auto px-4 md:px-6 lg:px-12" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">Portfolio</TranslatedText>
-          <h2 className="font-display text-5xl md:text-7xl mt-4">
+          <TranslatedText className="text-primary text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase">Portfolio</TranslatedText>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl mt-3 md:mt-4">
             <TranslatedText>SELECTED</TranslatedText> <span className="text-gradient"><TranslatedText>WORKS</TranslatedText></span>
           </h2>
         </motion.div>
@@ -99,14 +99,14 @@ const Works = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-16 relative z-10"
+          className="flex flex-wrap justify-center gap-2 md:gap-4 mb-10 md:mb-16 relative z-10"
         >
           {categories.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setActiveCategory(cat.value)}
               type="button"
-              className={`px-6 py-2 text-sm tracking-wide transition-all duration-300 cursor-pointer ${
+              className={`px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
                 activeCategory === cat.value
                   ? "bg-primary text-primary-foreground"
                   : "bg-transparent border border-border text-muted-foreground hover:border-primary hover:text-primary"
@@ -117,7 +117,7 @@ const Works = () => {
           ))}
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {filteredProjects.map((project, index) => (
             <motion.article
               key={project.id}
@@ -126,7 +126,7 @@ const Works = () => {
               transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
               className="group cursor-pointer card-hover"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-card mb-6">
+              <div className="relative aspect-[4/3] overflow-hidden bg-card mb-4 md:mb-6">
                 {project.image_url && (
                   <img
                     src={project.image_url}
@@ -137,39 +137,44 @@ const Works = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {project.show_link !== false && (project.demo_url || project.github_url) && (
-                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                  <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                     <a 
                       href={project.demo_url || project.github_url || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-12 h-12 bg-primary flex items-center justify-center"
+                      className="w-10 h-10 md:w-12 md:h-12 bg-primary flex items-center justify-center"
                     >
-                      <ArrowUpRight className="text-primary-foreground" size={24} />
+                      <ArrowUpRight className="text-primary-foreground" size={20} />
                     </a>
                   </div>
                 )}
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-primary text-xs tracking-[0.2em] uppercase">
+                  <span className="text-primary text-xs tracking-[0.15em] md:tracking-[0.2em] uppercase">
                     {project.category}
                   </span>
-                  <span className="text-muted-foreground text-sm">{project.year}</span>
+                  <span className="text-muted-foreground text-xs md:text-sm">{project.year}</span>
                 </div>
-                <h3 className="font-display text-2xl group-hover:text-primary transition-colors duration-300">
+                <h3 className="font-display text-xl md:text-2xl group-hover:text-primary transition-colors duration-300">
                   {project.title}
                 </h3>
-                <p className="text-muted-foreground text-sm">{project.description}</p>
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {project.tags.map((tag) => (
+                <p className="text-muted-foreground text-xs md:text-sm line-clamp-2">{project.description}</p>
+                <div className="flex flex-wrap gap-1.5 md:gap-2 pt-1 md:pt-2">
+                  {project.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-xs text-muted-foreground px-2 py-1 bg-muted/50"
+                      className="text-xs text-muted-foreground px-2 py-0.5 md:py-1 bg-muted/50"
                     >
                       {tag}
                     </span>
                   ))}
+                  {project.tags.length > 3 && (
+                    <span className="text-xs text-muted-foreground px-2 py-0.5 md:py-1 bg-muted/50">
+                      +{project.tags.length - 3}
+                    </span>
+                  )}
                 </div>
               </div>
             </motion.article>

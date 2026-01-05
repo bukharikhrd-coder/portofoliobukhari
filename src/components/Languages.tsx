@@ -45,24 +45,24 @@ const Languages = () => {
   }
 
   return (
-    <section id="languages" className="py-24 px-6 bg-background">
+    <section id="languages" className="py-16 md:py-24 px-4 md:px-6 bg-background">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-10 md:mb-16"
         >
-          <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
+          <TranslatedText className="text-primary text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase">
             Languages
           </TranslatedText>
-          <h2 className="font-display text-4xl md:text-5xl mt-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mt-3 md:mt-4">
             <TranslatedText>LANGUAGE</TranslatedText> <span className="text-gradient"><TranslatedText>SKILLS</TranslatedText></span>
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           {translatedLanguages?.map((lang, index) => (
             <motion.div
               key={lang.id}
@@ -70,16 +70,16 @@ const Languages = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-card border border-border p-6 hover:border-primary/50 transition-colors duration-300"
+              className="bg-card border border-border p-4 md:p-6 hover:border-primary/50 transition-colors duration-300"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <Globe className="text-primary" size={24} />
-                <h3 className="text-lg font-semibold text-foreground">
+              <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                <Globe className="text-primary" size={20} />
+                <h3 className="text-base md:text-lg font-semibold text-foreground">
                   {lang.language_name}
                 </h3>
               </div>
               <span
-                className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                className={`inline-block px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs md:text-sm font-medium ${
                   proficiencyColors[languages?.find(l => l.id === lang.id)?.proficiency_level || ""] || proficiencyColors.Intermediate
                 }`}
               >
