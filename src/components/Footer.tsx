@@ -44,11 +44,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="py-12 border-t border-border">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-            <Link to="/" className="font-display text-2xl tracking-tight">
+    <footer className="py-8 md:py-12 border-t border-border">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12">
+        <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
+          <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6 lg:gap-8">
+            <Link to="/" className="font-display text-xl md:text-2xl tracking-tight">
               BUKHARI<span className="text-gradient">, S.KOM</span>
             </Link>
             
@@ -71,8 +71,8 @@ const Footer = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-6">
-            <p className="text-muted-foreground text-sm">
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
+            <p className="text-muted-foreground text-xs md:text-sm text-center">
               © {new Date().getFullYear()} <TranslatedText>All Rights Reserved</TranslatedText>
             </p>
 
@@ -81,8 +81,8 @@ const Footer = () => {
               whileHover={{ y: -4 }}
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors duration-300"
             >
-              <span className="text-sm tracking-wide"><TranslatedText>Back to Top</TranslatedText></span>
-              <ArrowUp size={16} />
+              <span className="text-xs md:text-sm tracking-wide"><TranslatedText>Back to Top</TranslatedText></span>
+              <ArrowUp size={14} />
             </motion.button>
           </div>
         </div>

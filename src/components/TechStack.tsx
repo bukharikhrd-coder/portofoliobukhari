@@ -60,29 +60,29 @@ const TechStack = () => {
   if (!technologies || technologies.length === 0) return null;
 
   return (
-    <section id="tech" className="py-20">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section id="tech" className="py-12 md:py-20">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <span className="text-primary text-sm tracking-[0.3em] uppercase">
+          <span className="text-primary text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase">
             <TranslatedText>Technologies</TranslatedText>
           </span>
-          <h2 className="font-display text-5xl md:text-6xl mt-4">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-3 md:mt-4">
             <TranslatedText>SKILLS</TranslatedText> & <span className="text-gradient"><TranslatedText>STACK</TranslatedText></span>
           </h2>
-          <p className="text-muted-foreground mt-6 max-w-2xl mx-auto">
+          <p className="text-muted-foreground mt-4 md:mt-6 max-w-2xl mx-auto text-sm md:text-base">
             <TranslatedText>Technologies and tools I use to bring ideas to life</TranslatedText>
           </p>
         </motion.div>
 
         {/* Tech Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
           {displayTech.map((tech, index) => {
             const IconComponent = getIcon(tech.icon_name);
             
@@ -95,18 +95,18 @@ const TechStack = () => {
                 viewport={{ once: true, margin: "-20px" }}
                 className="group"
               >
-                <div className="relative p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover rounded-lg">
+                <div className="relative p-4 md:p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover rounded-lg">
                   {/* Icon */}
-                  <div className="mb-6">
+                  <div className="mb-4 md:mb-6">
                     <IconComponent 
-                      size={40} 
-                      className="text-muted-foreground group-hover:text-primary transition-colors duration-300" 
+                      size={28} 
+                      className="text-muted-foreground group-hover:text-primary transition-colors duration-300 md:w-10 md:h-10" 
                     />
                   </div>
                   
                   {/* Content */}
                   <div className="space-y-1">
-                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-300">
+                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-300 text-sm md:text-base">
                       {tech.name}
                     </h3>
                     <p className="text-xs text-muted-foreground tracking-wide uppercase">
@@ -115,7 +115,7 @@ const TechStack = () => {
                   </div>
 
                   {/* Decorative corner */}
-                  <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-t-primary/0 border-l-[40px] border-l-transparent group-hover:border-t-primary/20 transition-all duration-500" />
+                  <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] md:border-t-[40px] border-t-primary/0 border-l-[30px] md:border-l-[40px] border-l-transparent group-hover:border-t-primary/20 transition-all duration-500" />
                 </div>
               </motion.div>
             );
@@ -128,9 +128,9 @@ const TechStack = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
-          className="mt-12 text-center"
+          className="mt-8 md:mt-12 text-center"
         >
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm md:text-base">
             <TranslatedText>Always learning and exploring new technologies to deliver the best solutions</TranslatedText>
           </p>
         </motion.div>

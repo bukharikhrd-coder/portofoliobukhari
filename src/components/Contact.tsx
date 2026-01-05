@@ -83,53 +83,53 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-32 bg-secondary/30 relative overflow-hidden">
+    <section id="contact" className="py-16 md:py-32 bg-secondary/30 relative overflow-hidden">
       <motion.div className="absolute inset-0 opacity-5" style={{ y }}>
         <div className="absolute left-1/4 top-1/3 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
       </motion.div>
 
-      <div className="container mx-auto px-6 lg:px-12" ref={ref}>
-        <div className="grid lg:grid-cols-2 gap-16">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12" ref={ref}>
+        <div className="grid lg:grid-cols-2 gap-10 md:gap-16">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="space-y-8"
+            className="space-y-6 md:space-y-8"
           >
             <div>
-              <TranslatedText className="text-primary text-sm tracking-[0.3em] uppercase">
+              <TranslatedText className="text-primary text-xs md:text-sm tracking-[0.2em] md:tracking-[0.3em] uppercase">
                 {contactData.section_label || "Get in Touch"}
               </TranslatedText>
-              <h2 className="font-display text-5xl md:text-6xl mt-4 leading-tight">
+              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-3 md:mt-4 leading-tight">
                 <TranslatedText>{contactData.headline_1 || ""}</TranslatedText>
                 <br />
                 <TranslatedText className="text-gradient">{contactData.headline_2 || ""}</TranslatedText>
               </h2>
             </div>
 
-            <TranslatedText as="p" className="text-muted-foreground text-lg leading-relaxed max-w-md">
+            <TranslatedText as="p" className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-md">
               {contactData.description || ""}
             </TranslatedText>
 
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <a
                 href={`mailto:${contactData.email}`}
-                className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors duration-300 group"
+                className="flex items-center gap-3 md:gap-4 text-muted-foreground hover:text-primary transition-colors duration-300 group"
               >
-                <div className="w-12 h-12 border border-border flex items-center justify-center group-hover:border-primary transition-colors duration-300">
-                  <Mail size={20} />
+                <div className="w-10 h-10 md:w-12 md:h-12 border border-border flex items-center justify-center group-hover:border-primary transition-colors duration-300">
+                  <Mail size={18} />
                 </div>
-                <span>{contactData.email}</span>
+                <span className="text-sm md:text-base">{contactData.email}</span>
               </a>
-              <div className="flex items-center gap-4 text-muted-foreground">
-                <div className="w-12 h-12 border border-border flex items-center justify-center">
-                  <MapPin size={20} />
+              <div className="flex items-center gap-3 md:gap-4 text-muted-foreground">
+                <div className="w-10 h-10 md:w-12 md:h-12 border border-border flex items-center justify-center">
+                  <MapPin size={18} />
                 </div>
-                <span>{contactData.location}</span>
+                <span className="text-sm md:text-base">{contactData.location}</span>
               </div>
             </div>
 
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-3 md:gap-4 pt-2 md:pt-4">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -137,9 +137,9 @@ const Contact = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="w-12 h-12 border border-border flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300"
+                  className="w-10 h-10 md:w-12 md:h-12 border border-border flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-all duration-300"
                 >
-                  <social.icon size={20} />
+                  <social.icon size={18} />
                 </a>
               ))}
             </div>
@@ -150,56 +150,56 @@ const Contact = () => {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+              <div className="grid sm:grid-cols-2 gap-4 md:gap-6">
                 <div className="space-y-2">
-                  <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Your Name *</TranslatedText>
+                  <TranslatedText as="label" className="text-xs md:text-sm text-muted-foreground tracking-wide">Your Name *</TranslatedText>
                   <input
                     type="text"
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300"
+                    className="w-full px-3 md:px-4 py-3 md:py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300 text-sm md:text-base"
                   />
                 </div>
                 <div className="space-y-2">
-                  <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Your Email *</TranslatedText>
+                  <TranslatedText as="label" className="text-xs md:text-sm text-muted-foreground tracking-wide">Your Email *</TranslatedText>
                   <input
                     type="email"
                     placeholder="john@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300"
+                    className="w-full px-3 md:px-4 py-3 md:py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300 text-sm md:text-base"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Subject</TranslatedText>
+                <TranslatedText as="label" className="text-xs md:text-sm text-muted-foreground tracking-wide">Subject</TranslatedText>
                 <input
                   type="text"
                   placeholder="Project Discussion"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-4 py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300"
+                  className="w-full px-3 md:px-4 py-3 md:py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300 text-sm md:text-base"
                 />
               </div>
 
               <div className="space-y-2">
-                <TranslatedText as="label" className="text-sm text-muted-foreground tracking-wide">Message *</TranslatedText>
+                <TranslatedText as="label" className="text-xs md:text-sm text-muted-foreground tracking-wide">Message *</TranslatedText>
                 <textarea
-                  rows={6}
+                  rows={5}
                   placeholder="Tell me about your project..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300 resize-none"
+                  className="w-full px-3 md:px-4 py-3 md:py-4 bg-card border border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none transition-colors duration-300 resize-none text-sm md:text-base"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={sending}
-                className="w-full md:w-auto px-8 py-4 bg-primary text-primary-foreground font-medium tracking-wide flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50"
+                className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 bg-primary text-primary-foreground font-medium tracking-wide flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50 text-sm md:text-base"
               >
                 {sending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                 <TranslatedText>{sending ? "SENDING..." : "SEND MESSAGE"}</TranslatedText>
