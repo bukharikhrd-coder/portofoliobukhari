@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,10 @@ import {
   Sparkles
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import * as pdfjsLib from "pdfjs-dist";
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface CVReview {
   overallScore: number;
@@ -85,6 +89,61 @@ interface ExtractedCVData {
     description: string;
   }>;
 }
+
+// Isolated iframe component to prevent CV styles from affecting admin UI
+const CVPreviewIframe = ({ html }: { html: string }) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [height, setHeight] = useState(600);
+
+  useEffect(() => {
+    if (iframeRef.current) {
+      const doc = iframeRef.current.contentDocument;
+      if (doc) {
+        doc.open();
+        doc.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              * { box-sizing: border-box; }
+              body { 
+                margin: 0; 
+                padding: 24px; 
+                font-family: 'Times New Roman', serif;
+                background: white;
+                color: black;
+              }
+            </style>
+          </head>
+          <body>
+            ${html}
+          </body>
+          </html>
+        `);
+        doc.close();
+
+        // Adjust height after content loads
+        setTimeout(() => {
+          if (iframeRef.current?.contentDocument?.body) {
+            const contentHeight = iframeRef.current.contentDocument.body.scrollHeight;
+            setHeight(Math.min(Math.max(contentHeight + 48, 400), 800));
+          }
+        }, 100);
+      }
+    }
+  }, [html]);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      className="w-full border border-border rounded-lg bg-white"
+      style={{ height: `${height}px` }}
+      title="CV Preview"
+    />
+  );
+};
 
 const AdminCVManager = () => {
   const [activeTab, setActiveTab] = useState("import");
@@ -179,48 +238,33 @@ const AdminCVManager = () => {
   };
 
   const extractTextFromPDF = async (file: File): Promise<string> => {
-    // Using PDF.js for text extraction would be ideal, but for simplicity
-    // we'll use a basic approach and let AI handle messy text
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const arrayBuffer = e.target?.result as ArrayBuffer;
-        const bytes = new Uint8Array(arrayBuffer);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      let fullText = "";
+      
+      // Extract text from each page
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
         
-        // Basic text extraction from PDF (works for text-based PDFs)
-        let text = "";
-        let inText = false;
-        let textBuffer = "";
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(" ");
         
-        for (let i = 0; i < bytes.length; i++) {
-          const byte = bytes[i];
-          const char = String.fromCharCode(byte);
-          
-          if (byte >= 32 && byte <= 126) {
-            textBuffer += char;
-          } else if (byte === 10 || byte === 13) {
-            if (textBuffer.length > 2) {
-              text += textBuffer + " ";
-            }
-            textBuffer = "";
-          } else {
-            if (textBuffer.length > 2) {
-              text += textBuffer + " ";
-            }
-            textBuffer = "";
-          }
-        }
-        
-        // Clean up the extracted text
-        text = text
-          .replace(/\s+/g, " ")
-          .replace(/[^\x20-\x7E\u00C0-\u024F]/g, " ")
-          .trim();
-        
-        resolve(text);
-      };
-      reader.readAsArrayBuffer(file);
-    });
+        fullText += pageText + "\n";
+      }
+      
+      // Clean up the extracted text
+      return fullText
+        .replace(/\s+/g, " ")
+        .trim();
+    } catch (error) {
+      console.error("PDF.js extraction failed:", error);
+      toast.error("Failed to extract text from PDF");
+      return "";
+    }
   };
 
   const handleReviewPortfolio = async () => {
@@ -705,24 +749,21 @@ const AdminCVManager = () => {
             </Button>
           </Card>
 
-          {/* Generated CV Preview */}
+          {/* Generated CV Preview - Using iframe to isolate styles */}
           {generatedCV && (
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold flex items-center gap-2">
+            <Card className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
                   <CheckCircle size={18} className="text-green-500" />
                   Generated CV
                 </h3>
-                <Button onClick={handleDownloadCV} variant="outline" className="gap-2">
+                <Button onClick={handleDownloadCV} variant="outline" className="gap-2 text-sm">
                   <Download size={16} />
                   Print / Download PDF
                 </Button>
               </div>
               
-              <div 
-                className="border border-border rounded-lg p-6 bg-white text-black max-h-[600px] overflow-auto"
-                dangerouslySetInnerHTML={{ __html: generatedCV }}
-              />
+              <CVPreviewIframe html={generatedCV} />
             </Card>
           )}
         </TabsContent>
