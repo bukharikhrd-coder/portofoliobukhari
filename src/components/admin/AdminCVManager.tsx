@@ -15,7 +15,8 @@ import {
   Star,
   TrendingUp,
   BookOpen,
-  Sparkles
+  Sparkles,
+  Eye
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import * as pdfjsLib from "pdfjs-dist";
@@ -151,6 +152,202 @@ const CV_LANGUAGES = [
   { code: "zh", label: "中文", flag: "🇨🇳" },
   { code: "ar", label: "العربية", flag: "🇸🇦" },
 ];
+
+// Sample CV templates for each language
+const CV_PREVIEWS: Record<string, string> = {
+  id: `
+    <div style="font-family: 'Times New Roman', serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #000;">
+      <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 1px;">NAMA LENGKAP</h1>
+        <p style="margin: 8px 0 0 0; font-size: 14px; color: #444;">Jakarta, Indonesia • email@contoh.com • +62 812 3456 7890</p>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">LinkedIn: linkedin.com/in/nama • GitHub: github.com/nama</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Ringkasan Profesional</h2>
+        <p style="font-size: 13px; line-height: 1.5; margin: 0; text-align: justify;">Profesional berpengalaman dengan keahlian dalam pengembangan perangkat lunak dan manajemen proyek. Memiliki rekam jejak dalam memimpin tim dan menghasilkan solusi inovatif.</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Pengalaman Kerja</h2>
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-size: 13px;">Senior Software Engineer</strong>
+            <span style="font-size: 12px; color: #666;">Jan 2022 - Sekarang</span>
+          </div>
+          <div style="font-style: italic; font-size: 13px; color: #444;">PT. Teknologi Indonesia, Jakarta</div>
+          <ul style="margin: 6px 0 0 0; padding-left: 18px; font-size: 12px; line-height: 1.6;">
+            <li>Memimpin pengembangan aplikasi enterprise dengan 50+ pengguna aktif</li>
+            <li>Mengimplementasikan arsitektur microservices yang meningkatkan performa 40%</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Pendidikan</h2>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <strong style="font-size: 13px;">Sarjana Teknik Informatika</strong>
+          <span style="font-size: 12px; color: #666;">2015 - 2019</span>
+        </div>
+        <div style="font-style: italic; font-size: 13px; color: #444;">Universitas Indonesia, Depok</div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Keahlian</h2>
+        <p style="font-size: 12px; margin: 0;">JavaScript, TypeScript, React, Node.js, Python, PostgreSQL, Docker, AWS</p>
+      </div>
+      
+      <div>
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Bahasa</h2>
+        <p style="font-size: 12px; margin: 0;">Indonesia (Native), Inggris (Fasih), Mandarin (Dasar)</p>
+      </div>
+    </div>
+  `,
+  en: `
+    <div style="font-family: 'Times New Roman', serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #000;">
+      <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 1px;">FULL NAME</h1>
+        <p style="margin: 8px 0 0 0; font-size: 14px; color: #444;">London, United Kingdom • email@example.com • +44 7123 456789</p>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">LinkedIn: linkedin.com/in/name • GitHub: github.com/name</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Professional Summary</h2>
+        <p style="font-size: 13px; line-height: 1.5; margin: 0; text-align: justify;">Experienced professional with expertise in software development and project management. Proven track record of leading teams and delivering innovative solutions.</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Work Experience</h2>
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-size: 13px;">Senior Software Engineer</strong>
+            <span style="font-size: 12px; color: #666;">Jan 2022 - Present</span>
+          </div>
+          <div style="font-style: italic; font-size: 13px; color: #444;">Tech Company Ltd, London</div>
+          <ul style="margin: 6px 0 0 0; padding-left: 18px; font-size: 12px; line-height: 1.6;">
+            <li>Led development of enterprise applications with 50+ active users</li>
+            <li>Implemented microservices architecture improving performance by 40%</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Education</h2>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <strong style="font-size: 13px;">Bachelor of Computer Science</strong>
+          <span style="font-size: 12px; color: #666;">2015 - 2019</span>
+        </div>
+        <div style="font-style: italic; font-size: 13px; color: #444;">University of Oxford, Oxford</div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Skills</h2>
+        <p style="font-size: 12px; margin: 0;">JavaScript, TypeScript, React, Node.js, Python, PostgreSQL, Docker, AWS</p>
+      </div>
+      
+      <div>
+        <h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">Languages</h2>
+        <p style="font-size: 12px; margin: 0;">English (Native), Indonesian (Fluent), Mandarin (Basic)</p>
+      </div>
+    </div>
+  `,
+  zh: `
+    <div style="font-family: 'SimSun', 'Times New Roman', serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #000;">
+      <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 2px;">姓 名</h1>
+        <p style="margin: 8px 0 0 0; font-size: 14px; color: #444;">北京，中国 • email@example.com • +86 138 1234 5678</p>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">领英: linkedin.com/in/name • GitHub: github.com/name</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">个人简介</h2>
+        <p style="font-size: 13px; line-height: 1.6; margin: 0; text-align: justify;">经验丰富的专业人士，专长于软件开发和项目管理。具有领导团队和提供创新解决方案的良好记录。</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">工作经历</h2>
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <strong style="font-size: 13px;">高级软件工程师</strong>
+            <span style="font-size: 12px; color: #666;">2022年1月 - 至今</span>
+          </div>
+          <div style="font-style: italic; font-size: 13px; color: #444;">科技有限公司，北京</div>
+          <ul style="margin: 6px 0 0 0; padding-left: 18px; font-size: 12px; line-height: 1.6;">
+            <li>主导开发拥有50+活跃用户的企业级应用程序</li>
+            <li>实施微服务架构，性能提升40%</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">教育背景</h2>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+          <strong style="font-size: 13px;">计算机科学学士</strong>
+          <span style="font-size: 12px; color: #666;">2015 - 2019</span>
+        </div>
+        <div style="font-style: italic; font-size: 13px; color: #444;">北京大学，北京</div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">专业技能</h2>
+        <p style="font-size: 12px; margin: 0;">JavaScript, TypeScript, React, Node.js, Python, PostgreSQL, Docker, AWS</p>
+      </div>
+      
+      <div>
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px; letter-spacing: 1px;">语言能力</h2>
+        <p style="font-size: 12px; margin: 0;">中文（母语），英语（流利），印尼语（基础）</p>
+      </div>
+    </div>
+  `,
+  ar: `
+    <div dir="rtl" style="font-family: 'Traditional Arabic', 'Times New Roman', serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #000; text-align: right;">
+      <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px;">
+        <h1 style="margin: 0; font-size: 24px; font-weight: bold; letter-spacing: 1px;">الاسم الكامل</h1>
+        <p style="margin: 8px 0 0 0; font-size: 14px; color: #444;">الرياض، المملكة العربية السعودية • email@example.com • 966+ 50 123 4567</p>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">لينكد إن: linkedin.com/in/name • جيت هب: github.com/name</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px;">الملخص المهني</h2>
+        <p style="font-size: 13px; line-height: 1.8; margin: 0; text-align: justify;">محترف ذو خبرة في تطوير البرمجيات وإدارة المشاريع. سجل حافل في قيادة الفرق وتقديم حلول مبتكرة.</p>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px;">الخبرة العملية</h2>
+        <div style="margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-direction: row-reverse;">
+            <strong style="font-size: 13px;">مهندس برمجيات أول</strong>
+            <span style="font-size: 12px; color: #666;">يناير 2022 - حتى الآن</span>
+          </div>
+          <div style="font-style: italic; font-size: 13px; color: #444;">شركة التقنية، الرياض</div>
+          <ul style="margin: 6px 0 0 0; padding-right: 18px; font-size: 12px; line-height: 1.8;">
+            <li>قيادة تطوير تطبيقات المؤسسات مع أكثر من 50 مستخدمًا نشطًا</li>
+            <li>تنفيذ بنية الخدمات المصغرة مما أدى إلى تحسين الأداء بنسبة 40%</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px;">التعليم</h2>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-direction: row-reverse;">
+          <strong style="font-size: 13px;">بكالوريوس علوم الحاسب</strong>
+          <span style="font-size: 12px; color: #666;">2015 - 2019</span>
+        </div>
+        <div style="font-style: italic; font-size: 13px; color: #444;">جامعة الملك سعود، الرياض</div>
+      </div>
+      
+      <div style="margin-bottom: 18px;">
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px;">المهارات</h2>
+        <p style="font-size: 12px; margin: 0;">JavaScript, TypeScript, React, Node.js, Python, PostgreSQL, Docker, AWS</p>
+      </div>
+      
+      <div>
+        <h2 style="font-size: 14px; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 10px;">اللغات</h2>
+        <p style="font-size: 12px; margin: 0;">العربية (اللغة الأم)، الإنجليزية (طلاقة)، الإندونيسية (أساسي)</p>
+      </div>
+    </div>
+  `,
+};
 
 const AdminCVManager = () => {
   const [activeTab, setActiveTab] = useState("import");
@@ -729,7 +926,7 @@ const AdminCVManager = () => {
 
         {/* Generate Tab */}
         <TabsContent value="generate" className="space-y-4 mt-4">
-          <Card className="p-6">
+          <Card className="p-4 sm:p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <FileText size={18} className="text-primary" />
               Generate Oxford-Style CV
@@ -746,13 +943,13 @@ const AdminCVManager = () => {
                   <button
                     key={lang.code}
                     onClick={() => setSelectedLanguage(lang.code)}
-                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
                       selectedLanguage === lang.code
                         ? "bg-primary text-primary-foreground border-primary"
                         : "bg-card border-border hover:bg-secondary"
                     }`}
                   >
-                    <span className="mr-2">{lang.flag}</span>
+                    <span className="mr-1.5">{lang.flag}</span>
                     {lang.label}
                   </button>
                 ))}
@@ -776,6 +973,23 @@ const AdminCVManager = () => {
                 </>
               )}
             </Button>
+          </Card>
+
+          {/* Language Preview */}
+          <Card className="p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                <Eye size={18} className="text-primary" />
+                Format Preview ({CV_LANGUAGES.find(l => l.code === selectedLanguage)?.label})
+              </h3>
+              <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded">
+                Sample Template
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">
+              Preview contoh format CV Oxford dalam bahasa yang dipilih. Data Anda akan mengikuti format ini.
+            </p>
+            <CVPreviewIframe html={CV_PREVIEWS[selectedLanguage]} />
           </Card>
 
           {/* Generated CV Preview - Using iframe to isolate styles */}
