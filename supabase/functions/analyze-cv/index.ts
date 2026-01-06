@@ -12,8 +12,16 @@ serve(async (req) => {
   }
 
   try {
-    const { pdfText, portfolioData, action } = await req.json();
+    const { pdfText, portfolioData, action, language } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    
+    // Language mapping for prompts
+    const languageNames: Record<string, string> = {
+      id: "Indonesian (Bahasa Indonesia)",
+      en: "English",
+      zh: "Chinese (Simplified)",
+      ar: "Arabic",
+    };
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -114,6 +122,9 @@ Provide your review in JSON format:
       userPrompt = `Review this portfolio data for a professional CV:\n\n${JSON.stringify(portfolioData, null, 2)}`;
     } else if (action === "generate_oxford_cv") {
       // Generate Oxford-style CV content from portfolio data
+      const targetLanguage = languageNames[language] || "Indonesian (Bahasa Indonesia)";
+      const isArabic = language === "ar";
+      
       systemPrompt = `You are an expert at creating Oxford-style academic CVs. Generate a professionally formatted CV in HTML that follows the Oxford University CV guidelines.
 
 Oxford CV characteristics:
@@ -125,9 +136,12 @@ Oxford CV characteristics:
 - No photos or graphics
 - Professional, academic tone
 
+IMPORTANT: The CV MUST be written entirely in ${targetLanguage}. Translate all content including section headings, dates format, and descriptions to ${targetLanguage}.
+${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RTL styling." : ""}
+
 Return ONLY valid HTML content (no markdown, no code blocks) that can be directly rendered. Use inline styles for formatting. The HTML should be printable to PDF.`;
 
-      userPrompt = `Generate an Oxford-style CV HTML from this portfolio data. The CV should be in the same language as the data content:\n\n${JSON.stringify(portfolioData, null, 2)}`;
+      userPrompt = `Generate an Oxford-style CV HTML from this portfolio data. The entire CV must be written in ${targetLanguage}:\n\n${JSON.stringify(portfolioData, null, 2)}`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

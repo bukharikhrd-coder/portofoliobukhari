@@ -145,6 +145,13 @@ const CVPreviewIframe = ({ html }: { html: string }) => {
   );
 };
 
+const CV_LANGUAGES = [
+  { code: "id", label: "Indonesia", flag: "🇮🇩" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+  { code: "ar", label: "العربية", flag: "🇸🇦" },
+];
+
 const AdminCVManager = () => {
   const [activeTab, setActiveTab] = useState("import");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -153,6 +160,7 @@ const AdminCVManager = () => {
   const [extractedData, setExtractedData] = useState<ExtractedCVData | null>(null);
   const [review, setReview] = useState<CVReview | null>(null);
   const [generatedCV, setGeneratedCV] = useState<string | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState("id");
 
   // Fetch all portfolio data for review and generation
   const { data: portfolioData } = useQuery({
@@ -306,7 +314,7 @@ const AdminCVManager = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
-        body: { portfolioData, action: "generate_oxford_cv" },
+        body: { portfolioData, action: "generate_oxford_cv", language: selectedLanguage },
       });
 
       if (error) throw error;
@@ -729,6 +737,27 @@ const AdminCVManager = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Generate a professionally formatted CV from your portfolio data following Oxford University guidelines.
             </p>
+            
+            {/* Language Selection */}
+            <div className="mb-4">
+              <label className="text-sm font-medium mb-2 block">Select Language</label>
+              <div className="flex flex-wrap gap-2">
+                {CV_LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setSelectedLanguage(lang.code)}
+                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
+                      selectedLanguage === lang.code
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-card border-border hover:bg-secondary"
+                    }`}
+                  >
+                    <span className="mr-2">{lang.flag}</span>
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             
             <Button 
               onClick={handleGenerateCV} 
