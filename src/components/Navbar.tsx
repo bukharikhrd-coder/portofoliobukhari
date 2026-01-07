@@ -4,6 +4,7 @@ import { Menu, X, Settings, Sun, Moon, Monitor } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useSectionConfig } from "@/hooks/useSectionConfig";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import {
   DropdownMenu,
@@ -12,23 +13,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navLinks = [
-  { href: "#", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#experience", label: "Experience" },
-  { href: "#education", label: "Education" },
-  { href: "#languages", label: "Languages" },
-  { href: "#works", label: "Works" },
-  { href: "#techstack", label: "Tech" },
-  { href: "#video-tools", label: "Video" },
-  { href: "#contact", label: "Contact" },
-];
-
+// Map section_key to href and short label
+const sectionToNav: Record<string, { href: string; label: string }> = {
+  about: { href: "#about", label: "About" },
+  experience: { href: "#experience", label: "Experience" },
+  education: { href: "#education", label: "Education" },
+  trainings: { href: "#trainings", label: "Training" },
+  languages: { href: "#languages", label: "Languages" },
+  works: { href: "#works", label: "Works" },
+  videoportfolio: { href: "#videoportfolio", label: "Video" },
+  techstack: { href: "#techstack", label: "Tech" },
+  softwaretools: { href: "#softwaretools", label: "Tools" },
+  workjourney: { href: "#workjourney", label: "Journey" },
+  contact: { href: "#contact", label: "Contact" },
+};
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
+  const { data: sections } = useSectionConfig();
+
+  // Build dynamic nav links from section config
+  const navLinks = [
+    { href: "#", label: "Home" },
+    ...(sections || [])
+      .filter((s) => s.is_visible && sectionToNav[s.section_key])
+      .map((s) => sectionToNav[s.section_key]),
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
