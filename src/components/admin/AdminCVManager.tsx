@@ -16,7 +16,11 @@ import {
   TrendingUp,
   BookOpen,
   Sparkles,
-  Eye
+  Eye,
+  GraduationCap,
+  Briefcase,
+  Palette,
+  Zap
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import * as pdfjsLib from "pdfjs-dist";
@@ -151,6 +155,33 @@ const CV_LANGUAGES = [
   { code: "en", label: "English", flag: "🇬🇧" },
   { code: "zh", label: "中文", flag: "🇨🇳" },
   { code: "ar", label: "العربية", flag: "🇸🇦" },
+];
+
+const CV_TEMPLATES = [
+  { 
+    id: "oxford", 
+    label: "Oxford", 
+    icon: GraduationCap,
+    description: "Traditional academic style, clean and professional"
+  },
+  { 
+    id: "ats", 
+    label: "ATS-Friendly", 
+    icon: Zap,
+    description: "Optimized for Applicant Tracking Systems"
+  },
+  { 
+    id: "modern", 
+    label: "Modern", 
+    icon: Briefcase,
+    description: "Contemporary design with clean lines"
+  },
+  { 
+    id: "creative", 
+    label: "Creative", 
+    icon: Palette,
+    description: "Unique layout for creative industries"
+  },
 ];
 
 // Sample CV templates for each language
@@ -358,6 +389,7 @@ const AdminCVManager = () => {
   const [review, setReview] = useState<CVReview | null>(null);
   const [generatedCV, setGeneratedCV] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState("id");
+  const [selectedTemplate, setSelectedTemplate] = useState("oxford");
 
   // Fetch all portfolio data for review and generation
   const { data: portfolioData } = useQuery({
@@ -511,7 +543,7 @@ const AdminCVManager = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
-        body: { portfolioData, action: "generate_oxford_cv", language: selectedLanguage },
+        body: { portfolioData, action: "generate_cv", language: selectedLanguage, template: selectedTemplate },
       });
 
       if (error) throw error;
@@ -929,12 +961,43 @@ const AdminCVManager = () => {
           <Card className="p-4 sm:p-6">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <FileText size={18} className="text-primary" />
-              Generate Oxford-Style CV
+              Generate CV
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Generate a professionally formatted CV from your portfolio data following Oxford University guidelines.
+              Generate a professionally formatted CV from your portfolio data.
             </p>
             
+            {/* Template Selection */}
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2 block">Select Template</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {CV_TEMPLATES.map((template) => {
+                  const Icon = template.icon;
+                  return (
+                    <button
+                      key={template.id}
+                      onClick={() => setSelectedTemplate(template.id)}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                        selectedTemplate === template.id
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-card border-border hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon size={24} />
+                      <span>{template.label}</span>
+                      <span className={`text-xs text-center ${
+                        selectedTemplate === template.id 
+                          ? "text-primary-foreground/80" 
+                          : "text-muted-foreground"
+                      }`}>
+                        {template.description}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Language Selection */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-2 block">Select Language</label>

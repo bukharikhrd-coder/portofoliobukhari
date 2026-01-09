@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { pdfText, portfolioData, action, language } = await req.json();
+    const { pdfText, portfolioData, action, language, template } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     // Language mapping for prompts
@@ -120,28 +120,74 @@ Provide your review in JSON format:
 }`;
 
       userPrompt = `Review this portfolio data for a professional CV:\n\n${JSON.stringify(portfolioData, null, 2)}`;
-    } else if (action === "generate_oxford_cv") {
-      // Generate Oxford-style CV content from portfolio data
+    } else if (action === "generate_cv" || action === "generate_oxford_cv") {
+      // Generate CV content from portfolio data with template selection
       const targetLanguage = languageNames[language] || "Indonesian (Bahasa Indonesia)";
       const isArabic = language === "ar";
+      const selectedTemplate = template || "oxford";
       
-      systemPrompt = `You are an expert at creating Oxford-style academic CVs. Generate a professionally formatted CV in HTML that follows the Oxford University CV guidelines.
-
-Oxford CV characteristics:
+      // Template-specific instructions
+      const templateInstructions: Record<string, string> = {
+        oxford: `Oxford-style academic CV characteristics:
 - Clean, minimal design with clear hierarchy
 - Name prominently at top, followed by contact details
 - Reverse chronological order for experience and education
-- Clear section headings
+- Clear section headings with underlines
 - Concise, achievement-focused bullet points
 - No photos or graphics
 - Professional, academic tone
+- Font: Times New Roman or similar serif font`,
+        
+        ats: `ATS-Friendly (Applicant Tracking System) CV characteristics:
+- Simple, single-column layout with NO tables, columns, or graphics
+- Standard section headers: Contact, Summary, Experience, Education, Skills
+- Use standard fonts like Arial, Calibri, or Times New Roman
+- NO headers/footers, text boxes, or special formatting
+- Bullet points using simple dashes or standard bullets
+- Keywords-rich content for ATS parsing
+- Clear job titles and company names
+- Dates in consistent format (Month Year)
+- No images, icons, or decorative elements`,
+        
+        modern: `Modern professional CV characteristics:
+- Clean, contemporary design with subtle color accents (use a muted blue #2563eb)
+- Two-column layout option for skills/contact on side
+- Sans-serif fonts (Arial, Helvetica, or similar)
+- Section headers with subtle background or bottom border
+- Use of icons for contact details (represented as Unicode symbols)
+- Generous white space and clear visual hierarchy
+- Skills shown with subtle progress indicators or tags
+- Professional but not overly formal tone`,
+        
+        creative: `Creative industry CV characteristics:
+- Unique, eye-catching layout with personality
+- Bold header section with name prominently displayed
+- Use of accent colors (choose a vibrant but professional color scheme)
+- Creative section dividers and visual elements
+- Skills displayed as tags or visual elements
+- Portfolio/project highlights section
+- Personal branding elements
+- Balance of creativity and readability
+- Can include subtle decorative elements`,
+      };
+      
+      const templateName: Record<string, string> = {
+        oxford: "Oxford-Style Academic",
+        ats: "ATS-Friendly",
+        modern: "Modern Professional",
+        creative: "Creative Industry",
+      };
+      
+      systemPrompt = `You are an expert at creating ${templateName[selectedTemplate] || "professional"} CVs. Generate a professionally formatted CV in HTML.
+
+${templateInstructions[selectedTemplate] || templateInstructions.oxford}
 
 IMPORTANT: The CV MUST be written entirely in ${targetLanguage}. Translate all content including section headings, dates format, and descriptions to ${targetLanguage}.
 ${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RTL styling." : ""}
 
 Return ONLY valid HTML content (no markdown, no code blocks) that can be directly rendered. Use inline styles for formatting. The HTML should be printable to PDF.`;
 
-      userPrompt = `Generate an Oxford-style CV HTML from this portfolio data. The entire CV must be written in ${targetLanguage}:\n\n${JSON.stringify(portfolioData, null, 2)}`;
+      userPrompt = `Generate a ${templateName[selectedTemplate] || "professional"} CV HTML from this portfolio data. The entire CV must be written in ${targetLanguage}:\n\n${JSON.stringify(portfolioData, null, 2)}`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
