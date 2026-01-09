@@ -188,6 +188,47 @@ ${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RT
 Return ONLY valid HTML content (no markdown, no code blocks) that can be directly rendered. Use inline styles for formatting. The HTML should be printable to PDF.`;
 
       userPrompt = `Generate a ${templateName[selectedTemplate] || "professional"} CV HTML from this portfolio data. The entire CV must be written in ${targetLanguage}:\n\n${JSON.stringify(portfolioData, null, 2)}`;
+    } else if (action === "generate_portfolio") {
+      // Generate stylish portfolio page matching website design
+      const targetLanguage = languageNames[language] || "Indonesian (Bahasa Indonesia)";
+      const isArabic = language === "ar";
+      
+      systemPrompt = `You are an expert web designer creating a stunning single-page portfolio website. Generate a complete HTML page with inline CSS.
+
+DESIGN REQUIREMENTS - Match this exact aesthetic:
+- Dark theme: Black/dark gray backgrounds (#0a0a0a, #1a1a1a)
+- Accent color: Amber/Gold (#f59e0b, #d97706)
+- Subtle grain texture overlay on backgrounds
+- Typography: Modern, bold - large condensed all-caps headlines
+- Font families: Use system fonts - 'Anton' for headlines (or fallback to Arial Black), 'Inter' for body (or fallback to system-ui)
+- Editorial/magazine-inspired layout with generous whitespace
+- Animations: Smooth, minimal - subtle fade effects on hover
+- Overall feel: Premium, expensive, professional
+
+SECTIONS TO INCLUDE:
+1. Hero section with name prominently displayed, subtitle, and brief intro
+2. About section with professional summary
+3. Experience section - reverse chronological, with company names and achievements
+4. Education section with degrees and institutions
+5. Skills section displayed as stylish tags/badges with amber accent
+6. Contact section with email and social links
+
+TECHNICAL REQUIREMENTS:
+- Complete HTML5 document with DOCTYPE
+- All CSS must be inline in a <style> tag in the head
+- Responsive design that works on mobile and desktop
+- Use CSS Grid or Flexbox for layouts
+- Include smooth scroll behavior
+- Add subtle hover animations on interactive elements
+- Include a grain texture using CSS (SVG filter or pseudo-element)
+
+${isArabic ? "For Arabic, use dir=\"rtl\" on the html tag and appropriate RTL styling." : ""}
+
+IMPORTANT: All text content MUST be in ${targetLanguage}. Translate section headings, dates, and descriptions.
+
+Return ONLY the complete HTML document (no markdown, no code blocks).`;
+
+      userPrompt = `Create a stunning portfolio webpage from this data. All content must be in ${targetLanguage}:\n\n${JSON.stringify(portfolioData, null, 2)}`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -252,8 +293,16 @@ Return ONLY valid HTML content (no markdown, no code blocks) that can be directl
       }
     }
 
-    // For generate_oxford_cv, return HTML directly
-    return new Response(JSON.stringify({ result: content }), {
+    // For CV and portfolio generation, clean and return HTML
+    let htmlContent = content;
+    // Remove markdown code blocks if AI wrapped the HTML
+    if (htmlContent.includes("```html")) {
+      htmlContent = htmlContent.replace(/```html\n?/g, "").replace(/```\n?/g, "");
+    } else if (htmlContent.includes("```")) {
+      htmlContent = htmlContent.replace(/```\n?/g, "");
+    }
+    
+    return new Response(JSON.stringify({ result: htmlContent.trim() }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

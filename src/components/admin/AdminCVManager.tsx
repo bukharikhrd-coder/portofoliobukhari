@@ -20,7 +20,11 @@ import {
   GraduationCap,
   Briefcase,
   Palette,
-  Zap
+  Zap,
+  Edit3,
+  Save,
+  RotateCcw,
+  Globe
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import * as pdfjsLib from "pdfjs-dist";
@@ -95,8 +99,16 @@ interface ExtractedCVData {
   }>;
 }
 
-// Isolated iframe component to prevent CV styles from affecting admin UI
-const CVPreviewIframe = ({ html }: { html: string }) => {
+// Editable iframe component for CV editing
+const EditableCVIframe = ({ 
+  html, 
+  onContentChange,
+  isEditing 
+}: { 
+  html: string; 
+  onContentChange?: (newHtml: string) => void;
+  isEditing?: boolean;
+}) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(600);
 
@@ -119,15 +131,27 @@ const CVPreviewIframe = ({ html }: { html: string }) => {
                 font-family: 'Times New Roman', serif;
                 background: white;
                 color: black;
+                outline: none;
               }
+              ${isEditing ? `
+                body:focus { outline: 2px solid #f59e0b; outline-offset: -2px; }
+                [contenteditable]:hover { background: rgba(245, 158, 11, 0.1); }
+              ` : ''}
             </style>
           </head>
-          <body>
+          <body ${isEditing ? 'contenteditable="true"' : ''}>
             ${html}
           </body>
           </html>
         `);
         doc.close();
+
+        // Add input listener for content changes
+        if (isEditing && onContentChange) {
+          doc.body.addEventListener('input', () => {
+            onContentChange(doc.body.innerHTML);
+          });
+        }
 
         // Adjust height after content loads
         setTimeout(() => {
@@ -138,18 +162,22 @@ const CVPreviewIframe = ({ html }: { html: string }) => {
         }, 100);
       }
     }
-  }, [html]);
+  }, [html, isEditing]);
 
   return (
     <iframe
       ref={iframeRef}
-      className="w-full border border-border rounded-lg bg-white"
+      className={`w-full border rounded-lg bg-white ${isEditing ? 'border-primary border-2' : 'border-border'}`}
       style={{ height: `${height}px` }}
       title="CV Preview"
     />
   );
 };
 
+// Read-only iframe for preview
+const CVPreviewIframe = ({ html }: { html: string }) => {
+  return <EditableCVIframe html={html} isEditing={false} />;
+};
 const CV_LANGUAGES = [
   { code: "id", label: "Indonesia", flag: "🇮🇩" },
   { code: "en", label: "English", flag: "🇬🇧" },
@@ -388,8 +416,12 @@ const AdminCVManager = () => {
   const [extractedData, setExtractedData] = useState<ExtractedCVData | null>(null);
   const [review, setReview] = useState<CVReview | null>(null);
   const [generatedCV, setGeneratedCV] = useState<string | null>(null);
+  const [editedCV, setEditedCV] = useState<string | null>(null);
+  const [isEditingCV, setIsEditingCV] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("id");
   const [selectedTemplate, setSelectedTemplate] = useState("oxford");
+  const [isGeneratingPortfolio, setIsGeneratingPortfolio] = useState(false);
+  const [generatedPortfolio, setGeneratedPortfolio] = useState<string | null>(null);
 
   // Fetch all portfolio data for review and generation
   const { data: portfolioData } = useQuery({
@@ -540,6 +572,8 @@ const AdminCVManager = () => {
 
     setIsGenerating(true);
     setGeneratedCV(null);
+    setEditedCV(null);
+    setIsEditingCV(false);
 
     try {
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
@@ -550,6 +584,7 @@ const AdminCVManager = () => {
 
       if (data.result) {
         setGeneratedCV(data.result);
+        setEditedCV(data.result);
         toast.success("CV generated successfully!");
       }
     } catch (error) {
@@ -560,8 +595,37 @@ const AdminCVManager = () => {
     }
   };
 
+  const handleGeneratePortfolio = async () => {
+    if (!portfolioData) {
+      toast.error("No portfolio data available");
+      return;
+    }
+
+    setIsGeneratingPortfolio(true);
+    setGeneratedPortfolio(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-cv", {
+        body: { portfolioData, action: "generate_portfolio", language: selectedLanguage },
+      });
+
+      if (error) throw error;
+
+      if (data.result) {
+        setGeneratedPortfolio(data.result);
+        toast.success("Portfolio generated successfully!");
+      }
+    } catch (error) {
+      console.error("Error generating portfolio:", error);
+      toast.error("Failed to generate portfolio. Please try again.");
+    } finally {
+      setIsGeneratingPortfolio(false);
+    }
+  };
+
   const handleDownloadCV = () => {
-    if (!generatedCV) return;
+    const cvToDownload = editedCV || generatedCV;
+    if (!cvToDownload) return;
 
     const printWindow = window.open("", "_blank");
     if (printWindow) {
@@ -569,7 +633,7 @@ const AdminCVManager = () => {
         <!DOCTYPE html>
         <html>
         <head>
-          <title>CV - Oxford Style</title>
+          <title>CV - ${CV_TEMPLATES.find(t => t.id === selectedTemplate)?.label || 'Professional'}</title>
           <style>
             @media print {
               body { margin: 0; padding: 20px; }
@@ -577,12 +641,30 @@ const AdminCVManager = () => {
           </style>
         </head>
         <body>
-          ${generatedCV}
+          ${cvToDownload}
         </body>
         </html>
       `);
       printWindow.document.close();
       printWindow.print();
+    }
+  };
+
+  const handleDownloadPortfolio = () => {
+    if (!generatedPortfolio) return;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(generatedPortfolio);
+      printWindow.document.close();
+    }
+  };
+
+  const handleResetCV = () => {
+    if (generatedCV) {
+      setEditedCV(generatedCV);
+      setIsEditingCV(false);
+      toast.success("CV reset to original");
     }
   };
 
@@ -671,7 +753,7 @@ const AdminCVManager = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 w-full max-w-md">
+        <TabsList className="grid grid-cols-4 w-full max-w-lg">
           <TabsTrigger value="import" className="flex items-center gap-2">
             <Upload size={16} />
             Import
@@ -682,7 +764,11 @@ const AdminCVManager = () => {
           </TabsTrigger>
           <TabsTrigger value="generate" className="flex items-center gap-2">
             <FileText size={16} />
-            Generate
+            CV
+          </TabsTrigger>
+          <TabsTrigger value="portfolio" className="flex items-center gap-2">
+            <Globe size={16} />
+            Portfolio
           </TabsTrigger>
         </TabsList>
 
@@ -1055,21 +1141,150 @@ const AdminCVManager = () => {
             <CVPreviewIframe html={CV_PREVIEWS[selectedLanguage]} />
           </Card>
 
-          {/* Generated CV Preview - Using iframe to isolate styles */}
+          {/* Generated CV Preview - Editable */}
           {generatedCV && (
             <Card className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
                   <CheckCircle size={18} className="text-green-500" />
                   Generated CV
+                  {isEditingCV && (
+                    <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded">
+                      Editing Mode
+                    </span>
+                  )}
                 </h3>
-                <Button onClick={handleDownloadCV} variant="outline" className="gap-2 text-sm">
-                  <Download size={16} />
-                  Print / Download PDF
+                <div className="flex flex-wrap gap-2">
+                  {!isEditingCV ? (
+                    <Button 
+                      onClick={() => setIsEditingCV(true)} 
+                      variant="outline" 
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Edit3 size={14} />
+                      Edit
+                    </Button>
+                  ) : (
+                    <>
+                      <Button 
+                        onClick={handleResetCV} 
+                        variant="outline" 
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <RotateCcw size={14} />
+                        Reset
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          setIsEditingCV(false);
+                          toast.success("Changes saved!");
+                        }} 
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Save size={14} />
+                        Done
+                      </Button>
+                    </>
+                  )}
+                  <Button onClick={handleDownloadCV} variant="outline" size="sm" className="gap-2">
+                    <Download size={14} />
+                    Print / PDF
+                  </Button>
+                </div>
+              </div>
+              
+              {isEditingCV && (
+                <p className="text-xs text-amber-500 mb-3 flex items-center gap-1">
+                  <Edit3 size={12} />
+                  Click on the CV below to edit text directly. Changes are saved automatically.
+                </p>
+              )}
+              
+              <EditableCVIframe 
+                html={editedCV || generatedCV} 
+                isEditing={isEditingCV}
+                onContentChange={(newHtml) => setEditedCV(newHtml)}
+              />
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* Portfolio Tab */}
+        <TabsContent value="portfolio" className="space-y-4 mt-4">
+          <Card className="p-4 sm:p-6">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <Globe size={18} className="text-primary" />
+              Generate Portfolio Page
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Generate a stylish portfolio page matching your website design - dark theme, amber accents, and editorial layout.
+            </p>
+            
+            {/* Language Selection */}
+            <div className="mb-4">
+              <label className="text-sm font-medium mb-2 block">Select Language</label>
+              <div className="flex flex-wrap gap-2">
+                {CV_LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setSelectedLanguage(lang.code)}
+                    className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                      selectedLanguage === lang.code
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-card border-border hover:bg-secondary"
+                    }`}
+                  >
+                    <span className="mr-1.5">{lang.flag}</span>
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <Button 
+              onClick={handleGeneratePortfolio} 
+              disabled={isGeneratingPortfolio}
+              className="gap-2"
+            >
+              {isGeneratingPortfolio ? (
+                <>
+                  <Loader2 className="animate-spin" size={16} />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Globe size={16} />
+                  Generate Portfolio
+                </>
+              )}
+            </Button>
+          </Card>
+
+          {/* Generated Portfolio Preview */}
+          {generatedPortfolio && (
+            <Card className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
+                  <CheckCircle size={18} className="text-green-500" />
+                  Generated Portfolio
+                </h3>
+                <Button onClick={handleDownloadPortfolio} variant="outline" size="sm" className="gap-2">
+                  <Download size={14} />
+                  Open in New Tab
                 </Button>
               </div>
               
-              <CVPreviewIframe html={generatedCV} />
+              <div className="border border-border rounded-lg overflow-hidden">
+                <iframe
+                  srcDoc={generatedPortfolio}
+                  className="w-full bg-black"
+                  style={{ height: '600px' }}
+                  title="Portfolio Preview"
+                />
+              </div>
             </Card>
           )}
         </TabsContent>
