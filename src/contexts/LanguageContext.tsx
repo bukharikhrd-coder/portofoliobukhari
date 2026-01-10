@@ -1,19 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-export type Language = "en" | "id" | "zh" | "ar";
+export type Language = "en" | "id";
 
 export const languageLabels: Record<Language, string> = {
   en: "English",
   id: "Indonesia",
-  zh: "中文",
-  ar: "العربية",
 };
 
 export const languageFlags: Record<Language, string> = {
   en: "🇬🇧",
   id: "🇮🇩",
-  zh: "🇨🇳",
-  ar: "🇸🇦",
 };
 
 interface LanguageContextType {
@@ -30,7 +26,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     return (saved as Language) || "en";
   });
 
-  const isRTL = language === "ar";
+  const isRTL = false; // Only supporting LTR languages now
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
