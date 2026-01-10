@@ -177,6 +177,76 @@ const EditableCVIframe = ({
   );
 };
 
+// Editable iframe component for Portfolio editing (dark theme)
+const EditablePortfolioIframe = ({ 
+  html, 
+  onContentChange,
+  isEditing 
+}: { 
+  html: string; 
+  onContentChange?: (newHtml: string) => void;
+  isEditing?: boolean;
+}) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    if (iframeRef.current) {
+      const doc = iframeRef.current.contentDocument;
+      if (doc) {
+        // For portfolio, we write the full HTML document as it includes its own styles
+        doc.open();
+        
+        // If editing, we need to inject contenteditable and editing styles
+        if (isEditing) {
+          // Parse the HTML and inject editing capabilities
+          const parser = new DOMParser();
+          const parsedDoc = parser.parseFromString(html, 'text/html');
+          
+          // Add editing styles
+          const styleTag = parsedDoc.createElement('style');
+          styleTag.textContent = `
+            body { outline: none; }
+            body:focus { outline: 2px solid #f59e0b; outline-offset: -2px; }
+            [contenteditable] * { cursor: text; }
+            [contenteditable] *:hover { background: rgba(245, 158, 11, 0.15) !important; }
+          `;
+          parsedDoc.head.appendChild(styleTag);
+          
+          // Make body contenteditable
+          parsedDoc.body.setAttribute('contenteditable', 'true');
+          
+          doc.write(parsedDoc.documentElement.outerHTML);
+        } else {
+          doc.write(html);
+        }
+        doc.close();
+
+        // Add input listener for content changes
+        if (isEditing && onContentChange) {
+          doc.body.addEventListener('input', () => {
+            // Get the full HTML including head for portfolio
+            const fullHtml = doc.documentElement.outerHTML;
+            // Clean up editing attributes before saving
+            const cleanHtml = fullHtml
+              .replace(/\s*contenteditable="true"/g, '')
+              .replace(/<style>[\s\S]*?body:focus[\s\S]*?<\/style>/g, '');
+            onContentChange(doc.body.innerHTML);
+          });
+        }
+      }
+    }
+  }, [html, isEditing]);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      className={`w-full bg-black ${isEditing ? 'ring-2 ring-primary' : 'border border-border'} rounded-lg overflow-hidden`}
+      style={{ height: '600px' }}
+      title="Portfolio Preview"
+    />
+  );
+};
+
 // Read-only iframe for preview
 const CVPreviewIframe = ({ html }: { html: string }) => {
   return <EditableCVIframe html={html} isEditing={false} />;
@@ -423,6 +493,8 @@ const AdminCVManager = () => {
   const [selectedTemplate, setSelectedTemplate] = useState("oxford");
   const [isGeneratingPortfolio, setIsGeneratingPortfolio] = useState(false);
   const [generatedPortfolio, setGeneratedPortfolio] = useState<string | null>(null);
+  const [editedPortfolio, setEditedPortfolio] = useState<string | null>(null);
+  const [isEditingPortfolio, setIsEditingPortfolio] = useState(false);
 
   // Fetch all portfolio data for review and generation
   const { data: portfolioData } = useQuery({
@@ -607,6 +679,8 @@ const AdminCVManager = () => {
 
     setIsGeneratingPortfolio(true);
     setGeneratedPortfolio(null);
+    setEditedPortfolio(null);
+    setIsEditingPortfolio(false);
 
     try {
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
@@ -617,6 +691,7 @@ const AdminCVManager = () => {
 
       if (data.result) {
         setGeneratedPortfolio(data.result);
+        setEditedPortfolio(data.result);
         toast.success("Portfolio generated successfully!");
       }
     } catch (error) {
@@ -655,10 +730,11 @@ const AdminCVManager = () => {
   };
 
   const handleDownloadPortfolioHTML = () => {
-    if (!generatedPortfolio) return;
+    const portfolioToDownload = editedPortfolio || generatedPortfolio;
+    if (!portfolioToDownload) return;
 
     // Create a downloadable HTML file
-    const blob = new Blob([generatedPortfolio], { type: 'text/html' });
+    const blob = new Blob([portfolioToDownload], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -671,26 +747,12 @@ const AdminCVManager = () => {
   };
 
   const handleDownloadPortfolioPDF = () => {
-    if (!generatedPortfolio) return;
+    const portfolioToDownload = editedPortfolio || generatedPortfolio;
+    if (!portfolioToDownload) return;
 
     const printWindow = window.open("", "_blank");
     if (printWindow) {
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Portfolio</title>
-          <style>
-            @media print {
-              body { margin: 0; padding: 0; }
-            }
-          </style>
-        </head>
-        <body>
-          ${generatedPortfolio}
-        </body>
-        </html>
-      `);
+      printWindow.document.write(portfolioToDownload);
       printWindow.document.close();
       setTimeout(() => {
         printWindow.print();
@@ -699,11 +761,12 @@ const AdminCVManager = () => {
   };
 
   const handleOpenPortfolioNewTab = () => {
-    if (!generatedPortfolio) return;
+    const portfolioToOpen = editedPortfolio || generatedPortfolio;
+    if (!portfolioToOpen) return;
 
     const printWindow = window.open("", "_blank");
     if (printWindow) {
-      printWindow.document.write(generatedPortfolio);
+      printWindow.document.write(portfolioToOpen);
       printWindow.document.close();
     }
   };
@@ -713,6 +776,14 @@ const AdminCVManager = () => {
       setEditedCV(generatedCV);
       setIsEditingCV(false);
       toast.success("CV reset to original");
+    }
+  };
+
+  const handleResetPortfolio = () => {
+    if (generatedPortfolio) {
+      setEditedPortfolio(generatedPortfolio);
+      setIsEditingPortfolio(false);
+      toast.success("Portfolio reset to original");
     }
   };
 
@@ -1311,15 +1382,54 @@ const AdminCVManager = () => {
             </Button>
           </Card>
 
-          {/* Generated Portfolio Preview */}
+          {/* Generated Portfolio Preview - Editable */}
           {generatedPortfolio && (
             <Card className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <h3 className="font-semibold flex items-center gap-2 text-sm sm:text-base">
                   <CheckCircle size={18} className="text-green-500" />
                   Generated Portfolio
+                  {isEditingPortfolio && (
+                    <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded">
+                      Editing Mode
+                    </span>
+                  )}
                 </h3>
                 <div className="flex flex-wrap gap-2">
+                  {!isEditingPortfolio ? (
+                    <Button 
+                      onClick={() => setIsEditingPortfolio(true)} 
+                      variant="outline" 
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Edit3 size={14} />
+                      Edit
+                    </Button>
+                  ) : (
+                    <>
+                      <Button 
+                        onClick={handleResetPortfolio} 
+                        variant="outline" 
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <RotateCcw size={14} />
+                        Reset
+                      </Button>
+                      <Button 
+                        onClick={() => {
+                          setIsEditingPortfolio(false);
+                          toast.success("Changes saved!");
+                        }} 
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Save size={14} />
+                        Done
+                      </Button>
+                    </>
+                  )}
                   <Button onClick={handleOpenPortfolioNewTab} variant="outline" size="sm" className="gap-2">
                     <ExternalLink size={14} />
                     Open in New Tab
@@ -1335,14 +1445,28 @@ const AdminCVManager = () => {
                 </div>
               </div>
               
-              <div className="border border-border rounded-lg overflow-hidden">
-                <iframe
-                  srcDoc={generatedPortfolio}
-                  className="w-full bg-black"
-                  style={{ height: '600px' }}
-                  title="Portfolio Preview"
-                />
-              </div>
+              {isEditingPortfolio && (
+                <p className="text-xs text-amber-500 mb-3 flex items-center gap-1">
+                  <Edit3 size={12} />
+                  Click on the portfolio below to edit text directly. Changes are saved automatically.
+                </p>
+              )}
+              
+              <EditablePortfolioIframe 
+                html={editedPortfolio || generatedPortfolio} 
+                isEditing={isEditingPortfolio}
+                onContentChange={(newHtml) => {
+                  // For portfolio, we need to reconstruct the full HTML
+                  if (generatedPortfolio) {
+                    // Replace body content in the original HTML
+                    const updatedHtml = generatedPortfolio.replace(
+                      /<body[^>]*>[\s\S]*<\/body>/i,
+                      `<body>${newHtml}</body>`
+                    );
+                    setEditedPortfolio(updatedHtml);
+                  }
+                }}
+              />
             </Card>
           )}
         </TabsContent>
