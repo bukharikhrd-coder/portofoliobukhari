@@ -19,8 +19,6 @@ serve(async (req) => {
     const languageNames: Record<string, string> = {
       id: "Indonesian (Bahasa Indonesia)",
       en: "English",
-      zh: "Chinese (Simplified)",
-      ar: "Arabic",
     };
     
     if (!LOVABLE_API_KEY) {
@@ -191,7 +189,7 @@ Return ONLY valid HTML content (no markdown, no code blocks) that can be directl
     } else if (action === "generate_portfolio") {
       // Generate stylish portfolio page matching website design
       const targetLanguage = languageNames[language] || "Indonesian (Bahasa Indonesia)";
-      const isArabic = language === "ar";
+      const profileImageUrl = portfolioData?.profileImageUrl || null;
       
       systemPrompt = `You are an expert web designer creating a stunning single-page portfolio website. Generate a complete HTML page with inline CSS.
 
@@ -205,8 +203,15 @@ DESIGN REQUIREMENTS - Match this exact aesthetic:
 - Animations: Smooth, minimal - subtle fade effects on hover
 - Overall feel: Premium, expensive, professional
 
+${profileImageUrl ? `PROFILE PHOTO:
+- Include the profile photo prominently in the Hero section
+- Use this exact image URL: ${profileImageUrl}
+- Display as a circular or rounded image with a subtle border or glow effect
+- Size: approximately 150-200px on desktop, 120px on mobile
+- Add a subtle amber/gold border or shadow effect around the photo` : ""}
+
 SECTIONS TO INCLUDE:
-1. Hero section with name prominently displayed, subtitle, and brief intro
+1. Hero section with ${profileImageUrl ? "profile photo, " : ""}name prominently displayed, subtitle, and brief intro
 2. About section with professional summary
 3. Experience section - reverse chronological, with company names and achievements
 4. Education section with degrees and institutions
@@ -221,8 +226,6 @@ TECHNICAL REQUIREMENTS:
 - Include smooth scroll behavior
 - Add subtle hover animations on interactive elements
 - Include a grain texture using CSS (SVG filter or pseudo-element)
-
-${isArabic ? "For Arabic, use dir=\"rtl\" on the html tag and appropriate RTL styling." : ""}
 
 IMPORTANT: All text content MUST be in ${targetLanguage}. Translate section headings, dates, and descriptions.
 

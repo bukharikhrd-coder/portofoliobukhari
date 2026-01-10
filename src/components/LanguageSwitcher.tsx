@@ -8,7 +8,7 @@ import {
 import { useLanguage, Language, languageLabels, languageFlags } from "@/contexts/LanguageContext";
 import { motion } from "framer-motion";
 
-const languages: Language[] = ["en", "id", "zh", "ar"];
+const languages: Language[] = ["en", "id"];
 
 const LanguageSwitcher = () => {
   const { language, setLanguage } = useLanguage();

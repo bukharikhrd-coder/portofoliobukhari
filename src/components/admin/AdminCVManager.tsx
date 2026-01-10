@@ -181,8 +181,6 @@ const CVPreviewIframe = ({ html }: { html: string }) => {
 const CV_LANGUAGES = [
   { code: "id", label: "Indonesia", flag: "🇮🇩" },
   { code: "en", label: "English", flag: "🇬🇧" },
-  { code: "zh", label: "中文", flag: "🇨🇳" },
-  { code: "ar", label: "العربية", flag: "🇸🇦" },
 ];
 
 const CV_TEMPLATES = [
@@ -436,6 +434,7 @@ const AdminCVManager = () => {
         languagesRes,
         trainingsRes,
         contactRes,
+        profileImageRes,
       ] = await Promise.all([
         supabase.from("hero_content").select("*").limit(1).maybeSingle(),
         supabase.from("about_content").select("*").limit(1).maybeSingle(),
@@ -445,6 +444,7 @@ const AdminCVManager = () => {
         supabase.from("language_skills").select("*").order("order_index"),
         supabase.from("trainings").select("*").order("order_index"),
         supabase.from("contact_content").select("*").limit(1).maybeSingle(),
+        supabase.from("site_settings").select("value").eq("key", "profile_image_url").maybeSingle(),
       ]);
 
       return {
@@ -456,6 +456,7 @@ const AdminCVManager = () => {
         languages: languagesRes.data || [],
         trainings: trainingsRes.data || [],
         contact: contactRes.data,
+        profileImageUrl: profileImageRes.data?.value || null,
       };
     },
   });
