@@ -24,7 +24,10 @@ import {
   Edit3,
   Save,
   RotateCcw,
-  Globe
+  Globe,
+  ExternalLink,
+  FileCode,
+  Printer
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import * as pdfjsLib from "pdfjs-dist";
@@ -651,7 +654,51 @@ const AdminCVManager = () => {
     }
   };
 
-  const handleDownloadPortfolio = () => {
+  const handleDownloadPortfolioHTML = () => {
+    if (!generatedPortfolio) return;
+
+    // Create a downloadable HTML file
+    const blob = new Blob([generatedPortfolio], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `portfolio-${selectedLanguage}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Portfolio HTML downloaded!");
+  };
+
+  const handleDownloadPortfolioPDF = () => {
+    if (!generatedPortfolio) return;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Portfolio</title>
+          <style>
+            @media print {
+              body { margin: 0; padding: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          ${generatedPortfolio}
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.print();
+      }, 500);
+    }
+  };
+
+  const handleOpenPortfolioNewTab = () => {
     if (!generatedPortfolio) return;
 
     const printWindow = window.open("", "_blank");
@@ -1272,10 +1319,20 @@ const AdminCVManager = () => {
                   <CheckCircle size={18} className="text-green-500" />
                   Generated Portfolio
                 </h3>
-                <Button onClick={handleDownloadPortfolio} variant="outline" size="sm" className="gap-2">
-                  <Download size={14} />
-                  Open in New Tab
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={handleOpenPortfolioNewTab} variant="outline" size="sm" className="gap-2">
+                    <ExternalLink size={14} />
+                    Open in New Tab
+                  </Button>
+                  <Button onClick={handleDownloadPortfolioHTML} variant="outline" size="sm" className="gap-2">
+                    <FileCode size={14} />
+                    Download HTML
+                  </Button>
+                  <Button onClick={handleDownloadPortfolioPDF} variant="outline" size="sm" className="gap-2">
+                    <Printer size={14} />
+                    Print / PDF
+                  </Button>
+                </div>
               </div>
               
               <div className="border border-border rounded-lg overflow-hidden">
