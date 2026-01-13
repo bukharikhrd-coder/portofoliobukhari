@@ -510,6 +510,7 @@ const AdminCVManager = () => {
         trainingsRes,
         contactRes,
         profileImageRes,
+        projectsRes,
       ] = await Promise.all([
         supabase.from("hero_content").select("*").limit(1).maybeSingle(),
         supabase.from("about_content").select("*").limit(1).maybeSingle(),
@@ -520,6 +521,7 @@ const AdminCVManager = () => {
         supabase.from("trainings").select("*").order("order_index"),
         supabase.from("contact_content").select("*").limit(1).maybeSingle(),
         supabase.from("site_settings").select("value").eq("key", "profile_image_url").maybeSingle(),
+        supabase.from("projects").select("*").order("order_index"),
       ]);
 
       return {
@@ -532,6 +534,7 @@ const AdminCVManager = () => {
         trainings: trainingsRes.data || [],
         contact: contactRes.data,
         profileImageUrl: profileImageRes.data?.value || null,
+        projects: projectsRes.data || [],
       };
     },
   });

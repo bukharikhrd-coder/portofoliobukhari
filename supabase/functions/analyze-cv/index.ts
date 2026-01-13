@@ -123,6 +123,7 @@ Provide your review in JSON format:
       const targetLanguage = languageNames[language] || "Indonesian (Bahasa Indonesia)";
       const isArabic = language === "ar";
       const selectedTemplate = template || "oxford";
+      const profileImageUrl = portfolioData?.profileImageUrl || null;
       
       // Template-specific instructions
       const templateInstructions: Record<string, string> = {
@@ -132,7 +133,6 @@ Provide your review in JSON format:
 - Reverse chronological order for experience and education
 - Clear section headings with underlines
 - Concise, achievement-focused bullet points
-- No photos or graphics
 - Professional, academic tone
 - Font: Times New Roman or similar serif font`,
         
@@ -176,9 +176,21 @@ Provide your review in JSON format:
         creative: "Creative Industry",
       };
       
+      // Photo instruction for CV - include in modern and creative templates
+      const photoInstruction = profileImageUrl && (selectedTemplate === "modern" || selectedTemplate === "creative")
+        ? `\nPROFILE PHOTO:
+Include the profile photo in the CV header section.
+Use this exact image URL: ${profileImageUrl}
+- Position: Top right corner of the header, or left side in a sidebar layout
+- Size: 100-120px diameter
+- Style: Circular with a subtle border
+- Make it professional and well-integrated with the design`
+        : '';
+      
       systemPrompt = `You are an expert at creating ${templateName[selectedTemplate] || "professional"} CVs. Generate a professionally formatted CV in HTML.
 
 ${templateInstructions[selectedTemplate] || templateInstructions.oxford}
+${photoInstruction}
 
 IMPORTANT: The CV MUST be written entirely in ${targetLanguage}. Translate all content including section headings, dates format, and descriptions to ${targetLanguage}.
 ${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RTL styling." : ""}
@@ -190,6 +202,34 @@ Return ONLY valid HTML content (no markdown, no code blocks) that can be directl
       // Generate stylish portfolio page matching website design
       const targetLanguage = languageNames[language] || "Indonesian (Bahasa Indonesia)";
       const profileImageUrl = portfolioData?.profileImageUrl || null;
+      const projects = portfolioData?.projects || [];
+      
+      // Build projects instruction if there are projects
+      const projectsInstruction = projects.length > 0 ? `
+PROJECTS SECTION (IMPORTANT - Include this section with images!):
+Display the following projects with their thumbnail images in a grid layout:
+${projects.map((p: any, i: number) => `
+Project ${i + 1}:
+- Title: ${p.title}
+- Category: ${p.category}
+- Description: ${p.description || 'N/A'}
+- Image URL: ${p.image_url || 'No image'}
+- Year: ${p.year || 'N/A'}
+- Demo URL: ${p.demo_url || 'N/A'}
+- GitHub URL: ${p.github_url || 'N/A'}
+- Show Link: ${p.show_link ? 'Yes' : 'No'}
+`).join('')}
+
+For each project card:
+- Display the project image (use image_url) with 16:9 or 4:3 aspect ratio
+- Show project title prominently below/over the image
+- Display category as a small tag/badge with amber accent
+- Include brief description
+- If show_link is true and demo_url exists, add a "View Project" link
+- If github_url exists, add a GitHub icon/link
+- Style: Dark cards with subtle border, hover effect (slight scale + glow)
+- Grid: 2 columns on desktop, 1 on mobile
+- Add loading="lazy" to images` : '';
       
       systemPrompt = `You are an expert web designer creating a stunning single-page portfolio website. Generate a complete HTML page with inline CSS.
 
@@ -214,9 +254,11 @@ SECTIONS TO INCLUDE:
 1. Hero section with ${profileImageUrl ? "profile photo, " : ""}name prominently displayed, subtitle, and brief intro
 2. About section with professional summary
 3. Experience section - reverse chronological, with company names and achievements
-4. Education section with degrees and institutions
-5. Skills section displayed as stylish tags/badges with amber accent
-6. Contact section with email and social links
+${projects.length > 0 ? "4. Projects section - showcase projects with images in a grid layout" : ""}
+${projects.length > 0 ? "5" : "4"}. Education section with degrees and institutions
+${projects.length > 0 ? "6" : "5"}. Skills section displayed as stylish tags/badges with amber accent
+${projects.length > 0 ? "7" : "6"}. Contact section with email and social links
+${projectsInstruction}
 
 TECHNICAL REQUIREMENTS:
 - Complete HTML5 document with DOCTYPE
@@ -226,6 +268,7 @@ TECHNICAL REQUIREMENTS:
 - Include smooth scroll behavior
 - Add subtle hover animations on interactive elements
 - Include a grain texture using CSS (SVG filter or pseudo-element)
+- For project images, use object-fit: cover and proper aspect ratios
 
 IMPORTANT: All text content MUST be in ${targetLanguage}. Translate section headings, dates, and descriptions.
 
