@@ -254,6 +254,7 @@ const CVPreviewIframe = ({ html }: { html: string }) => {
 const CV_LANGUAGES = [
   { code: "id", label: "Indonesia", flag: "🇮🇩" },
   { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "zh", label: "中文 (Mandarin)", flag: "🇨🇳" },
 ];
 
 const CV_TEMPLATES = [

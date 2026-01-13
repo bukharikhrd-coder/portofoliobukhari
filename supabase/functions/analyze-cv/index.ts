@@ -19,6 +19,7 @@ serve(async (req) => {
     const languageNames: Record<string, string> = {
       id: "Indonesian (Bahasa Indonesia)",
       en: "English",
+      zh: "Mandarin Chinese (中文)",
     };
     
     if (!LOVABLE_API_KEY) {
