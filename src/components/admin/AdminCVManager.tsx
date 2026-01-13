@@ -510,6 +510,8 @@ const AdminCVManager = () => {
         languagesRes,
         trainingsRes,
         contactRes,
+        heroImageRes,
+        aboutImageRes,
         profileImageRes,
         projectsRes,
       ] = await Promise.all([
@@ -521,9 +523,14 @@ const AdminCVManager = () => {
         supabase.from("language_skills").select("*").order("order_index"),
         supabase.from("trainings").select("*").order("order_index"),
         supabase.from("contact_content").select("*").limit(1).maybeSingle(),
+        supabase.from("site_settings").select("value").eq("key", "hero_image_url").maybeSingle(),
+        supabase.from("site_settings").select("value").eq("key", "about_image_url").maybeSingle(),
         supabase.from("site_settings").select("value").eq("key", "profile_image_url").maybeSingle(),
         supabase.from("projects").select("*").order("order_index"),
       ]);
+
+      // Prioritas foto: About (terbaru) > Hero > Profile
+      const profileImageUrl = aboutImageRes.data?.value || heroImageRes.data?.value || profileImageRes.data?.value || null;
 
       return {
         hero: heroRes.data,
@@ -534,7 +541,7 @@ const AdminCVManager = () => {
         languages: languagesRes.data || [],
         trainings: trainingsRes.data || [],
         contact: contactRes.data,
-        profileImageUrl: profileImageRes.data?.value || null,
+        profileImageUrl,
         projects: projectsRes.data || [],
       };
     },
