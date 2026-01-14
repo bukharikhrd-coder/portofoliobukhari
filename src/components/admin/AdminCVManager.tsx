@@ -27,9 +27,13 @@ import {
   Globe,
   ExternalLink,
   FileCode,
-  Printer
+  Printer,
+  Image as ImageIcon,
+  User,
+  Home
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import ImageUpload from "./ImageUpload";
 import * as pdfjsLib from "pdfjs-dist";
 
 // Configure PDF.js worker
@@ -496,9 +500,11 @@ const AdminCVManager = () => {
   const [generatedPortfolio, setGeneratedPortfolio] = useState<string | null>(null);
   const [editedPortfolio, setEditedPortfolio] = useState<string | null>(null);
   const [isEditingPortfolio, setIsEditingPortfolio] = useState(false);
+  const [selectedPhotoSource, setSelectedPhotoSource] = useState<"about" | "hero" | "custom">("about");
+  const [customPhotoUrl, setCustomPhotoUrl] = useState<string | null>(null);
 
   // Fetch all portfolio data for review and generation
-  const { data: portfolioData } = useQuery({
+  const { data: portfolioData, refetch: refetchPortfolioData } = useQuery({
     queryKey: ["portfolio_data_for_cv"],
     queryFn: async () => {
       const [
@@ -529,9 +535,6 @@ const AdminCVManager = () => {
         supabase.from("projects").select("*").order("order_index"),
       ]);
 
-      // Prioritas foto: About (terbaru) > Hero > Profile
-      const profileImageUrl = aboutImageRes.data?.value || heroImageRes.data?.value || profileImageRes.data?.value || null;
-
       return {
         hero: heroRes.data,
         about: aboutRes.data,
@@ -541,11 +544,25 @@ const AdminCVManager = () => {
         languages: languagesRes.data || [],
         trainings: trainingsRes.data || [],
         contact: contactRes.data,
-        profileImageUrl,
+        heroImageUrl: heroImageRes.data?.value || null,
+        aboutImageUrl: aboutImageRes.data?.value || null,
+        profileImageUrl: profileImageRes.data?.value || null,
         projects: projectsRes.data || [],
       };
     },
   });
+
+  // Get the selected photo URL based on user selection
+  const getSelectedPhotoUrl = () => {
+    if (selectedPhotoSource === "custom" && customPhotoUrl) {
+      return customPhotoUrl;
+    }
+    if (selectedPhotoSource === "hero") {
+      return portfolioData?.heroImageUrl || null;
+    }
+    // Default to about
+    return portfolioData?.aboutImageUrl || portfolioData?.heroImageUrl || portfolioData?.profileImageUrl || null;
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -663,8 +680,14 @@ const AdminCVManager = () => {
     setIsEditingCV(false);
 
     try {
+      // Use selected photo source
+      const portfolioDataWithSelectedPhoto = {
+        ...portfolioData,
+        profileImageUrl: getSelectedPhotoUrl(),
+      };
+      
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
-        body: { portfolioData, action: "generate_cv", language: selectedLanguage, template: selectedTemplate },
+        body: { portfolioData: portfolioDataWithSelectedPhoto, action: "generate_cv", language: selectedLanguage, template: selectedTemplate },
       });
 
       if (error) throw error;
@@ -694,8 +717,14 @@ const AdminCVManager = () => {
     setIsEditingPortfolio(false);
 
     try {
+      // Use selected photo source
+      const portfolioDataWithSelectedPhoto = {
+        ...portfolioData,
+        profileImageUrl: getSelectedPhotoUrl(),
+      };
+      
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
-        body: { portfolioData, action: "generate_portfolio", language: selectedLanguage },
+        body: { portfolioData: portfolioDataWithSelectedPhoto, action: "generate_portfolio", language: selectedLanguage },
       });
 
       if (error) throw error;
@@ -1215,7 +1244,7 @@ const AdminCVManager = () => {
             </div>
 
             {/* Language Selection */}
-            <div className="mb-4">
+            <div className="mb-5">
               <label className="text-sm font-medium mb-2 block">Select Language</label>
               <div className="flex flex-wrap gap-2">
                 {CV_LANGUAGES.map((lang) => (
@@ -1233,6 +1262,92 @@ const AdminCVManager = () => {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Photo Selection */}
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2 block">Select Photo</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* About Photo Option */}
+                <button
+                  onClick={() => setSelectedPhotoSource("about")}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                    selectedPhotoSource === "about"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary border-2 border-current flex items-center justify-center">
+                    {portfolioData?.aboutImageUrl ? (
+                      <img src={portfolioData.aboutImageUrl} alt="About" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={24} />
+                    )}
+                  </div>
+                  <span>About Section</span>
+                  <span className={`text-xs ${selectedPhotoSource === "about" ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                    {portfolioData?.aboutImageUrl ? "Available" : "Not set"}
+                  </span>
+                </button>
+
+                {/* Hero Photo Option */}
+                <button
+                  onClick={() => setSelectedPhotoSource("hero")}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                    selectedPhotoSource === "hero"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary border-2 border-current flex items-center justify-center">
+                    {portfolioData?.heroImageUrl ? (
+                      <img src={portfolioData.heroImageUrl} alt="Hero" className="w-full h-full object-cover" />
+                    ) : (
+                      <Home size={24} />
+                    )}
+                  </div>
+                  <span>Hero Section</span>
+                  <span className={`text-xs ${selectedPhotoSource === "hero" ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                    {portfolioData?.heroImageUrl ? "Available" : "Not set"}
+                  </span>
+                </button>
+
+                {/* Custom Upload Option */}
+                <button
+                  onClick={() => setSelectedPhotoSource("custom")}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                    selectedPhotoSource === "custom"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary border-2 border-current flex items-center justify-center">
+                    {customPhotoUrl ? (
+                      <img src={customPhotoUrl} alt="Custom" className="w-full h-full object-cover" />
+                    ) : (
+                      <Upload size={24} />
+                    )}
+                  </div>
+                  <span>Upload New</span>
+                  <span className={`text-xs ${selectedPhotoSource === "custom" ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                    {customPhotoUrl ? "Uploaded" : "Choose file"}
+                  </span>
+                </button>
+              </div>
+
+              {/* Custom Photo Upload */}
+              {selectedPhotoSource === "custom" && (
+                <div className="mt-4 p-4 border border-border rounded-lg bg-secondary/50">
+                  <ImageUpload
+                    currentImage={customPhotoUrl}
+                    onImageChange={(url) => setCustomPhotoUrl(url)}
+                    bucket="project-images"
+                    folder="cv-photos"
+                    label="Upload Photo for CV/Portfolio"
+                    aspectRatio={1}
+                  />
+                </div>
+              )}
             </div>
             
             <Button 
@@ -1354,7 +1469,7 @@ const AdminCVManager = () => {
             </p>
             
             {/* Language Selection */}
-            <div className="mb-4">
+            <div className="mb-5">
               <label className="text-sm font-medium mb-2 block">Select Language</label>
               <div className="flex flex-wrap gap-2">
                 {CV_LANGUAGES.map((lang) => (
@@ -1372,6 +1487,92 @@ const AdminCVManager = () => {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Photo Selection for Portfolio */}
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2 block">Select Photo</label>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* About Photo Option */}
+                <button
+                  onClick={() => setSelectedPhotoSource("about")}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                    selectedPhotoSource === "about"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary border-2 border-current flex items-center justify-center">
+                    {portfolioData?.aboutImageUrl ? (
+                      <img src={portfolioData.aboutImageUrl} alt="About" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={24} />
+                    )}
+                  </div>
+                  <span>About Section</span>
+                  <span className={`text-xs ${selectedPhotoSource === "about" ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                    {portfolioData?.aboutImageUrl ? "Available" : "Not set"}
+                  </span>
+                </button>
+
+                {/* Hero Photo Option */}
+                <button
+                  onClick={() => setSelectedPhotoSource("hero")}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                    selectedPhotoSource === "hero"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary border-2 border-current flex items-center justify-center">
+                    {portfolioData?.heroImageUrl ? (
+                      <img src={portfolioData.heroImageUrl} alt="Hero" className="w-full h-full object-cover" />
+                    ) : (
+                      <Home size={24} />
+                    )}
+                  </div>
+                  <span>Hero Section</span>
+                  <span className={`text-xs ${selectedPhotoSource === "hero" ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                    {portfolioData?.heroImageUrl ? "Available" : "Not set"}
+                  </span>
+                </button>
+
+                {/* Custom Upload Option */}
+                <button
+                  onClick={() => setSelectedPhotoSource("custom")}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-lg border text-sm font-medium transition-all ${
+                    selectedPhotoSource === "custom"
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary border-2 border-current flex items-center justify-center">
+                    {customPhotoUrl ? (
+                      <img src={customPhotoUrl} alt="Custom" className="w-full h-full object-cover" />
+                    ) : (
+                      <Upload size={24} />
+                    )}
+                  </div>
+                  <span>Upload New</span>
+                  <span className={`text-xs ${selectedPhotoSource === "custom" ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                    {customPhotoUrl ? "Uploaded" : "Choose file"}
+                  </span>
+                </button>
+              </div>
+
+              {/* Custom Photo Upload */}
+              {selectedPhotoSource === "custom" && (
+                <div className="mt-4 p-4 border border-border rounded-lg bg-secondary/50">
+                  <ImageUpload
+                    currentImage={customPhotoUrl}
+                    onImageChange={(url) => setCustomPhotoUrl(url)}
+                    bucket="project-images"
+                    folder="cv-photos"
+                    label="Upload Photo for CV/Portfolio"
+                    aspectRatio={1}
+                  />
+                </div>
+              )}
             </div>
             
             <Button 
