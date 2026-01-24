@@ -104,6 +104,71 @@ export type Database = {
         }
         Relationships: []
       }
+      client_orders: {
+        Row: {
+          amount_paid: number | null
+          client_email: string
+          client_name: string
+          client_phone: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          order_number: string
+          package_id: string | null
+          paid_at: string | null
+          project_url: string | null
+          requirements: Json | null
+          status: string
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_paid?: number | null
+          client_email: string
+          client_name: string
+          client_phone?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_number: string
+          package_id?: string | null
+          paid_at?: string | null
+          project_url?: string | null
+          requirements?: Json | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_paid?: number | null
+          client_email?: string
+          client_name?: string
+          client_phone?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_number?: string
+          package_id?: string | null
+          paid_at?: string | null
+          project_url?: string | null
+          requirements?: Json | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_orders_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "service_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_content: {
         Row: {
           created_at: string
@@ -432,6 +497,45 @@ export type Database = {
           order_index?: number
           section_key?: string
           section_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_packages: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          order_index: number | null
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          order_index?: number | null
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          order_index?: number | null
+          price?: number
           updated_at?: string
         }
         Relationships: []

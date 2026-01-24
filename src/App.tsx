@@ -15,6 +15,13 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Services pages
+const ServicesHome = lazy(() => import("./pages/services/ServicesHome"));
+const ServicesPricing = lazy(() => import("./pages/services/ServicesPricing"));
+const ServicesCheckout = lazy(() => import("./pages/services/ServicesCheckout"));
+const ServicesSuccess = lazy(() => import("./pages/services/ServicesSuccess"));
+const ServicesCancel = lazy(() => import("./pages/services/ServicesCancel"));
+
 const queryClient = new QueryClient();
 
 // Loading fallback component
@@ -42,6 +49,14 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/admin" element={<Admin />} />
+                    
+                    {/* Services routes */}
+                    <Route path="/services" element={<ServicesHome />} />
+                    <Route path="/services/pricing" element={<ServicesPricing />} />
+                    <Route path="/services/checkout/:packageId" element={<ServicesCheckout />} />
+                    <Route path="/services/success" element={<ServicesSuccess />} />
+                    <Route path="/services/cancel" element={<ServicesCancel />} />
+                    
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
