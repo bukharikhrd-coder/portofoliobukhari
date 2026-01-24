@@ -24,7 +24,8 @@ import {
   Layers,
   Share2,
   FileUp,
-  Palette
+  Palette,
+  Settings
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -44,11 +45,13 @@ import AdminSectionOrder from "@/components/admin/AdminSectionOrder";
 import AdminFooterSocial from "@/components/admin/AdminFooterSocial";
 import AdminCVManager from "@/components/admin/AdminCVManager";
 import AdminColorTheme from "@/components/admin/AdminColorTheme";
+import AdminSettings from "@/components/admin/AdminSettings";
 
-type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme" | "settings";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "settings", label: "Settings", icon: Settings },
   { id: "cvmanager", label: "CV Manager", icon: FileUp },
   { id: "colortheme", label: "Color Theme", icon: Palette },
   { id: "sectionorder", label: "Section Order", icon: Layers },
@@ -122,6 +125,8 @@ const Admin = () => {
     switch (activeTab) {
       case "analytics":
         return <AdminAnalytics />;
+      case "settings":
+        return <AdminSettings />;
       case "cvmanager":
         return <AdminCVManager />;
       case "colortheme":
