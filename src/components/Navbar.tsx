@@ -27,6 +27,11 @@ const sectionToNav: Record<string, { href: string; label: string }> = {
   workjourney: { href: "#workjourney", label: "Journey" },
   contact: { href: "#contact", label: "Contact" },
 };
+
+// Additional static nav links (external pages)
+const additionalLinks = [
+  { href: "/services", label: "Services", isExternal: true },
+];
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,10 +41,11 @@ const Navbar = () => {
 
   // Build dynamic nav links from section config
   const navLinks = [
-    { href: "#", label: "Home" },
+    { href: "#", label: "Home", isExternal: false },
     ...(sections || [])
       .filter((s) => s.is_visible && sectionToNav[s.section_key])
-      .map((s) => sectionToNav[s.section_key]),
+      .map((s) => ({ ...sectionToNav[s.section_key], isExternal: false })),
+    ...additionalLinks,
   ];
 
   useEffect(() => {
@@ -97,14 +103,24 @@ const Navbar = () => {
           {/* Desktop & Tablet Navigation - hidden only on small phones */}
           <div className="hidden sm:flex items-center gap-4 lg:gap-6">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
-              >
-                {link.label}
-              </a>
+              link.isExternal ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                  className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
             {user && isAdmin && (
               <Link
@@ -221,17 +237,34 @@ const Navbar = () => {
           >
             <div className="container mx-auto px-6 py-6 space-y-4">
               {navLinks.map((link, index) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={(e) => handleSmoothScroll(e, link.href)}
-                  className="block text-lg text-muted-foreground hover:text-foreground transition-colors duration-300"
-                >
-                  {link.label}
-                </motion.a>
+                link.isExternal ? (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <Link
+                      to={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className="block text-lg text-muted-foreground hover:text-foreground transition-colors duration-300"
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    onClick={(e) => handleSmoothScroll(e, link.href)}
+                    className="block text-lg text-muted-foreground hover:text-foreground transition-colors duration-300"
+                  >
+                    {link.label}
+                  </motion.a>
+                )
               ))}
               {user && isAdmin && (
                 <motion.div

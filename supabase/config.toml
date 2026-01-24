@@ -2,3 +2,12 @@ project_id = "rjawpgtopoxzfmevyrfw"
 
 [functions.translate]
 verify_jwt = false
+
+[functions.analyze-cv]
+verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
