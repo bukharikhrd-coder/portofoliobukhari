@@ -25,7 +25,9 @@ import {
   Share2,
   FileUp,
   Palette,
-  Settings
+  Settings,
+  Package,
+  ShoppingCart
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -46,12 +48,16 @@ import AdminFooterSocial from "@/components/admin/AdminFooterSocial";
 import AdminCVManager from "@/components/admin/AdminCVManager";
 import AdminColorTheme from "@/components/admin/AdminColorTheme";
 import AdminSettings from "@/components/admin/AdminSettings";
+import AdminServicePackages from "@/components/admin/AdminServicePackages";
+import AdminClientOrders from "@/components/admin/AdminClientOrders";
 
-type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme" | "settings";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme" | "settings" | "servicepackages" | "clientorders";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
   { id: "settings", label: "Settings", icon: Settings },
+  { id: "servicepackages", label: "Service Packages", icon: Package },
+  { id: "clientorders", label: "Client Orders", icon: ShoppingCart },
   { id: "cvmanager", label: "CV Manager", icon: FileUp },
   { id: "colortheme", label: "Color Theme", icon: Palette },
   { id: "sectionorder", label: "Section Order", icon: Layers },
@@ -127,6 +133,10 @@ const Admin = () => {
         return <AdminAnalytics />;
       case "settings":
         return <AdminSettings />;
+      case "servicepackages":
+        return <AdminServicePackages />;
+      case "clientorders":
+        return <AdminClientOrders />;
       case "cvmanager":
         return <AdminCVManager />;
       case "colortheme":
