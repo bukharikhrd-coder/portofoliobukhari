@@ -15,6 +15,7 @@ import WorkJourneyGallery from "@/components/WorkJourneyGallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import PWAUpdatePrompt from "@/components/PWAUpdatePrompt";
 import BackToDashboard from "@/components/BackToDashboard";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
@@ -98,6 +99,7 @@ const Index = () => {
         </main>
         <Footer />
         <PWAInstallPrompt />
+        <PWAUpdatePrompt />
         <BackToDashboard />
       </div>
     </>
