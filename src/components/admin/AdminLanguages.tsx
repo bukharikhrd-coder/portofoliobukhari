@@ -6,6 +6,19 @@ import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
 import { SortableList } from "./SortableList";
 
 const proficiencyLevels = ["Native", "Professional", "Advanced", "Intermediate", "Basic"];
+const hskLevels = ["HSK 1 (Beginner)", "HSK 2 (Elementary)", "HSK 3 (Intermediate)", "HSK 4 (Upper Intermediate)", "HSK 5 (Advanced)", "HSK 6 (Mastery)"];
+
+const isMandarin = (name: string) => {
+  const lower = name.toLowerCase();
+  return lower.includes("mandarin") || lower.includes("chinese") || lower.includes("中文") || lower.includes("华语");
+};
+
+const getProficiencyOptions = (languageName: string) => {
+  if (isMandarin(languageName)) {
+    return [...proficiencyLevels, ...hskLevels];
+  }
+  return proficiencyLevels;
+};
 
 interface Language {
   id: string;
@@ -100,7 +113,7 @@ const AdminLanguages = () => {
         <div className="flex flex-wrap gap-4 items-center flex-1">
           <input type="text" value={formData.language_name} onChange={(e) => setFormData({ ...formData, language_name: e.target.value })} className="flex-1 min-w-[200px] px-4 py-2 bg-background border border-border rounded" />
           <select value={formData.proficiency_level} onChange={(e) => setFormData({ ...formData, proficiency_level: e.target.value })} className="px-4 py-2 bg-background border border-border rounded">
-            {proficiencyLevels.map((level) => <option key={level} value={level}>{level}</option>)}
+            {getProficiencyOptions(formData.language_name).map((level) => <option key={level} value={level}>{level}</option>)}
           </select>
           <button onClick={() => saveMutation.mutate({ ...formData, id: lang.id })} className="p-2 bg-primary text-primary-foreground rounded"><Save size={18} /></button>
           <button onClick={() => setEditingId(null)} className="p-2 border border-border rounded"><X size={18} /></button>
@@ -136,7 +149,7 @@ const AdminLanguages = () => {
         <div className="bg-card border border-primary p-6 flex flex-wrap gap-4 items-end mb-4 rounded-lg">
           <input type="text" placeholder="Language Name" value={formData.language_name} onChange={(e) => setFormData({ ...formData, language_name: e.target.value })} className="flex-1 min-w-[200px] px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none rounded" />
           <select value={formData.proficiency_level} onChange={(e) => setFormData({ ...formData, proficiency_level: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none rounded">
-            {proficiencyLevels.map((level) => <option key={level} value={level}>{level}</option>)}
+            {getProficiencyOptions(formData.language_name).map((level) => <option key={level} value={level}>{level}</option>)}
           </select>
           <button onClick={() => saveMutation.mutate(formData)} className="px-4 py-3 bg-primary text-primary-foreground rounded"><Save size={18} /></button>
           <button onClick={() => setIsAdding(false)} className="px-4 py-3 border border-border rounded"><X size={18} /></button>

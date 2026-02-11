@@ -12,6 +12,11 @@ const proficiencyColors: Record<string, string> = {
   Basic: "bg-primary/20 text-foreground",
 };
 
+const getColorForLevel = (level: string) => {
+  if (level.startsWith("HSK")) return "bg-accent text-accent-foreground";
+  return proficiencyColors[level] || proficiencyColors.Intermediate;
+};
+
 const Languages = () => {
   const { data: languages, isLoading } = useQuery({
     queryKey: ["language_skills"],
@@ -80,7 +85,7 @@ const Languages = () => {
               </div>
               <span
                 className={`inline-block px-2 md:px-3 py-0.5 md:py-1 rounded-full text-xs md:text-sm font-medium ${
-                  proficiencyColors[languages?.find(l => l.id === lang.id)?.proficiency_level || ""] || proficiencyColors.Intermediate
+                  proficiencyColors[languages?.find(l => l.id === lang.id)?.proficiency_level || ""] || getColorForLevel(languages?.find(l => l.id === lang.id)?.proficiency_level || "")
                 }`}
               >
                 {lang.proficiency_level}
