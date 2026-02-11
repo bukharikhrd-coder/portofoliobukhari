@@ -15,6 +15,9 @@ serve(async (req) => {
     const { pdfText, portfolioData, action, language, template } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
+    // Get portfolio URL from request or use default
+    const portfolioUrl = portfolioData?.portfolioUrl || "https://portofoliobukhari.lovable.app";
+    
     // Language mapping for prompts
     const languageNames: Record<string, string> = {
       id: "Indonesian (Bahasa Indonesia)",
@@ -195,9 +198,16 @@ ${photoInstruction}
 
 WEBSITE LINK (IMPORTANT):
 - Include a clickable link to the portfolio website in the contact/header section of the CV
-- Website URL: https://portofoliobukhari.lovable.app
-- Display it as: Portfolio: <a href="https://portofoliobukhari.lovable.app" target="_blank" style="color: #2563eb; text-decoration: underline;">portofoliobukhari.lovable.app</a>
+- Website URL: ${portfolioUrl}
+- Display it as: Portfolio: <a href="${portfolioUrl}" target="_blank" style="color: #2563eb; text-decoration: underline;">${portfolioUrl.replace('https://', '')}</a>
 - Make sure the link is clickable and opens in a new tab
+
+SKILLS & TOOLS SECTION (IMPORTANT):
+- Include a dedicated "Skills" section listing all professional competencies from the skills data
+- Include a "Software & Tools" section showcasing tools proficiency with their proficiency levels
+- Present skills as professional competency keywords (e.g., "Full-Stack Web Development", "Data Analysis & Visualization")
+- For tools, mention proficiency level (Expert/Advanced/Intermediate) next to each tool name
+- Order by relevance and proficiency level (Expert first, then Advanced, then Intermediate)
 
 IMPORTANT: The CV MUST be written entirely in ${targetLanguage}. Translate all content including section headings, dates format, and descriptions to ${targetLanguage}.
 ${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RTL styling." : ""}

@@ -4,14 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Eye, EyeOff, Save, Key, CreditCard } from "lucide-react";
+import { Eye, EyeOff, Save, Key, CreditCard, Globe } from "lucide-react";
 
 const AdminSettings = () => {
   const [stripeSecretKey, setStripeSecretKey] = useState("");
   const [stripePublishableKey, setStripePublishableKey] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
   const [showSecretKey, setShowSecretKey] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingUrl, setSavingUrl] = useState(false);
 
   useEffect(() => {
     fetchSettings();
@@ -22,7 +24,7 @@ const AdminSettings = () => {
       const { data, error } = await supabase
         .from("site_settings")
         .select("*")
-        .in("key", ["stripe_secret_key", "stripe_publishable_key"]);
+        .in("key", ["stripe_secret_key", "stripe_publishable_key", "portfolio_url"]);
 
       if (error) throw error;
 
@@ -31,6 +33,8 @@ const AdminSettings = () => {
           setStripeSecretKey(setting.value || "");
         } else if (setting.key === "stripe_publishable_key") {
           setStripePublishableKey(setting.value || "");
+        } else if (setting.key === "portfolio_url") {
+          setPortfolioUrl(setting.value || "");
         }
       });
     } catch (error) {
@@ -81,6 +85,19 @@ const AdminSettings = () => {
     }
   };
 
+  const handleSavePortfolioUrl = async () => {
+    setSavingUrl(true);
+    try {
+      await saveSetting("portfolio_url", portfolioUrl);
+      toast.success("Link portfolio berhasil disimpan!");
+    } catch (error) {
+      console.error("Error saving portfolio URL:", error);
+      toast.error("Gagal menyimpan link portfolio");
+    } finally {
+      setSavingUrl(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -96,6 +113,46 @@ const AdminSettings = () => {
         <p className="text-muted-foreground">
           Kelola pengaturan integrasi dan konfigurasi lainnya
         </p>
+      </div>
+
+      {/* Portfolio URL Settings */}
+      <div className="bg-card border border-border p-6 space-y-6">
+        <div className="flex items-center gap-3 border-b border-border pb-4">
+          <div className="w-10 h-10 bg-primary/10 flex items-center justify-center">
+            <Globe size={20} className="text-primary" />
+          </div>
+          <div>
+            <h2 className="text-lg font-display">Portfolio Website Link</h2>
+            <p className="text-sm text-muted-foreground">
+              Link website yang akan ditampilkan di CV yang di-generate
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="portfolio_url" className="flex items-center gap-2">
+              <Globe size={14} />
+              Website URL
+            </Label>
+            <Input
+              id="portfolio_url"
+              type="url"
+              value={portfolioUrl}
+              onChange={(e) => setPortfolioUrl(e.target.value)}
+              placeholder="https://portofoliobukhari.lovable.app"
+              className="font-mono text-sm"
+            />
+            <p className="text-xs text-muted-foreground">
+              URL ini akan muncul sebagai link yang bisa diklik pada CV yang di-generate
+            </p>
+          </div>
+
+          <Button onClick={handleSavePortfolioUrl} disabled={savingUrl} className="w-full sm:w-auto">
+            <Save size={16} className="mr-2" />
+            {savingUrl ? "Menyimpan..." : "Simpan Link Portfolio"}
+          </Button>
+        </div>
       </div>
 
       {/* Stripe Settings */}

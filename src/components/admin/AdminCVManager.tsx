@@ -520,6 +520,8 @@ const AdminCVManager = () => {
         aboutImageRes,
         profileImageRes,
         projectsRes,
+        toolsRes,
+        portfolioUrlRes,
       ] = await Promise.all([
         supabase.from("hero_content").select("*").limit(1).maybeSingle(),
         supabase.from("about_content").select("*").limit(1).maybeSingle(),
@@ -533,6 +535,8 @@ const AdminCVManager = () => {
         supabase.from("site_settings").select("value").eq("key", "about_image_url").maybeSingle(),
         supabase.from("site_settings").select("value").eq("key", "profile_image_url").maybeSingle(),
         supabase.from("projects").select("*").order("order_index"),
+        supabase.from("video_tools").select("*").order("order_index"),
+        supabase.from("site_settings").select("value").eq("key", "portfolio_url").maybeSingle(),
       ]);
 
       return {
@@ -548,6 +552,8 @@ const AdminCVManager = () => {
         aboutImageUrl: aboutImageRes.data?.value || null,
         profileImageUrl: profileImageRes.data?.value || null,
         projects: projectsRes.data || [],
+        tools: toolsRes.data || [],
+        portfolioUrl: portfolioUrlRes.data?.value || "https://portofoliobukhari.lovable.app",
       };
     },
   });
