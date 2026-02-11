@@ -193,6 +193,12 @@ Use this exact image URL: ${profileImageUrl}
 ${templateInstructions[selectedTemplate] || templateInstructions.oxford}
 ${photoInstruction}
 
+WEBSITE LINK (IMPORTANT):
+- Include a clickable link to the portfolio website in the contact/header section of the CV
+- Website URL: https://portofoliobukhari.lovable.app
+- Display it as: Portfolio: <a href="https://portofoliobukhari.lovable.app" target="_blank" style="color: #2563eb; text-decoration: underline;">portofoliobukhari.lovable.app</a>
+- Make sure the link is clickable and opens in a new tab
+
 IMPORTANT: The CV MUST be written entirely in ${targetLanguage}. Translate all content including section headings, dates format, and descriptions to ${targetLanguage}.
 ${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RTL styling." : ""}
 
