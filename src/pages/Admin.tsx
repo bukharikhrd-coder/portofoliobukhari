@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   X,
+  ChevronDown,
   Home,
   Code,
   GraduationCap,
@@ -82,6 +83,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("analytics");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [stats, setStats] = useState({
     projects: 0,
     messages: 0,
@@ -118,6 +120,10 @@ const Admin = () => {
     await signOut();
     navigate("/");
   };
+
+  const toggleGroup = useCallback((group: string) => {
+    setCollapsedGroups(prev => ({ ...prev, [group]: !prev[group] }));
+  }, []);
 
   if (loading) {
     return (
@@ -219,39 +225,57 @@ const Admin = () => {
             { group: "Portfolio", items: ["projects", "techstack", "softwaretools", "videoportfolio", "journeygallery"] },
             { group: "Tools", items: ["cvmanager", "colortheme", "sectionorder"] },
             { group: "Communication", items: ["contact", "footersocial", "messages"] },
-          ].map((group) => (
-            <div key={group.group} className="mb-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-3 py-1.5">
-                {group.group}
-              </p>
-              {group.items.map((itemId) => {
-                const item = navItems.find((n) => n.id === itemId);
-                if (!item) return null;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      setSidebarOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-all duration-200 rounded-md text-sm ${
-                      activeTab === item.id
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    }`}
-                  >
-                    <item.icon size={16} />
-                    <span className="font-medium truncate">{item.label}</span>
-                    {item.id === "messages" && stats.unreadMessages > 0 && (
-                      <span className="ml-auto bg-destructive text-destructive-foreground text-xs px-1.5 py-0.5 rounded-full">
-                        {stats.unreadMessages}
-                      </span>
+          ].map((group) => {
+            const isCollapsed = collapsedGroups[group.group] ?? false;
+            const hasActiveItem = group.items.includes(activeTab);
+            return (
+              <div key={group.group} className="mb-1">
+                <button
+                  onClick={() => toggleGroup(group.group)}
+                  className="w-full flex items-center justify-between px-3 py-1.5 group"
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">
+                    {group.group}
+                    {hasActiveItem && isCollapsed && (
+                      <span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-primary" />
                     )}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
+                  </p>
+                  <ChevronDown
+                    size={12}
+                    className={`text-muted-foreground transition-transform duration-200 ${isCollapsed ? "-rotate-90" : ""}`}
+                  />
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"}`}>
+                  {group.items.map((itemId) => {
+                    const item = navItems.find((n) => n.id === itemId);
+                    if (!item) return null;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          setActiveTab(item.id);
+                          setSidebarOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-all duration-200 rounded-md text-sm ${
+                          activeTab === item.id
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        }`}
+                      >
+                        <item.icon size={16} />
+                        <span className="font-medium truncate">{item.label}</span>
+                        {item.id === "messages" && stats.unreadMessages > 0 && (
+                          <span className="ml-auto bg-destructive text-destructive-foreground text-xs px-1.5 py-0.5 rounded-full">
+                            {stats.unreadMessages}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </nav>
 
         {/* Fixed Footer */}
