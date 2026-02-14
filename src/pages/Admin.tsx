@@ -178,13 +178,20 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-card border border-border"
-      >
-        {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      {/* Mobile fixed header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card border-b border-border flex items-center justify-between px-4">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-md hover:bg-secondary"
+        >
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+        <div className="flex items-center gap-2">
+          <LayoutDashboard className="text-primary" size={18} />
+          <span className="font-display text-lg">ADMIN</span>
+        </div>
+        <div className="w-9" /> {/* Spacer for centering */}
+      </div>
 
       {/* Sidebar */}
       <aside
@@ -192,13 +199,16 @@ const Admin = () => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        {/* Fixed Logo Header */}
-        <div className="shrink-0 p-6 border-b border-border">
+        {/* Logo Header - hidden on mobile (shown in top bar instead) */}
+        <div className="shrink-0 p-6 border-b border-border hidden lg:block">
           <Link to="/" className="flex items-center gap-2">
             <LayoutDashboard className="text-primary" size={24} />
             <span className="font-display text-xl">ADMIN</span>
           </Link>
         </div>
+
+        {/* Mobile spacer for fixed header */}
+        <div className="shrink-0 h-14 lg:hidden" />
 
         {/* Scrollable Navigation */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
@@ -264,7 +274,7 @@ const Admin = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 lg:p-8 overflow-auto lg:ml-64">
+      <main className="flex-1 pt-16 lg:pt-0 p-4 lg:p-8 overflow-auto lg:ml-64 min-w-0">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 20 }}
