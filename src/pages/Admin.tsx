@@ -195,8 +195,8 @@ const Admin = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border transform transition-transform duration-300 flex flex-col ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border transform transition-all duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] flex flex-col ${
+          sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100"
         }`}
       >
         {/* Logo Header - hidden on mobile (shown in top bar instead) */}
@@ -288,7 +288,7 @@ const Admin = () => {
       {/* Overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-background/80 z-30 lg:hidden"
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden animate-fade-in"
           onClick={() => setSidebarOpen(false)}
         />
       )}
