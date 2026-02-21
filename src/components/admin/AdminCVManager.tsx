@@ -502,6 +502,7 @@ const AdminCVManager = () => {
   const [isEditingPortfolio, setIsEditingPortfolio] = useState(false);
   const [selectedPhotoSource, setSelectedPhotoSource] = useState<"about" | "hero" | "custom">("about");
   const [customPhotoUrl, setCustomPhotoUrl] = useState<string | null>(null);
+  const [targetPosition, setTargetPosition] = useState("");
 
   // Fetch all portfolio data for review and generation
   const { data: portfolioData, refetch: refetchPortfolioData } = useQuery({
@@ -693,7 +694,7 @@ const AdminCVManager = () => {
       };
       
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
-        body: { portfolioData: portfolioDataWithSelectedPhoto, action: "generate_cv", language: selectedLanguage, template: selectedTemplate },
+        body: { portfolioData: portfolioDataWithSelectedPhoto, action: "generate_cv", language: selectedLanguage, template: selectedTemplate, targetPosition: targetPosition.trim() || undefined },
       });
 
       if (error) throw error;
@@ -1341,8 +1342,8 @@ const AdminCVManager = () => {
                 </button>
               </div>
 
-              {/* Custom Photo Upload */}
-              {selectedPhotoSource === "custom" && (
+            {/* Custom Photo Upload */}
+            {selectedPhotoSource === "custom" && (
                 <div className="mt-4 p-4 border border-border rounded-lg bg-secondary/50">
                   <ImageUpload
                     currentImage={customPhotoUrl}
@@ -1354,6 +1355,21 @@ const AdminCVManager = () => {
                   />
                 </div>
               )}
+            </div>
+
+            {/* Target Position */}
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2 block">Target Position (Optional)</label>
+              <input
+                type="text"
+                value={targetPosition}
+                onChange={(e) => setTargetPosition(e.target.value)}
+                placeholder="e.g. Frontend Developer, Data Analyst, Project Manager..."
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Masukkan posisi yang ingin dilamar. CV akan disesuaikan kata-kata dan fokusnya sesuai posisi tersebut. Kosongkan untuk CV umum.
+              </p>
             </div>
             
             <Button 
