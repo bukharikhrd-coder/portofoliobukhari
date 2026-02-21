@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { pdfText, portfolioData, action, language, template } = await req.json();
+    const { pdfText, portfolioData, action, language, template, targetPosition } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     // Get portfolio URL from request or use default
@@ -211,6 +211,16 @@ SKILLS & TOOLS SECTION (IMPORTANT):
 
 IMPORTANT: The CV MUST be written entirely in ${targetLanguage}. Translate all content including section headings, dates format, and descriptions to ${targetLanguage}.
 ${isArabic ? "For Arabic, add dir=\"rtl\" to the body tag and use appropriate RTL styling." : ""}
+${targetPosition ? `
+TARGET POSITION (CRITICAL):
+The candidate is applying for the position of "${targetPosition}". You MUST tailor the entire CV to this target role:
+- Rewrite the professional summary to highlight relevance to "${targetPosition}"
+- Emphasize and prioritize experience, skills, and achievements most relevant to "${targetPosition}"
+- Use industry-specific keywords and terminology related to "${targetPosition}"
+- Reorder bullet points to put the most relevant accomplishments first
+- Adjust skill descriptions to match what recruiters look for in a "${targetPosition}" role
+- If applicable, adjust job descriptions to emphasize transferable skills relevant to "${targetPosition}"
+` : ""}
 
 Return ONLY valid HTML content (no markdown, no code blocks) that can be directly rendered. Use inline styles for formatting. The HTML should be printable to PDF.`;
 
