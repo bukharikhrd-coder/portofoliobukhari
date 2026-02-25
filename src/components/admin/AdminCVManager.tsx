@@ -33,7 +33,9 @@ import {
   Home
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ImageUpload from "./ImageUpload";
+import { asBlob } from "html-docx-js-typescript";
 import * as pdfjsLib from "pdfjs-dist";
 
 // Configure PDF.js worker
@@ -749,7 +751,7 @@ const AdminCVManager = () => {
     }
   };
 
-  const handleDownloadCV = () => {
+  const handleDownloadCVPDF = () => {
     const cvToDownload = editedCV || generatedCV;
     if (!cvToDownload) return;
 
@@ -773,6 +775,28 @@ const AdminCVManager = () => {
       `);
       printWindow.document.close();
       printWindow.print();
+    }
+  };
+
+  const handleDownloadCVWord = async () => {
+    const cvToDownload = editedCV || generatedCV;
+    if (!cvToDownload) return;
+
+    try {
+      const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${cvToDownload}</body></html>`;
+      const blob = await asBlob(fullHtml) as Blob;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `cv-${selectedLanguage}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("CV Word document downloaded!");
+    } catch (error) {
+      console.error("Error generating Word document:", error);
+      toast.error("Failed to generate Word document.");
     }
   };
 
@@ -1456,10 +1480,24 @@ const AdminCVManager = () => {
                       </Button>
                     </>
                   )}
-                  <Button onClick={handleDownloadCV} variant="outline" size="sm" className="gap-2">
-                    <Download size={14} />
-                    Print / PDF
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Download size={14} />
+                        Export
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={handleDownloadCVPDF} className="gap-2 cursor-pointer">
+                        <Printer size={14} />
+                        Export as PDF
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleDownloadCVWord} className="gap-2 cursor-pointer">
+                        <FileText size={14} />
+                        Export as Word (.docx)
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
               
