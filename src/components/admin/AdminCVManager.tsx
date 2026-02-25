@@ -505,6 +505,7 @@ const AdminCVManager = () => {
   const [selectedPhotoSource, setSelectedPhotoSource] = useState<"about" | "hero" | "custom">("about");
   const [customPhotoUrl, setCustomPhotoUrl] = useState<string | null>(null);
   const [targetPosition, setTargetPosition] = useState("");
+  const [includeProjects, setIncludeProjects] = useState(false);
 
   // Fetch all portfolio data for review and generation
   const { data: portfolioData, refetch: refetchPortfolioData } = useQuery({
@@ -696,7 +697,7 @@ const AdminCVManager = () => {
       };
       
       const { data, error } = await supabase.functions.invoke("analyze-cv", {
-        body: { portfolioData: portfolioDataWithSelectedPhoto, action: "generate_cv", language: selectedLanguage, template: selectedTemplate, targetPosition: targetPosition.trim() || undefined },
+        body: { portfolioData: portfolioDataWithSelectedPhoto, action: "generate_cv", language: selectedLanguage, template: selectedTemplate, targetPosition: targetPosition.trim() || undefined, includeProjects },
       });
 
       if (error) throw error;
@@ -1394,6 +1395,29 @@ const AdminCVManager = () => {
               <p className="text-xs text-muted-foreground mt-1.5">
                 Masukkan posisi yang ingin dilamar. CV akan disesuaikan kata-kata dan fokusnya sesuai posisi tersebut. Kosongkan untuk CV umum.
               </p>
+            </div>
+
+            {/* Include Projects */}
+            <div className="mb-5">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={includeProjects}
+                  onChange={(e) => setIncludeProjects(e.target.checked)}
+                  className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                />
+                <div>
+                  <span className="text-sm font-medium">Sertakan Project/Portfolio</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Tambahkan daftar project ke CV. AI akan menyesuaikan deskripsi project sesuai target position.
+                  </p>
+                </div>
+              </label>
+              {includeProjects && portfolioData?.projects && (
+                <p className="text-xs text-muted-foreground mt-2 ml-7">
+                  {portfolioData.projects.length} project akan disertakan dalam CV
+                </p>
+              )}
             </div>
             
             <Button 
