@@ -35,7 +35,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ImageUpload from "./ImageUpload";
-import { asBlob } from "html-docx-js-typescript";
 import * as pdfjsLib from "pdfjs-dist";
 
 // Configure PDF.js worker
@@ -784,12 +783,110 @@ const AdminCVManager = () => {
     if (!cvToDownload) return;
 
     try {
-      const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${cvToDownload}</body></html>`;
-      const blob = await asBlob(fullHtml) as Blob;
+      // Build a proper Word-compatible HTML document using MHTML format
+      const wordHtml = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<meta name="ProgId" content="Word.Document">
+<meta name="Generator" content="Microsoft Word 15">
+<meta name="Originator" content="Microsoft Word 15">
+<!--[if gte mso 9]>
+<xml>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  @page {
+    size: A4;
+    margin: 2cm 2cm 2cm 2cm;
+  }
+  body {
+    font-family: 'Calibri', 'Arial', sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    font-size: 22pt;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin: 0 0 4pt 0;
+    border-bottom: 2pt solid #2563eb;
+    padding-bottom: 6pt;
+  }
+  h2 {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #2563eb;
+    margin: 14pt 0 6pt 0;
+    border-bottom: 1pt solid #e5e7eb;
+    padding-bottom: 4pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+  }
+  h3 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin: 8pt 0 2pt 0;
+  }
+  h4 {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #555555;
+    margin: 6pt 0 2pt 0;
+  }
+  p {
+    margin: 2pt 0 4pt 0;
+    font-size: 11pt;
+  }
+  ul {
+    margin: 2pt 0 6pt 0;
+    padding-left: 18pt;
+  }
+  li {
+    margin: 1pt 0;
+    font-size: 11pt;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  td, th {
+    padding: 4pt 6pt;
+    vertical-align: top;
+    font-size: 11pt;
+  }
+  a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+  .mso-section {
+    margin-bottom: 10pt;
+  }
+</style>
+</head>
+<body>
+${cvToDownload}
+</body>
+</html>`;
+
+      const blob = new Blob(['\ufeff' + wordHtml], { 
+        type: 'application/msword' 
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `cv-${selectedLanguage}.docx`;
+      a.download = `cv-${selectedLanguage}.doc`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1518,7 +1615,7 @@ const AdminCVManager = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleDownloadCVWord} className="gap-2 cursor-pointer">
                         <FileText size={14} />
-                        Export as Word (.docx)
+                        Export as Word (.doc)
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
