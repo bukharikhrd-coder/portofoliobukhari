@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { pdfText, portfolioData, action, language, template, targetPosition } = await req.json();
+    const { pdfText, portfolioData, action, language, template, targetPosition, includeProjects } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     // Get portfolio URL from request or use default
@@ -220,6 +220,18 @@ The candidate is applying for the position of "${targetPosition}". You MUST tail
 - Reorder bullet points to put the most relevant accomplishments first
 - Adjust skill descriptions to match what recruiters look for in a "${targetPosition}" role
 - If applicable, adjust job descriptions to emphasize transferable skills relevant to "${targetPosition}"
+` : ""}
+${includeProjects && portfolioData?.projects?.length > 0 ? `
+PROJECTS/PORTFOLIO SECTION (IMPORTANT):
+Include a "Projects" or "Portfolio" section in the CV showcasing the candidate's work.
+${targetPosition ? `Adapt each project description to highlight relevance to the "${targetPosition}" role. Rewrite descriptions to emphasize skills and outcomes that matter for "${targetPosition}".` : "Present each project professionally with clear descriptions."}
+For each project, include:
+- Project title
+- Brief description (1-2 sentences, AI-optimized for the target role if specified)
+- Technologies/tools used (infer from description if not explicit)
+- Year if available
+- Do NOT include project images or links in the CV
+- Keep it concise and professional
 ` : ""}
 
 Return ONLY valid HTML content (no markdown, no code blocks) that can be directly rendered. Use inline styles for formatting. The HTML should be printable to PDF.`;
