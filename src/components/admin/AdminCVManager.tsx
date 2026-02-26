@@ -132,16 +132,22 @@ const EditableCVIframe = ({
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
             <style>
               * { box-sizing: border-box; }
               body { 
                 margin: 0; 
                 padding: 24px; 
-                font-family: 'Times New Roman', serif;
+                font-family: 'Crimson Pro', 'Georgia', 'Times New Roman', serif;
                 background: white;
-                color: black;
+                color: #1a1a1a;
+                font-size: 11pt;
+                line-height: 1.45;
                 outline: none;
               }
+              h1 { font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif; }
+              h2 { font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif; }
+              h3 { font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif; }
               ${isEditing ? `
                 body:focus { outline: 2px solid #f59e0b; outline-offset: -2px; }
                 [contenteditable]:hover { background: rgba(245, 158, 11, 0.1); }
@@ -751,22 +757,114 @@ const AdminCVManager = () => {
     }
   };
 
+  const cvExportStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    @page {
+      size: A4;
+      margin: 20mm 18mm 20mm 18mm;
+    }
+    
+    body {
+      font-family: 'Crimson Pro', 'Georgia', 'Times New Roman', serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: #1a1a1a;
+      background: white;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 20mm 18mm;
+    }
+    
+    h1 {
+      font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 6pt;
+      color: #111;
+    }
+    
+    h2 {
+      font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 11pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      border-bottom: 1.5pt solid #2c2c2c;
+      padding-bottom: 3pt;
+      margin-top: 14pt;
+      margin-bottom: 8pt;
+      color: #2c2c2c;
+    }
+    
+    h3 {
+      font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 11pt;
+      font-weight: 600;
+      margin-bottom: 1pt;
+      color: #1a1a1a;
+    }
+    
+    p {
+      font-size: 10.5pt;
+      line-height: 1.5;
+      margin-bottom: 4pt;
+      text-align: justify;
+      hyphens: auto;
+    }
+    
+    ul {
+      padding-left: 16pt;
+      margin: 4pt 0 8pt 0;
+    }
+    
+    li {
+      font-size: 10.5pt;
+      line-height: 1.5;
+      margin-bottom: 2pt;
+      text-align: justify;
+    }
+    
+    a {
+      color: #1a56db;
+      text-decoration: none;
+    }
+    
+    strong { font-weight: 600; }
+    em, .italic { font-style: italic; color: #444; }
+    
+    .contact-info {
+      font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 9.5pt;
+      color: #555;
+    }
+    
+    @media print {
+      body { padding: 0; }
+      a { color: #1a1a1a !important; }
+    }
+  `;
+
   const handleDownloadCVPDF = () => {
     const cvToDownload = editedCV || generatedCV;
     if (!cvToDownload) return;
 
+    const templateLabel = CV_TEMPLATES.find(t => t.id === selectedTemplate)?.label || 'Professional';
     const printWindow = window.open("", "_blank");
     if (printWindow) {
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>CV - ${CV_TEMPLATES.find(t => t.id === selectedTemplate)?.label || 'Professional'}</title>
-          <style>
-            @media print {
-              body { margin: 0; padding: 20px; }
-            }
-          </style>
+          <meta charset="UTF-8">
+          <title>CV - ${templateLabel}</title>
+          <style>${cvExportStyles}</style>
         </head>
         <body>
           ${cvToDownload}
@@ -774,7 +872,10 @@ const AdminCVManager = () => {
         </html>
       `);
       printWindow.document.close();
-      printWindow.print();
+      // Wait for fonts to load before printing
+      setTimeout(() => {
+        printWindow.print();
+      }, 800);
     }
   };
 
@@ -783,12 +884,61 @@ const AdminCVManager = () => {
     if (!cvToDownload) return;
 
     try {
-      const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${cvToDownload}</body></html>`;
+      const wordStyles = `
+        body {
+          font-family: 'Cambria', 'Georgia', 'Times New Roman', serif;
+          font-size: 11pt;
+          line-height: 1.45;
+          color: #1a1a1a;
+          max-width: 180mm;
+          margin: 0 auto;
+          padding: 10mm;
+        }
+        h1 {
+          font-family: 'Calibri', 'Arial', sans-serif;
+          font-size: 20pt;
+          font-weight: bold;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-bottom: 4pt;
+          color: #111;
+        }
+        h2 {
+          font-family: 'Calibri', 'Arial', sans-serif;
+          font-size: 11pt;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          border-bottom: 1.5pt solid #2c2c2c;
+          padding-bottom: 2pt;
+          margin-top: 12pt;
+          margin-bottom: 6pt;
+          color: #2c2c2c;
+        }
+        h3 {
+          font-family: 'Calibri', 'Arial', sans-serif;
+          font-size: 11pt;
+          font-weight: bold;
+          margin-bottom: 1pt;
+        }
+        p {
+          font-size: 10.5pt;
+          line-height: 1.5;
+          margin-bottom: 4pt;
+          text-align: justify;
+        }
+        ul { padding-left: 16pt; margin: 4pt 0 8pt 0; }
+        li { font-size: 10.5pt; line-height: 1.5; margin-bottom: 2pt; }
+        a { color: #1a56db; text-decoration: none; }
+        strong { font-weight: bold; }
+      `;
+      const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${wordStyles}</style></head><body>${cvToDownload}</body></html>`;
       const blob = await asBlob(fullHtml) as Blob;
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `cv-${selectedLanguage}.docx`;
+      const name = portfolioData?.hero?.headline_1 || 'cv';
+      a.download = `CV-${name.replace(/\s+/g, '_')}-${selectedLanguage}.docx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
