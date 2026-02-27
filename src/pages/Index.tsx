@@ -17,6 +17,7 @@ import Footer from "@/components/Footer";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import PWAUpdatePrompt from "@/components/PWAUpdatePrompt";
 import BackToDashboard from "@/components/BackToDashboard";
+import FloatingCVButton from "@/components/FloatingCVButton";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 // Map section keys to their components
@@ -101,6 +102,7 @@ const Index = () => {
         <PWAInstallPrompt />
         <PWAUpdatePrompt />
         <BackToDashboard />
+        <FloatingCVButton />
       </div>
     </>
   );
