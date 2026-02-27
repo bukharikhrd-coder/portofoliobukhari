@@ -35,7 +35,7 @@ const FloatingCVButton = () => {
         window.open(data.value, "_blank");
       } else {
         const { data: fnData, error } = await supabase.functions.invoke("analyze-cv", {
-          body: { action: "generate", language: "en", targetPosition: "" },
+          body: { action: "generate_cv", language: "en", portfolioData: {}, targetPosition: "" },
         });
         if (error) throw error;
 
