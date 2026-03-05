@@ -11,6 +11,7 @@ const Experience = () => {
       const { data, error } = await supabase
         .from("work_experience")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index", { ascending: true });
       if (error) throw error;
       return data;

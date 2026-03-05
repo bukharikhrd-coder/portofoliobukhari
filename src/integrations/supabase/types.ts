@@ -254,6 +254,7 @@ export type Database = {
           id: string
           institution: string
           is_current: boolean | null
+          is_visible: boolean
           location: string | null
           order_index: number | null
           start_year: string
@@ -268,6 +269,7 @@ export type Database = {
           id?: string
           institution: string
           is_current?: boolean | null
+          is_visible?: boolean
           location?: string | null
           order_index?: number | null
           start_year: string
@@ -282,6 +284,7 @@ export type Database = {
           id?: string
           institution?: string
           is_current?: boolean | null
+          is_visible?: boolean
           location?: string | null
           order_index?: number | null
           start_year?: string
@@ -621,6 +624,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_visible: boolean
           order_index: number | null
           organization: string | null
           title: string
@@ -632,6 +636,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_visible?: boolean
           order_index?: number | null
           organization?: string | null
           title: string
@@ -643,6 +648,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_visible?: boolean
           order_index?: number | null
           organization?: string | null
           title?: string
@@ -716,6 +722,7 @@ export type Database = {
           created_at: string
           icon_name: string | null
           id: string
+          is_visible: boolean
           name: string
           order_index: number | null
           proficiency_level: string | null
@@ -724,6 +731,7 @@ export type Database = {
           created_at?: string
           icon_name?: string | null
           id?: string
+          is_visible?: boolean
           name: string
           order_index?: number | null
           proficiency_level?: string | null
@@ -732,6 +740,7 @@ export type Database = {
           created_at?: string
           icon_name?: string | null
           id?: string
+          is_visible?: boolean
           name?: string
           order_index?: number | null
           proficiency_level?: string | null
@@ -776,6 +785,7 @@ export type Database = {
           end_date: string | null
           id: string
           is_current: boolean | null
+          is_visible: boolean
           location: string | null
           order_index: number | null
           position: string
@@ -789,6 +799,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           is_current?: boolean | null
+          is_visible?: boolean
           location?: string | null
           order_index?: number | null
           position: string
@@ -802,6 +813,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           is_current?: boolean | null
+          is_visible?: boolean
           location?: string | null
           order_index?: number | null
           position?: string

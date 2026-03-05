@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Pencil, Check, X, Smile } from "lucide-react";
+import { Loader2, Plus, Trash2, Pencil, Check, X, Smile, Eye, EyeOff } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -197,7 +197,7 @@ const AdminSoftwareTools = () => {
 
                 return (
                   <SortableItemWrapper key={tool.id} id={tool.id} disabled={editingId !== null}>
-                    <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className={`relative p-5 bg-card border rounded-xl transition-all ${isEditing ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"}`}>
+                    <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className={`relative p-5 bg-card border rounded-xl transition-all ${isEditing ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"} ${!(tool as any).is_visible ? 'opacity-50' : ''}`}>
                       {isEditing ? (
                         <div className="space-y-4">
                           <div className="flex items-start gap-3">
@@ -222,10 +222,25 @@ const AdminSoftwareTools = () => {
                             {ToolIcon ? <ToolIcon size={26} className="text-primary" /> : <span className="text-xl font-bold text-primary">{tool.name.charAt(0)}</span>}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-medium truncate">{tool.name}</h4>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-medium truncate">{tool.name}</h4>
+                              {!(tool as any).is_visible && <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground rounded">Hidden</span>}
+                            </div>
                             <span className={`inline-block mt-1 px-2 py-0.5 text-xs font-medium rounded-full border ${getProficiencyColor(tool.proficiency_level)}`}>{tool.proficiency_level}</span>
                           </div>
                           <div className="flex items-center gap-1">
+                            <button
+                              onClick={async () => {
+                                const newVis = !(tool as any).is_visible;
+                                await supabase.from("video_tools").update({ is_visible: newVis }).eq("id", tool.id);
+                                setItems(items.map(i => i.id === tool.id ? { ...i, is_visible: newVis } as any : i));
+                                toast.success(newVis ? "Visible" : "Hidden");
+                              }}
+                              className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg"
+                              title={(tool as any).is_visible ? "Hide" : "Show"}
+                            >
+                              {(tool as any).is_visible !== false ? <Eye size={16} /> : <EyeOff size={16} />}
+                            </button>
                             <button onClick={() => startEdit(tool)} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg"><Pencil size={16} /></button>
                             <button onClick={() => deleteTool(tool.id)} className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"><Trash2 size={16} /></button>
                           </div>

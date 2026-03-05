@@ -11,6 +11,7 @@ const Trainings = () => {
       const { data, error } = await supabase
         .from('trainings')
         .select('*')
+        .eq('is_visible', true)
         .order('order_index', { ascending: true });
       
       if (error) throw error;

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff } from "lucide-react";
 import { SortableList } from "./SortableList";
 
 interface WorkExperience {
@@ -15,6 +15,7 @@ interface WorkExperience {
   description: string | null;
   location: string | null;
   order_index: number | null;
+  is_visible: boolean;
 }
 
 const AdminExperience = () => {
@@ -148,13 +149,28 @@ const AdminExperience = () => {
           </div>
         </div>
       ) : (
-        <div className="flex items-start justify-between">
+        <div className={`flex items-start justify-between ${!exp.is_visible ? 'opacity-50' : ''}`}>
           <div>
-            <h3 className="text-lg font-semibold">{exp.position}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-semibold">{exp.position}</h3>
+              {!exp.is_visible && <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground rounded">Hidden</span>}
+            </div>
             <p className="text-muted-foreground">{exp.company_name} • {exp.start_date} - {exp.is_current ? "Present" : exp.end_date}</p>
             {exp.description && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{exp.description}</p>}
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={async () => {
+                const newVis = !exp.is_visible;
+                await supabase.from("work_experience").update({ is_visible: newVis }).eq("id", exp.id);
+                queryClient.invalidateQueries({ queryKey: ["admin_work_experience"] });
+                toast.success(newVis ? "Visible" : "Hidden");
+              }}
+              className="p-2 hover:bg-secondary rounded"
+              title={exp.is_visible ? "Hide" : "Show"}
+            >
+              {exp.is_visible !== false ? <Eye size={18} /> : <EyeOff size={18} />}
+            </button>
             <button onClick={() => handleEdit(exp)} className="p-2 hover:bg-secondary rounded"><Pencil size={18} /></button>
             <button onClick={() => deleteMutation.mutate(exp.id)} className="p-2 hover:bg-destructive/20 text-destructive rounded"><Trash2 size={18} /></button>
           </div>
