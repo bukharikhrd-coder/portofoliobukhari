@@ -433,6 +433,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_featured: boolean | null
+          is_visible: boolean
           order_index: number | null
           show_link: boolean | null
           title: string
@@ -448,6 +449,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
+          is_visible?: boolean
           order_index?: number | null
           show_link?: boolean | null
           title: string
@@ -463,6 +465,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
+          is_visible?: boolean
           order_index?: number | null
           show_link?: boolean | null
           title?: string
@@ -813,6 +816,7 @@ export type Database = {
           description: string | null
           id: string
           image_url: string
+          is_visible: boolean
           order_index: number | null
           title: string
           updated_at: string
@@ -823,6 +827,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url: string
+          is_visible?: boolean
           order_index?: number | null
           title: string
           updated_at?: string
@@ -833,6 +838,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string
+          is_visible?: boolean
           order_index?: number | null
           title?: string
           updated_at?: string

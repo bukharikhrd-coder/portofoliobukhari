@@ -45,6 +45,7 @@ const Works = () => {
       const { data: projectsData } = await supabase
         .from("projects")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index");
 
       if (projectsData) {
@@ -69,7 +70,7 @@ const Works = () => {
   );
 
   const filteredProjects = translatedProjects.filter(
-    (project) => activeCategory === "all" || project.category === activeCategory
+    (project) => (project as any).is_visible !== false && (activeCategory === "all" || project.category === activeCategory)
   );
 
   return (
