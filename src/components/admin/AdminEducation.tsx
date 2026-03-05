@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff } from "lucide-react";
 
 interface Education {
   id: string;
@@ -131,13 +131,28 @@ const AdminEducation = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-start justify-between">
+              <div className={`flex items-start justify-between ${!(edu as any).is_visible ? 'opacity-50' : ''}`}>
                 <div>
-                  <h3 className="text-lg font-semibold">{edu.degree} {edu.field_of_study && `- ${edu.field_of_study}`}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold">{edu.degree} {edu.field_of_study && `- ${edu.field_of_study}`}</h3>
+                    {!(edu as any).is_visible && <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground rounded">Hidden</span>}
+                  </div>
                   <p className="text-muted-foreground">{edu.institution} • {edu.start_year} - {edu.is_current ? "Present" : edu.end_year}</p>
                   {edu.description && <p className="text-sm text-muted-foreground mt-2">{edu.description}</p>}
                 </div>
                 <div className="flex gap-2">
+                  <button
+                    onClick={async () => {
+                      const newVis = !(edu as any).is_visible;
+                      await supabase.from("education").update({ is_visible: newVis }).eq("id", edu.id);
+                      queryClient.invalidateQueries({ queryKey: ["admin_education"] });
+                      toast.success(newVis ? "Visible" : "Hidden");
+                    }}
+                    className="p-2 hover:bg-secondary"
+                    title={(edu as any).is_visible ? "Hide" : "Show"}
+                  >
+                    {(edu as any).is_visible !== false ? <Eye size={18} /> : <EyeOff size={18} />}
+                  </button>
                   <button onClick={() => { setEditingId(edu.id); setFormData(edu); }} className="p-2 hover:bg-secondary"><Pencil size={18} /></button>
                   <button onClick={() => deleteMutation.mutate(edu.id)} className="p-2 hover:bg-destructive/20 text-destructive"><Trash2 size={18} /></button>
                 </div>

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Trash2, Plus, Award, Pencil, X, Check } from "lucide-react";
+import { Trash2, Plus, Award, Pencil, X, Check, Eye, EyeOff } from "lucide-react";
 import { SortableList, SortableItemWrapper } from "./SortableList";
 import {
   DndContext,
@@ -198,16 +198,32 @@ const AdminTrainings = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex items-start gap-4">
+                      <div className={`flex items-start gap-4 ${!(training as any).is_visible ? 'opacity-50' : ''}`}>
                         <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                           <Award className="w-5 h-5 text-primary" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold">{training.title}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">{training.title}</h3>
+                            {!(training as any).is_visible && <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground rounded">Hidden</span>}
+                          </div>
                           <div className="text-sm text-muted-foreground">{training.organization} {training.year && `• ${training.year}`}</div>
                           {training.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{training.description}</p>}
                         </div>
                         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={async () => {
+                              const newVis = !(training as any).is_visible;
+                              await supabase.from("trainings").update({ is_visible: newVis }).eq("id", training.id);
+                              queryClient.invalidateQueries({ queryKey: ["admin-trainings"] });
+                              toast.success(newVis ? "Visible" : "Hidden");
+                            }}
+                            title={(training as any).is_visible ? "Hide" : "Show"}
+                          >
+                            {(training as any).is_visible !== false ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                          </Button>
                           <Button size="icon" variant="ghost" onClick={() => startEdit(training)}><Pencil className="w-4 h-4" /></Button>
                           <Button size="icon" variant="ghost" className="text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(training.id)}><Trash2 className="w-4 h-4" /></Button>
                         </div>

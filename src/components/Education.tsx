@@ -11,6 +11,7 @@ const Education = () => {
       const { data, error } = await supabase
         .from("education")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index", { ascending: true });
       if (error) throw error;
       return data;

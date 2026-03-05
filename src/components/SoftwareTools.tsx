@@ -21,6 +21,7 @@ const SoftwareTools = () => {
       const { data, error } = await supabase
         .from("video_tools")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index", { ascending: true });
       if (error) throw error;
       return data as ToolItem[];
