@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Edit2, X, Check } from "lucide-react";
+import { Loader2, Plus, Trash2, Edit2, X, Check, Eye, EyeOff } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import { SortableList } from "./SortableList";
 
@@ -12,6 +12,7 @@ interface JourneyItem {
   image_url: string;
   year: string | null;
   order_index: number | null;
+  is_visible: boolean;
 }
 
 const AdminWorkJourneyGallery = () => {
@@ -285,7 +286,7 @@ const AdminWorkJourneyGallery = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-4 p-3">
+              <div className={`flex items-center gap-4 p-3 ${!item.is_visible ? 'opacity-50' : ''}`}>
                 {/* Thumbnail */}
                 <div className="w-16 h-16 flex-shrink-0 bg-secondary/50 overflow-hidden rounded">
                   <img
@@ -297,7 +298,12 @@ const AdminWorkJourneyGallery = () => {
                 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-foreground text-sm truncate">{item.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium text-foreground text-sm truncate">{item.title}</h3>
+                    {!item.is_visible && (
+                      <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground flex-shrink-0 rounded">Hidden</span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     {item.year && (
                       <span className="text-primary text-xs">{item.year}</span>
@@ -310,6 +316,18 @@ const AdminWorkJourneyGallery = () => {
                 
                 {/* Actions */}
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                  <button
+                    onClick={async () => {
+                      const newVis = !item.is_visible;
+                      await supabase.from("work_journey_gallery").update({ is_visible: newVis }).eq("id", item.id);
+                      setItems(items.map(i => i.id === item.id ? { ...i, is_visible: newVis } : i));
+                      toast.success(newVis ? "Item visible" : "Item hidden");
+                    }}
+                    className="p-1.5 bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground transition-colors rounded"
+                    title={item.is_visible ? "Hide" : "Show"}
+                  >
+                    {item.is_visible ? <Eye size={14} /> : <EyeOff size={14} />}
+                  </button>
                   <button
                     onClick={() => handleEdit(item)}
                     className="p-1.5 bg-background/80 text-foreground hover:bg-primary hover:text-primary-foreground transition-colors rounded"

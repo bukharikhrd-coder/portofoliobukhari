@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Edit2, X, Save, Upload } from "lucide-react";
+import { Loader2, Plus, Trash2, Edit2, X, Save, Upload, Eye, EyeOff } from "lucide-react";
 import { SortableList } from "./SortableList";
 
 interface Project {
@@ -16,6 +16,7 @@ interface Project {
   is_featured: boolean | null;
   order_index: number | null;
   show_link: boolean | null;
+  is_visible: boolean;
   tags?: string[];
 }
 
@@ -46,6 +47,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
     is_featured: false,
     order_index: 0,
     show_link: true,
+    is_visible: true,
     tags: [],
   };
 
@@ -516,7 +518,7 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
         items={projects}
         onReorder={handleReorder}
         renderItem={(project) => (
-          <div className="bg-card border border-border overflow-hidden group flex gap-3 p-3">
+          <div className={`bg-card border border-border overflow-hidden group flex gap-3 p-3 ${!project.is_visible ? 'opacity-50' : ''}`}>
             {project.image_url && (
               <div className="w-20 h-14 flex-shrink-0 overflow-hidden bg-muted">
                 <img
@@ -530,6 +532,9 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h3 className="font-medium text-sm truncate">{project.title}</h3>
+                  {!project.is_visible && (
+                    <span className="text-[10px] px-1.5 py-0.5 bg-muted text-muted-foreground flex-shrink-0">Hidden</span>
+                  )}
                   <span className="text-primary text-[10px] tracking-wide uppercase flex-shrink-0">
                     {project.category}
                   </span>
@@ -553,6 +558,18 @@ const AdminProjects = ({ onUpdate }: AdminProjectsProps) => {
                 </div>
               </div>
               <div className="flex gap-1 flex-shrink-0">
+                <button
+                  onClick={async () => {
+                    const newVisibility = !project.is_visible;
+                    await supabase.from("projects").update({ is_visible: newVisibility }).eq("id", project.id);
+                    setProjects(projects.map(p => p.id === project.id ? { ...p, is_visible: newVisibility } : p));
+                    toast.success(newVisibility ? "Project visible" : "Project hidden");
+                  }}
+                  className={`p-1.5 border border-border text-xs transition-colors ${project.is_visible ? 'hover:border-muted-foreground' : 'hover:border-primary hover:text-primary'}`}
+                  title={project.is_visible ? "Hide project" : "Show project"}
+                >
+                  {project.is_visible ? <Eye size={12} /> : <EyeOff size={12} />}
+                </button>
                 <button
                   onClick={() => setEditingProject(project)}
                   className="p-1.5 border border-border text-xs hover:border-primary hover:text-primary transition-colors"

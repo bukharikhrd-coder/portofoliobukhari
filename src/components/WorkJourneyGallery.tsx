@@ -25,6 +25,7 @@ const WorkJourneyGallery = () => {
       const { data, error } = await supabase
         .from("work_journey_gallery")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index");
       if (data && !error) {
         setItems(data);
