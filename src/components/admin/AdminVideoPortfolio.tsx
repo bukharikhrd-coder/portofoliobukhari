@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Save, X, Play } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Play, Eye, EyeOff } from "lucide-react";
 import ImageUpload from "./ImageUpload";
 import { SortableList } from "./SortableList";
 
@@ -16,6 +16,7 @@ interface Video {
   thumbnail_url: string | null;
   platform: string | null;
   order_index: number | null;
+  is_visible: boolean;
 }
 
 const AdminVideoPortfolio = () => {
@@ -114,8 +115,17 @@ const AdminVideoPortfolio = () => {
 
   if (isLoading) return <div className="animate-pulse h-32 bg-muted rounded-lg" />;
 
+  const toggleVisibility = async (video: Video) => {
+    const newVisibility = !video.is_visible;
+    setLocalVideos(prev => prev.map(v => v.id === video.id ? { ...v, is_visible: newVisibility } : v));
+    const { error } = await supabase.from("video_portfolio").update({ is_visible: newVisibility }).eq("id", video.id);
+    if (error) { toast.error("Failed to update visibility"); return; }
+    queryClient.invalidateQueries({ queryKey: ["admin_video_portfolio"] });
+    toast.success(newVisibility ? "Video visible" : "Video hidden");
+  };
+
   const renderVideoItem = (video: Video) => (
-    <div className="bg-card border border-border p-6">
+    <div className={`bg-card border border-border p-6 ${!video.is_visible ? "opacity-50" : ""}`}>
       {editingId === video.id ? (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,8 +181,12 @@ const AdminVideoPortfolio = () => {
             <h3 className="text-lg font-semibold">{video.title}</h3>
             <p className="text-muted-foreground text-sm">{video.platform} • {video.video_url}</p>
             {video.description && <p className="text-sm text-muted-foreground mt-2">{video.description}</p>}
+            {!video.is_visible && <span className="text-xs bg-muted px-2 py-0.5 rounded mt-1 inline-block">Hidden</span>}
           </div>
           <div className="flex gap-2">
+            <button onClick={() => toggleVisibility(video)} className="p-2 hover:bg-secondary rounded" title={video.is_visible ? "Hide" : "Show"}>
+              {video.is_visible ? <Eye size={18} /> : <EyeOff size={18} />}
+            </button>
             <button onClick={() => { setEditingId(video.id); setFormData({ ...video, description: video.description || "", thumbnail_url: video.thumbnail_url || "", platform: video.platform || "youtube", order_index: video.order_index || 0 }); }} className="p-2 hover:bg-secondary rounded"><Pencil size={18} /></button>
             <button onClick={() => deleteMutation.mutate(video.id)} className="p-2 hover:bg-destructive/20 text-destructive rounded"><Trash2 size={18} /></button>
           </div>

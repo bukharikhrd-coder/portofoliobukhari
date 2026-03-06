@@ -24,6 +24,7 @@ const Languages = () => {
       const { data, error } = await supabase
         .from("language_skills")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index", { ascending: true });
       if (error) throw error;
       return data;

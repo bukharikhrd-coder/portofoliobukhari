@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, Pencil, Check, X, Smile } from "lucide-react";
+import { Loader2, Plus, Trash2, Pencil, Check, X, Smile, Eye, EyeOff } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,6 +29,7 @@ interface TechItem {
   category: string | null;
   icon_name: string | null;
   order_index: number | null;
+  is_visible: boolean;
 }
 
 const categories = ["Frontend", "Backend", "Design", "DevOps", "Other"];
@@ -125,6 +126,14 @@ const AdminTechStack = () => {
     }
   };
 
+  const toggleVisibility = async (item: TechItem) => {
+    const newVisibility = !item.is_visible;
+    setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_visible: newVisibility } : i));
+    const { error } = await supabase.from("tech_stack").update({ is_visible: newVisibility }).eq("id", item.id);
+    if (error) { toast.error("Failed to update visibility"); return; }
+    toast.success(newVisibility ? "Item visible" : "Item hidden");
+  };
+
   const openIconPicker = (target: "new" | string) => {
     setIconPickerTarget(target);
     setShowIconPicker(true);
@@ -201,7 +210,7 @@ const AdminTechStack = () => {
 
                         return (
                           <SortableItemWrapper key={item.id} id={item.id} disabled={editingId !== null}>
-                            <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className={`relative p-4 bg-card border rounded-xl transition-all ${isEditing ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"}`}>
+                            <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className={`relative p-4 bg-card border rounded-xl transition-all ${isEditing ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"} ${!item.is_visible ? "opacity-50" : ""}`}>
                               {isEditing ? (
                                 <div className="space-y-3">
                                   <div className="flex items-start gap-3">
@@ -230,6 +239,9 @@ const AdminTechStack = () => {
                                     <p className="text-xs text-muted-foreground">{item.icon_name || "No icon"}</p>
                                   </div>
                                   <div className="flex items-center gap-1">
+                                    <button onClick={() => toggleVisibility(item)} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg" title={item.is_visible ? "Hide" : "Show"}>
+                                      {item.is_visible ? <Eye size={16} /> : <EyeOff size={16} />}
+                                    </button>
                                     <button onClick={() => startEdit(item)} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg"><Pencil size={16} /></button>
                                     <button onClick={() => removeItem(item.id)} className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg"><Trash2 size={16} /></button>
                                   </div>
