@@ -26,6 +26,7 @@ import {
   Share2,
   FileUp,
   Palette,
+  Layout,
   Settings,
   Package,
   ShoppingCart
@@ -48,11 +49,12 @@ import AdminSectionOrder from "@/components/admin/AdminSectionOrder";
 import AdminFooterSocial from "@/components/admin/AdminFooterSocial";
 import AdminCVManager from "@/components/admin/AdminCVManager";
 import AdminColorTheme from "@/components/admin/AdminColorTheme";
+import AdminUITemplate from "@/components/admin/AdminUITemplate";
 import AdminSettings from "@/components/admin/AdminSettings";
 import AdminServicePackages from "@/components/admin/AdminServicePackages";
 import AdminClientOrders from "@/components/admin/AdminClientOrders";
 
-type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme" | "settings" | "servicepackages" | "clientorders";
+type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme" | "uitemplate" | "settings" | "servicepackages" | "clientorders";
 
 const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "analytics", label: "Analytics", icon: BarChart3 },
@@ -61,6 +63,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "clientorders", label: "Client Orders", icon: ShoppingCart },
   { id: "cvmanager", label: "CV Manager", icon: FileUp },
   { id: "colortheme", label: "Color Theme", icon: Palette },
+  { id: "uitemplate", label: "UI Template", icon: Layout },
   { id: "sectionorder", label: "Section Order", icon: Layers },
   { id: "hero", label: "Hero Section", icon: Home },
   { id: "about", label: "About Me", icon: User },
@@ -147,6 +150,8 @@ const Admin = () => {
         return <AdminCVManager />;
       case "colortheme":
         return <AdminColorTheme />;
+      case "uitemplate":
+        return <AdminUITemplate />;
       case "sectionorder":
         return <AdminSectionOrder />;
       case "hero":
@@ -223,7 +228,7 @@ const Admin = () => {
             { group: "Services", items: ["servicepackages", "clientorders"] },
             { group: "Content", items: ["hero", "about", "experience", "education", "trainings", "languages"] },
             { group: "Portfolio", items: ["projects", "techstack", "softwaretools", "videoportfolio", "journeygallery"] },
-            { group: "Tools", items: ["cvmanager", "colortheme", "sectionorder"] },
+            { group: "Tools", items: ["cvmanager", "colortheme", "uitemplate", "sectionorder"] },
             { group: "Communication", items: ["contact", "footersocial", "messages"] },
           ].map((group) => {
             const isCollapsed = collapsedGroups[group.group] ?? false;

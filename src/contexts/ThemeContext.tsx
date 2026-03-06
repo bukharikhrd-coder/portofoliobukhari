@@ -4,13 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 type ThemeMode = "dark" | "light" | "system";
 type ResolvedTheme = "dark" | "light";
 type ColorTheme = "amber" | "blue" | "green" | "purple" | "red" | "pink" | "cyan" | "orange";
+type UITemplate = "editorial" | "modern-blue";
 
 interface ThemeContextType {
   theme: ResolvedTheme;
   themeMode: ThemeMode;
   colorTheme: ColorTheme;
+  uiTemplate: UITemplate;
   setThemeMode: (mode: ThemeMode) => void;
   setColorTheme: (color: ColorTheme) => void;
+  setUITemplate: (template: UITemplate) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -31,6 +34,11 @@ export const COLOR_THEMES: { id: ColorTheme; label: string; hue: number; saturat
   { id: "pink", label: "Pink", hue: 330, saturation: 81 },
   { id: "red", label: "Red", hue: 0, saturation: 84 },
   { id: "orange", label: "Orange", hue: 24, saturation: 95 },
+];
+
+export const UI_TEMPLATES: { id: UITemplate; label: string; description: string }[] = [
+  { id: "editorial", label: "Editorial Dark", description: "Tema gelap editorial dengan layout magazine-style, font bold, dan aksen emas" },
+  { id: "modern-blue", label: "Modern Blue", description: "Tema cerah modern dengan gradien biru, rounded corners, dan feel yang friendly" },
 ];
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -54,6 +62,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return "amber"; // Default to amber
   });
 
+  const [uiTemplate, setUITemplateState] = useState<UITemplate>("editorial");
+
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
     if (themeMode === "system") {
       return getSystemTheme();
@@ -61,26 +71,32 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return themeMode as ResolvedTheme;
   });
 
-  // Fetch color theme from database on mount
+  // Fetch color theme and UI template from database on mount
   useEffect(() => {
-    const fetchColorTheme = async () => {
+    const fetchSettings = async () => {
       try {
         const { data } = await supabase
           .from("site_settings")
-          .select("value")
-          .eq("key", "color_theme")
-          .maybeSingle();
+          .select("key, value")
+          .in("key", ["color_theme", "ui_template"]);
         
-        if (data?.value && COLOR_THEMES.some(t => t.id === data.value)) {
-          setColorThemeState(data.value as ColorTheme);
-          localStorage.setItem("colorTheme", data.value);
+        if (data) {
+          for (const setting of data) {
+            if (setting.key === "color_theme" && setting.value && COLOR_THEMES.some(t => t.id === setting.value)) {
+              setColorThemeState(setting.value as ColorTheme);
+              localStorage.setItem("colorTheme", setting.value);
+            }
+            if (setting.key === "ui_template" && setting.value && UI_TEMPLATES.some(t => t.id === setting.value)) {
+              setUITemplateState(setting.value as UITemplate);
+            }
+          }
         }
       } catch (error) {
-        console.error("Error fetching color theme:", error);
+        console.error("Error fetching theme settings:", error);
       }
     };
 
-    fetchColorTheme();
+    fetchSettings();
   }, []);
 
   // Listen for system theme changes
@@ -164,8 +180,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("colorTheme", color);
   };
 
+  const setUITemplate = (template: UITemplate) => {
+    setUITemplateState(template);
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, colorTheme, setThemeMode, setColorTheme }}>
+    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, colorTheme, uiTemplate, setThemeMode, setColorTheme, setUITemplate }}>
       {children}
     </ThemeContext.Provider>
   );
