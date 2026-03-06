@@ -377,6 +377,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_visible: boolean
           language_name: string
           order_index: number | null
           proficiency_level: string
@@ -384,6 +385,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_visible?: boolean
           language_name: string
           order_index?: number | null
           proficiency_level?: string
@@ -391,6 +393,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_visible?: boolean
           language_name?: string
           order_index?: number | null
           proficiency_level?: string
@@ -597,6 +600,7 @@ export type Database = {
           created_at: string
           icon_name: string | null
           id: string
+          is_visible: boolean
           name: string
           order_index: number | null
         }
@@ -605,6 +609,7 @@ export type Database = {
           created_at?: string
           icon_name?: string | null
           id?: string
+          is_visible?: boolean
           name: string
           order_index?: number | null
         }
@@ -613,6 +618,7 @@ export type Database = {
           created_at?: string
           icon_name?: string | null
           id?: string
+          is_visible?: boolean
           name?: string
           order_index?: number | null
         }
@@ -686,6 +692,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_visible: boolean
           order_index: number | null
           platform: string | null
           thumbnail_url: string | null
@@ -697,6 +704,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_visible?: boolean
           order_index?: number | null
           platform?: string | null
           thumbnail_url?: string | null
@@ -708,6 +716,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_visible?: boolean
           order_index?: number | null
           platform?: string | null
           thumbnail_url?: string | null
