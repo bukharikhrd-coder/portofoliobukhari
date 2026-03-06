@@ -26,6 +26,7 @@ import {
   Share2,
   FileUp,
   Palette,
+  Layout,
   Settings,
   Package,
   ShoppingCart
@@ -62,6 +63,7 @@ const navItems: { id: TabType; label: string; icon: any }[] = [
   { id: "clientorders", label: "Client Orders", icon: ShoppingCart },
   { id: "cvmanager", label: "CV Manager", icon: FileUp },
   { id: "colortheme", label: "Color Theme", icon: Palette },
+  { id: "uitemplate", label: "UI Template", icon: Layout },
   { id: "sectionorder", label: "Section Order", icon: Layers },
   { id: "hero", label: "Hero Section", icon: Home },
   { id: "about", label: "About Me", icon: User },
