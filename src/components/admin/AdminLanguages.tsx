@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff } from "lucide-react";
 import { SortableList } from "./SortableList";
 
 const proficiencyLevels = ["Native", "Professional", "Advanced", "Intermediate", "Basic"];
@@ -25,6 +25,7 @@ interface Language {
   language_name: string;
   proficiency_level: string;
   order_index: number | null;
+  is_visible: boolean;
 }
 
 const AdminLanguages = () => {
@@ -107,8 +108,17 @@ const AdminLanguages = () => {
 
   if (isLoading) return <div className="animate-pulse h-32 bg-muted rounded-lg" />;
 
+  const toggleVisibility = async (lang: Language) => {
+    const newVisibility = !lang.is_visible;
+    setLocalLanguages(prev => prev.map(l => l.id === lang.id ? { ...l, is_visible: newVisibility } : l));
+    const { error } = await supabase.from("language_skills").update({ is_visible: newVisibility }).eq("id", lang.id);
+    if (error) { toast.error("Failed to update visibility"); return; }
+    queryClient.invalidateQueries({ queryKey: ["admin_language_skills"] });
+    toast.success(newVisibility ? "Language visible" : "Language hidden");
+  };
+
   const renderLanguageItem = (lang: Language) => (
-    <div className="bg-card border border-border p-4 flex items-center justify-between rounded-lg">
+    <div className={`bg-card border border-border p-4 flex items-center justify-between rounded-lg ${!lang.is_visible ? "opacity-50" : ""}`}>
       {editingId === lang.id ? (
         <div className="flex flex-wrap gap-4 items-center flex-1">
           <input type="text" value={formData.language_name} onChange={(e) => setFormData({ ...formData, language_name: e.target.value })} className="flex-1 min-w-[200px] px-4 py-2 bg-background border border-border rounded" />
@@ -120,11 +130,15 @@ const AdminLanguages = () => {
         </div>
       ) : (
         <>
-          <div>
+          <div className="flex items-center gap-2">
             <span className="font-medium">{lang.language_name}</span>
-            <span className="ml-3 text-sm text-muted-foreground">{lang.proficiency_level}</span>
+            <span className="text-sm text-muted-foreground">{lang.proficiency_level}</span>
+            {!lang.is_visible && <span className="text-xs bg-muted px-2 py-0.5 rounded">Hidden</span>}
           </div>
           <div className="flex gap-2">
+            <button onClick={() => toggleVisibility(lang)} className="p-2 hover:bg-secondary rounded" title={lang.is_visible ? "Hide" : "Show"}>
+              {lang.is_visible ? <Eye size={18} /> : <EyeOff size={18} />}
+            </button>
             <button onClick={() => { setEditingId(lang.id); setFormData({ language_name: lang.language_name, proficiency_level: lang.proficiency_level, order_index: lang.order_index || 0 }); }} className="p-2 hover:bg-secondary rounded"><Pencil size={18} /></button>
             <button onClick={() => deleteMutation.mutate(lang.id)} className="p-2 hover:bg-destructive/20 text-destructive rounded"><Trash2 size={18} /></button>
           </div>

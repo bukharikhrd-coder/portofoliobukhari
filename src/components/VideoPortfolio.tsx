@@ -24,6 +24,7 @@ const VideoPortfolio = () => {
       const { data, error } = await supabase
         .from("video_portfolio")
         .select("*")
+        .eq("is_visible", true)
         .order("order_index", { ascending: true });
       if (error) throw error;
       return data as VideoItem[];

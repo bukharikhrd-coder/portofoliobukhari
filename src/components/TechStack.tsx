@@ -21,6 +21,7 @@ const TechStack = () => {
       const { data, error } = await supabase
         .from("tech_stack")
         .select("*")
+        .eq("is_visible", true)
         .order("category")
         .order("order_index");
       
