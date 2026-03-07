@@ -6,16 +6,27 @@ import NavbarModern from "@/components/modern/NavbarModern";
 import Hero from "@/components/Hero";
 import HeroModern from "@/components/modern/HeroModern";
 import About from "@/components/About";
+import AboutModern from "@/components/modern/AboutModern";
 import Experience from "@/components/Experience";
+import ExperienceModern from "@/components/modern/ExperienceModern";
 import Education from "@/components/Education";
+import EducationModern from "@/components/modern/EducationModern";
 import Trainings from "@/components/Trainings";
+import TrainingsModern from "@/components/modern/TrainingsModern";
 import Languages from "@/components/Languages";
+import LanguagesModern from "@/components/modern/LanguagesModern";
 import Works from "@/components/Works";
+import WorksModern from "@/components/modern/WorksModern";
 import TechStack from "@/components/TechStack";
+import TechStackModern from "@/components/modern/TechStackModern";
 import SoftwareTools from "@/components/SoftwareTools";
+import SoftwareToolsModern from "@/components/modern/SoftwareToolsModern";
 import VideoPortfolio from "@/components/VideoPortfolio";
+import VideoPortfolioModern from "@/components/modern/VideoPortfolioModern";
 import WorkJourneyGallery from "@/components/WorkJourneyGallery";
+import WorkJourneyGalleryModern from "@/components/modern/WorkJourneyGalleryModern";
 import Contact from "@/components/Contact";
+import ContactModern from "@/components/modern/ContactModern";
 import Footer from "@/components/Footer";
 import FooterModern from "@/components/modern/FooterModern";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
@@ -24,19 +35,19 @@ import BackToDashboard from "@/components/BackToDashboard";
 import FloatingCVButton from "@/components/FloatingCVButton";
 import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
-// Map section keys to their components
-const sectionComponents: Record<string, React.ComponentType> = {
-  about: About,
-  techstack: TechStack,
-  experience: Experience,
-  education: Education,
-  trainings: Trainings,
-  languages: Languages,
-  works: Works,
-  videoportfolio: VideoPortfolio,
-  softwaretools: SoftwareTools,
-  workjourney: WorkJourneyGallery,
-  contact: Contact,
+// Map section keys to their components (editorial and modern)
+const sectionComponents: Record<string, { editorial: React.ComponentType; modern: React.ComponentType }> = {
+  about: { editorial: About, modern: AboutModern },
+  techstack: { editorial: TechStack, modern: TechStackModern },
+  experience: { editorial: Experience, modern: ExperienceModern },
+  education: { editorial: Education, modern: EducationModern },
+  trainings: { editorial: Trainings, modern: TrainingsModern },
+  languages: { editorial: Languages, modern: LanguagesModern },
+  works: { editorial: Works, modern: WorksModern },
+  videoportfolio: { editorial: VideoPortfolio, modern: VideoPortfolioModern },
+  softwaretools: { editorial: SoftwareTools, modern: SoftwareToolsModern },
+  workjourney: { editorial: WorkJourneyGallery, modern: WorkJourneyGalleryModern },
+  contact: { editorial: Contact, modern: ContactModern },
 };
 
 const Index = () => {
@@ -46,30 +57,26 @@ const Index = () => {
 
   const isModern = uiTemplate === "modern-blue";
 
+  const getComponent = (key: string) => {
+    const entry = sectionComponents[key];
+    if (!entry) return null;
+    return isModern ? entry.modern : entry.editorial;
+  };
+
   // Render sections based on config order and visibility
   const renderSections = () => {
     if (isLoading || !sections) {
-      return (
-        <>
-          <About />
-          <Experience />
-          <Education />
-          <Trainings />
-          <Languages />
-          <Works />
-          <TechStack />
-          <SoftwareTools />
-          <VideoPortfolio />
-          <WorkJourneyGallery />
-          <Contact />
-        </>
-      );
+      const defaultKeys = ["about", "experience", "education", "trainings", "languages", "works", "techstack", "softwaretools", "videoportfolio", "workjourney", "contact"];
+      return defaultKeys.map((key) => {
+        const Component = getComponent(key);
+        return Component ? <Component key={key} /> : null;
+      });
     }
 
     return sections
       .filter((section) => section.is_visible)
       .map((section) => {
-        const Component = sectionComponents[section.section_key];
+        const Component = getComponent(section.section_key);
         if (!Component) return null;
         return <Component key={section.section_key} />;
       });
