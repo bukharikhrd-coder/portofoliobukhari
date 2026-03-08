@@ -122,7 +122,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         const { data } = await supabase
           .from("site_settings")
           .select("key, value")
-          .in("key", ["color_theme", "ui_template", "custom_bg_dark", "custom_bg_light", "custom_font_dark", "custom_font_light", "custom_accent_hex"]);
+          .in("key", ["color_theme", "ui_template", "custom_bg_dark", "custom_bg_light", "custom_font_dark", "custom_font_light", "custom_accent_hex", "gradient_enabled", "gradient_from", "gradient_to", "gradient_angle", "gradient_target"]);
         
         if (data) {
           const settings: Record<string, string> = {};
