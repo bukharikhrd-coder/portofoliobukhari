@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, Palette, Check, Sun, Moon, Monitor, RotateCcw } from "lucide-react";
+import { Loader2, Palette, Check, Sun, Moon, Monitor, RotateCcw, Sparkles } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { useTheme, COLOR_THEMES } from "@/contexts/ThemeContext";
 
 const AdminColorTheme = () => {
@@ -19,6 +20,13 @@ const AdminColorTheme = () => {
   const [customFontColor, setCustomFontColor] = useState("#f5f5f5");
   const [customFontColorLight, setCustomFontColorLight] = useState("#1a1a1a");
   const [customAccentHex, setCustomAccentHex] = useState("#e69500");
+
+  // Gradient settings
+  const [gradientEnabled, setGradientEnabled] = useState(false);
+  const [gradientFrom, setGradientFrom] = useState("#e69500");
+  const [gradientTo, setGradientTo] = useState("#d97706");
+  const [gradientAngle, setGradientAngle] = useState("135");
+  const [gradientTarget, setGradientTarget] = useState<"hero" | "sections" | "all">("hero");
 
   useEffect(() => {
     setSelectedColor(colorTheme);
