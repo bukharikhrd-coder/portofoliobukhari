@@ -43,10 +43,10 @@ const HeroModern = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[hsl(210,80%,96%)] via-[hsl(210,70%,92%)] to-[hsl(220,60%,88%)] dark:from-[hsl(220,30%,12%)] dark:via-[hsl(220,25%,16%)] dark:to-[hsl(210,20%,20%)]">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-background">
       {/* Decorative blobs */}
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-[hsl(210,80%,70%/0.15)] rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[hsl(200,90%,60%/0.1)] rounded-full blur-3xl" />
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">

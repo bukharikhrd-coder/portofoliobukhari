@@ -5,6 +5,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import profilePhoto from "@/assets/profile-photo.png";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,11 +34,20 @@ const moreNavItems = [
 const NavbarModern = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      const { data } = await supabase.from("site_settings").select("value").eq("key", "hero_image_url").maybeSingle();
+      if (data?.value) setProfileImageUrl(data.value);
+    };
+    fetchProfileImage();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -108,9 +119,11 @@ const NavbarModern = () => {
             }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-display text-lg">
-              B
-            </div>
+            <img
+              src={profileImageUrl || profilePhoto}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary/30"
+            />
             <span className="font-body font-semibold text-lg text-foreground">
               Bukhari <span className="text-primary">S.Kom</span>
             </span>

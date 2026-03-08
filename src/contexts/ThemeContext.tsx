@@ -41,6 +41,50 @@ export const UI_TEMPLATES: { id: UITemplate; label: string; description: string 
   { id: "modern-blue", label: "Modern Blue", description: "Tema cerah modern dengan gradien biru, rounded corners, dan feel yang friendly" },
 ];
 
+function hexToHSL(hex: string) {
+  let r = parseInt(hex.slice(1, 3), 16) / 255;
+  let g = parseInt(hex.slice(3, 5), 16) / 255;
+  let b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function applyCustomColorsFromSettings(settings: Record<string, string>) {
+  const root = document.documentElement;
+  const isDark = root.classList.contains("dark") || !root.classList.contains("light");
+
+  const bgHex = isDark ? settings.custom_bg_dark : settings.custom_bg_light;
+  if (bgHex) {
+    const hsl = hexToHSL(bgHex);
+    root.style.setProperty("--background", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+  }
+
+  const fgHex = isDark ? settings.custom_font_dark : settings.custom_font_light;
+  if (fgHex) {
+    const hsl = hexToHSL(fgHex);
+    root.style.setProperty("--foreground", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--card-foreground", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+  }
+
+  if (settings.custom_accent_hex) {
+    const hsl = hexToHSL(settings.custom_accent_hex);
+    root.style.setProperty("--primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--accent", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+  }
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
     if (typeof window !== "undefined") {
@@ -71,25 +115,33 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return themeMode as ResolvedTheme;
   });
 
-  // Fetch color theme and UI template from database on mount
+  // Fetch settings from database on mount
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const { data } = await supabase
           .from("site_settings")
           .select("key, value")
-          .in("key", ["color_theme", "ui_template"]);
+          .in("key", ["color_theme", "ui_template", "custom_bg_dark", "custom_bg_light", "custom_font_dark", "custom_font_light", "custom_accent_hex"]);
         
         if (data) {
-          for (const setting of data) {
-            if (setting.key === "color_theme" && setting.value && COLOR_THEMES.some(t => t.id === setting.value)) {
-              setColorThemeState(setting.value as ColorTheme);
-              localStorage.setItem("colorTheme", setting.value);
-            }
-            if (setting.key === "ui_template" && setting.value && UI_TEMPLATES.some(t => t.id === setting.value)) {
-              setUITemplateState(setting.value as UITemplate);
-            }
+          const settings: Record<string, string> = {};
+          for (const s of data) {
+            if (s.value) settings[s.key] = s.value;
           }
+          
+          if (settings.color_theme && COLOR_THEMES.some(t => t.id === settings.color_theme)) {
+            setColorThemeState(settings.color_theme as ColorTheme);
+            localStorage.setItem("colorTheme", settings.color_theme);
+          }
+          if (settings.ui_template && UI_TEMPLATES.some(t => t.id === settings.ui_template)) {
+            setUITemplateState(settings.ui_template as UITemplate);
+          }
+
+          // Apply custom colors after a tick so the theme class is set
+          setTimeout(() => {
+            applyCustomColorsFromSettings(settings);
+          }, 150);
         }
       } catch (error) {
         console.error("Error fetching theme settings:", error);
