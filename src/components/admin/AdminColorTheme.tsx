@@ -165,6 +165,21 @@ const AdminColorTheme = () => {
     setGradientTarget("hero");
   };
 
+  const gradientPresets = [
+    { id: "sunset", label: "Sunset", from: "#ff6b6b", to: "#ffa500", angle: "135" },
+    { id: "ocean", label: "Ocean", from: "#0066cc", to: "#00d4ff", angle: "45" },
+    { id: "forest", label: "Forest", from: "#134e5e", to: "#16a085", angle: "135" },
+    { id: "neon", label: "Neon", from: "#ff00ff", to: "#00ffff", angle: "90" },
+    { id: "aurora", label: "Aurora", from: "#667eea", to: "#764ba2", angle: "135" },
+    { id: "peach", label: "Peach", from: "#f093fb", to: "#f5576c", angle: "45" },
+  ];
+
+  const applyGradientPreset = (preset: { from: string; to: string; angle: string }) => {
+    setGradientFrom(preset.from);
+    setGradientTo(preset.to);
+    setGradientAngle(preset.angle);
+  };
+
   const gradientCSS = `linear-gradient(${gradientAngle}deg, ${gradientFrom}, ${gradientTo})`;
 
   const getThemeColors = (hue: number, saturation: number) => ({
