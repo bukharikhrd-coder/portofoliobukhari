@@ -57,6 +57,18 @@ const Index = () => {
 
   const isModern = uiTemplate === "modern-blue";
 
+  // Check gradient settings from CSS variables
+  const getGradientClass = (target: "hero" | "section") => {
+    const root = document.documentElement;
+    const enabled = root.style.getPropertyValue("--gradient-enabled") === "1";
+    if (!enabled) return "";
+    const gradTarget = root.style.getPropertyValue("--gradient-target") || "hero";
+    if (gradTarget === "all") return "gradient-section";
+    if (gradTarget === "hero" && target === "hero") return "gradient-section";
+    if (gradTarget === "sections" && target === "section") return "gradient-section";
+    return "";
+  };
+
   const getComponent = (key: string) => {
     const entry = sectionComponents[key];
     if (!entry) return null;
@@ -94,13 +106,15 @@ const Index = () => {
         <link rel="canonical" href="https://bukhari.dev" />
       </Helmet>
 
-      <div className="min-h-screen bg-background overflow-x-hidden">
+      <div className={`min-h-screen bg-background overflow-x-hidden ${getGradientClass("hero") === "gradient-section" && getGradientClass("section") === "gradient-section" ? "gradient-section" : ""}`}>
         {isModern ? <NavbarModern /> : <Navbar />}
         <main>
-          <div id="home">
+          <div id="home" className={getGradientClass("hero")}>
             {isModern ? <HeroModern /> : <Hero />}
           </div>
-          {renderSections()}
+          <div className={getGradientClass("section")}>
+            {renderSections()}
+          </div>
         </main>
         {isModern ? <FooterModern /> : <Footer />}
         <PWAInstallPrompt />
