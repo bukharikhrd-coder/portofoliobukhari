@@ -114,6 +114,11 @@ const AdminColorTheme = () => {
         { key: "custom_font_dark", value: customFontColor },
         { key: "custom_font_light", value: customFontColorLight },
         { key: "custom_accent_hex", value: customAccentHex },
+        { key: "gradient_enabled", value: String(gradientEnabled) },
+        { key: "gradient_from", value: gradientFrom },
+        { key: "gradient_to", value: gradientTo },
+        { key: "gradient_angle", value: gradientAngle },
+        { key: "gradient_target", value: gradientTarget },
       ];
 
       for (const s of settings) {
