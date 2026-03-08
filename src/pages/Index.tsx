@@ -106,7 +106,7 @@ const Index = () => {
         <link rel="canonical" href="https://bukhari.dev" />
       </Helmet>
 
-      <div className={`min-h-screen bg-background overflow-x-hidden ${getGradientClass("hero") === "gradient-section" && getGradientClass("section") === "gradient-section" ? "gradient-section" : ""}`}>
+      <div className={`min-h-screen bg-background overflow-x-hidden ${getGradientClass("hero") && getGradientClass("section") ? "gradient-section" : ""}`}>
         {isModern ? <NavbarModern /> : <Navbar />}
         <main>
           <div id="home" className={getGradientClass("hero")}>
