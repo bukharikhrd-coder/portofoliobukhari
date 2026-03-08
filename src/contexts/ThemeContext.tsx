@@ -83,6 +83,18 @@ function applyCustomColorsFromSettings(settings: Record<string, string>) {
     root.style.setProperty("--accent", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
     root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
   }
+
+  // Apply gradient
+  if (settings.gradient_enabled === "true" && settings.gradient_from && settings.gradient_to) {
+    const angle = settings.gradient_angle || "135";
+    const gradient = `linear-gradient(${angle}deg, ${settings.gradient_from}, ${settings.gradient_to})`;
+    root.style.setProperty("--custom-gradient", gradient);
+    root.style.setProperty("--gradient-enabled", "1");
+    root.style.setProperty("--gradient-target", settings.gradient_target || "hero");
+  } else {
+    root.style.setProperty("--gradient-enabled", "0");
+    root.style.removeProperty("--custom-gradient");
+  }
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
