@@ -41,7 +41,9 @@ const AdminColorTheme = () => {
         .in("key", [
           "custom_bg_dark", "custom_bg_light",
           "custom_font_dark", "custom_font_light",
-          "custom_accent_hex"
+          "custom_accent_hex",
+          "gradient_enabled", "gradient_from", "gradient_to",
+          "gradient_angle", "gradient_target"
         ]);
       if (data) {
         for (const s of data) {
@@ -50,8 +52,12 @@ const AdminColorTheme = () => {
           if (s.key === "custom_font_dark" && s.value) setCustomFontColor(s.value);
           if (s.key === "custom_font_light" && s.value) setCustomFontColorLight(s.value);
           if (s.key === "custom_accent_hex" && s.value) setCustomAccentHex(s.value);
+          if (s.key === "gradient_enabled" && s.value) setGradientEnabled(s.value === "true");
+          if (s.key === "gradient_from" && s.value) setGradientFrom(s.value);
+          if (s.key === "gradient_to" && s.value) setGradientTo(s.value);
+          if (s.key === "gradient_angle" && s.value) setGradientAngle(s.value);
+          if (s.key === "gradient_target" && s.value) setGradientTarget(s.value as "hero" | "sections" | "all");
         }
-      }
     };
     fetchCustomColors();
   }, []);
