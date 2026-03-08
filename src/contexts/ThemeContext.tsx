@@ -71,25 +71,33 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return themeMode as ResolvedTheme;
   });
 
-  // Fetch color theme and UI template from database on mount
+  // Fetch settings from database on mount
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         const { data } = await supabase
           .from("site_settings")
           .select("key, value")
-          .in("key", ["color_theme", "ui_template"]);
+          .in("key", ["color_theme", "ui_template", "custom_bg_dark", "custom_bg_light", "custom_font_dark", "custom_font_light", "custom_accent_hex"]);
         
         if (data) {
-          for (const setting of data) {
-            if (setting.key === "color_theme" && setting.value && COLOR_THEMES.some(t => t.id === setting.value)) {
-              setColorThemeState(setting.value as ColorTheme);
-              localStorage.setItem("colorTheme", setting.value);
-            }
-            if (setting.key === "ui_template" && setting.value && UI_TEMPLATES.some(t => t.id === setting.value)) {
-              setUITemplateState(setting.value as UITemplate);
-            }
+          const settings: Record<string, string> = {};
+          for (const s of data) {
+            if (s.value) settings[s.key] = s.value;
           }
+          
+          if (settings.color_theme && COLOR_THEMES.some(t => t.id === settings.color_theme)) {
+            setColorThemeState(settings.color_theme as ColorTheme);
+            localStorage.setItem("colorTheme", settings.color_theme);
+          }
+          if (settings.ui_template && UI_TEMPLATES.some(t => t.id === settings.ui_template)) {
+            setUITemplateState(settings.ui_template as UITemplate);
+          }
+
+          // Apply custom colors after a tick so the theme class is set
+          setTimeout(() => {
+            applyCustomColorsFromSettings(settings);
+          }, 150);
         }
       } catch (error) {
         console.error("Error fetching theme settings:", error);
