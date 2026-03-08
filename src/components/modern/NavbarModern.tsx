@@ -42,6 +42,14 @@ const NavbarModern = () => {
   const isHomePage = location.pathname === "/";
 
   useEffect(() => {
+    const fetchProfileImage = async () => {
+      const { data } = await supabase.from("site_settings").select("value").eq("key", "hero_image_url").maybeSingle();
+      if (data?.value) setProfileImageUrl(data.value);
+    };
+    fetchProfileImage();
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
