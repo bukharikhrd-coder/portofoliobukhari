@@ -416,10 +416,6 @@ const AdminColorTheme = () => {
           Tambahkan efek gradien pada background section. Pilih warna awal, warna akhir, dan sudut gradien.
         </p>
 
-        <p className="text-sm text-muted-foreground mb-6">
-          Tambahkan efek gradien pada background section. Pilih warna awal, warna akhir, dan sudut gradien.
-        </p>
-
         {/* Gradient Presets */}
         <div className="mb-8">
           <Label className="text-sm font-medium mb-4 block">Gradient Presets</Label>
@@ -440,7 +436,7 @@ const AdminColorTheme = () => {
           </div>
         </div>
 
-        <div className="space-y-6 ${!gradientEnabled ? "opacity-40 pointer-events-none" : ""}`>
+        <div className={`space-y-6 ${!gradientEnabled ? "opacity-40 pointer-events-none" : ""}`}>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Gradient From */}
             <div className="space-y-2">
