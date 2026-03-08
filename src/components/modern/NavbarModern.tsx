@@ -36,7 +36,6 @@ const NavbarModern = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const { user, isAdmin } = useAuth();
-  const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
