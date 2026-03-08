@@ -386,7 +386,100 @@ const AdminColorTheme = () => {
         </div>
       </Card>
 
-      {/* Actions */}
+      {/* Gradient Color Picker */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Sparkles size={18} className="text-primary" /> Gradient Background
+          </h3>
+          <div className="flex items-center gap-2">
+            <Label className="text-sm text-muted-foreground">Aktifkan</Label>
+            <Switch checked={gradientEnabled} onCheckedChange={setGradientEnabled} />
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Tambahkan efek gradien pada background section. Pilih warna awal, warna akhir, dan sudut gradien.
+        </p>
+
+        <div className={`space-y-6 ${!gradientEnabled ? "opacity-40 pointer-events-none" : ""}`}>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Gradient From */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Warna Awal (From)</Label>
+              <div className="flex items-center gap-3">
+                <input type="color" value={gradientFrom} onChange={(e) => setGradientFrom(e.target.value)}
+                  className="w-12 h-10 rounded-lg border border-border cursor-pointer" />
+                <Input value={gradientFrom} onChange={(e) => setGradientFrom(e.target.value)}
+                  placeholder="#e69500" className="font-mono text-sm" />
+              </div>
+            </div>
+
+            {/* Gradient To */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Warna Akhir (To)</Label>
+              <div className="flex items-center gap-3">
+                <input type="color" value={gradientTo} onChange={(e) => setGradientTo(e.target.value)}
+                  className="w-12 h-10 rounded-lg border border-border cursor-pointer" />
+                <Input value={gradientTo} onChange={(e) => setGradientTo(e.target.value)}
+                  placeholder="#d97706" className="font-mono text-sm" />
+              </div>
+            </div>
+
+            {/* Gradient Angle */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Sudut Gradien ({gradientAngle}°)</Label>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={gradientAngle}
+                onChange={(e) => setGradientAngle(e.target.value)}
+                className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Gradient Target */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Terapkan Gradien Pada</Label>
+            <div className="grid grid-cols-3 gap-3 max-w-md">
+              {[
+                { id: "hero" as const, label: "Hero Only" },
+                { id: "sections" as const, label: "All Sections" },
+                { id: "all" as const, label: "Full Page" },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => setGradientTarget(opt.id)}
+                  className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    gradientTarget === opt.id
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Gradient Preview */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Preview Gradien</Label>
+            <div className="h-24 rounded-xl border border-border overflow-hidden" style={{ background: gradientCSS }}>
+              <div className="h-full flex items-center justify-center">
+                <span className="text-white text-sm font-medium drop-shadow-lg px-4 text-center">
+                  {gradientAngle}° — {gradientFrom} → {gradientTo}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <div className="flex items-center gap-4">
         <Button onClick={handleSaveAll} disabled={saving} className="gap-2">
           {saving ? <><Loader2 className="animate-spin" size={16} /> Saving...</> : <><Check size={16} /> Save All Colors</>}
