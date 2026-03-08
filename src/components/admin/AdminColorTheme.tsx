@@ -158,7 +158,14 @@ const AdminColorTheme = () => {
     setCustomFontColorLight("#1a1a1a");
     setCustomAccentHex("#e69500");
     setSelectedColor("amber");
+    setGradientEnabled(false);
+    setGradientFrom("#e69500");
+    setGradientTo("#d97706");
+    setGradientAngle("135");
+    setGradientTarget("hero");
   };
+
+  const gradientCSS = `linear-gradient(${gradientAngle}deg, ${gradientFrom}, ${gradientTo})`;
 
   const getThemeColors = (hue: number, saturation: number) => ({
     primary: `hsl(${hue}, ${saturation}%, 50%)`,
