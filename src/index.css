@@ -209,4 +209,9 @@
   .animation-delay-600 {
     animation-delay: 600ms;
   }
+
+  /* Custom gradient background utility */
+  .gradient-section {
+    background: var(--custom-gradient, none);
+  }
 }
