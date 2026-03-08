@@ -416,7 +416,31 @@ const AdminColorTheme = () => {
           Tambahkan efek gradien pada background section. Pilih warna awal, warna akhir, dan sudut gradien.
         </p>
 
-        <div className={`space-y-6 ${!gradientEnabled ? "opacity-40 pointer-events-none" : ""}`}>
+        <p className="text-sm text-muted-foreground mb-6">
+          Tambahkan efek gradien pada background section. Pilih warna awal, warna akhir, dan sudut gradien.
+        </p>
+
+        {/* Gradient Presets */}
+        <div className="mb-8">
+          <Label className="text-sm font-medium mb-4 block">Gradient Presets</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {gradientPresets.map((preset) => (
+              <button
+                key={preset.id}
+                onClick={() => applyGradientPreset(preset)}
+                className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border hover:border-primary transition-all group"
+              >
+                <div
+                  className="w-full h-16 rounded-lg shadow-md group-hover:shadow-lg transition-shadow"
+                  style={{ background: `linear-gradient(135deg, ${preset.from}, ${preset.to})` }}
+                />
+                <span className="text-xs font-medium text-center">{preset.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-6 ${!gradientEnabled ? "opacity-40 pointer-events-none" : ""}`>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Gradient From */}
             <div className="space-y-2">
