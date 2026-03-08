@@ -108,9 +108,11 @@ const NavbarModern = () => {
             }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-display text-lg">
-              B
-            </div>
+            <img
+              src={profileImageUrl || profilePhoto}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary/30"
+            />
             <span className="font-body font-semibold text-lg text-foreground">
               Bukhari <span className="text-primary">S.Kom</span>
             </span>
