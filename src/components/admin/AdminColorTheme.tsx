@@ -58,6 +58,7 @@ const AdminColorTheme = () => {
           if (s.key === "gradient_angle" && s.value) setGradientAngle(s.value);
           if (s.key === "gradient_target" && s.value) setGradientTarget(s.value as "hero" | "sections" | "all");
         }
+      }
     };
     fetchCustomColors();
   }, []);
