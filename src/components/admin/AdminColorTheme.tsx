@@ -5,7 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, Palette, Check, Sun, Moon, Monitor, RotateCcw } from "lucide-react";
+import { Loader2, Palette, Check, Sun, Moon, Monitor, RotateCcw, Sparkles } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { useTheme, COLOR_THEMES } from "@/contexts/ThemeContext";
 
 const AdminColorTheme = () => {
@@ -20,6 +21,13 @@ const AdminColorTheme = () => {
   const [customFontColorLight, setCustomFontColorLight] = useState("#1a1a1a");
   const [customAccentHex, setCustomAccentHex] = useState("#e69500");
 
+  // Gradient settings
+  const [gradientEnabled, setGradientEnabled] = useState(false);
+  const [gradientFrom, setGradientFrom] = useState("#e69500");
+  const [gradientTo, setGradientTo] = useState("#d97706");
+  const [gradientAngle, setGradientAngle] = useState("135");
+  const [gradientTarget, setGradientTarget] = useState<"hero" | "sections" | "all">("hero");
+
   useEffect(() => {
     setSelectedColor(colorTheme);
   }, [colorTheme]);
@@ -33,7 +41,9 @@ const AdminColorTheme = () => {
         .in("key", [
           "custom_bg_dark", "custom_bg_light",
           "custom_font_dark", "custom_font_light",
-          "custom_accent_hex"
+          "custom_accent_hex",
+          "gradient_enabled", "gradient_from", "gradient_to",
+          "gradient_angle", "gradient_target"
         ]);
       if (data) {
         for (const s of data) {
@@ -42,6 +52,11 @@ const AdminColorTheme = () => {
           if (s.key === "custom_font_dark" && s.value) setCustomFontColor(s.value);
           if (s.key === "custom_font_light" && s.value) setCustomFontColorLight(s.value);
           if (s.key === "custom_accent_hex" && s.value) setCustomAccentHex(s.value);
+          if (s.key === "gradient_enabled" && s.value) setGradientEnabled(s.value === "true");
+          if (s.key === "gradient_from" && s.value) setGradientFrom(s.value);
+          if (s.key === "gradient_to" && s.value) setGradientTo(s.value);
+          if (s.key === "gradient_angle" && s.value) setGradientAngle(s.value);
+          if (s.key === "gradient_target" && s.value) setGradientTarget(s.value as "hero" | "sections" | "all");
         }
       }
     };
@@ -99,6 +114,11 @@ const AdminColorTheme = () => {
         { key: "custom_font_dark", value: customFontColor },
         { key: "custom_font_light", value: customFontColorLight },
         { key: "custom_accent_hex", value: customAccentHex },
+        { key: "gradient_enabled", value: String(gradientEnabled) },
+        { key: "gradient_from", value: gradientFrom },
+        { key: "gradient_to", value: gradientTo },
+        { key: "gradient_angle", value: gradientAngle },
+        { key: "gradient_target", value: gradientTarget },
       ];
 
       for (const s of settings) {
@@ -138,7 +158,14 @@ const AdminColorTheme = () => {
     setCustomFontColorLight("#1a1a1a");
     setCustomAccentHex("#e69500");
     setSelectedColor("amber");
+    setGradientEnabled(false);
+    setGradientFrom("#e69500");
+    setGradientTo("#d97706");
+    setGradientAngle("135");
+    setGradientTarget("hero");
   };
+
+  const gradientCSS = `linear-gradient(${gradientAngle}deg, ${gradientFrom}, ${gradientTo})`;
 
   const getThemeColors = (hue: number, saturation: number) => ({
     primary: `hsl(${hue}, ${saturation}%, 50%)`,
@@ -359,7 +386,100 @@ const AdminColorTheme = () => {
         </div>
       </Card>
 
-      {/* Actions */}
+      {/* Gradient Color Picker */}
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <Sparkles size={18} className="text-primary" /> Gradient Background
+          </h3>
+          <div className="flex items-center gap-2">
+            <Label className="text-sm text-muted-foreground">Aktifkan</Label>
+            <Switch checked={gradientEnabled} onCheckedChange={setGradientEnabled} />
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Tambahkan efek gradien pada background section. Pilih warna awal, warna akhir, dan sudut gradien.
+        </p>
+
+        <div className={`space-y-6 ${!gradientEnabled ? "opacity-40 pointer-events-none" : ""}`}>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Gradient From */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Warna Awal (From)</Label>
+              <div className="flex items-center gap-3">
+                <input type="color" value={gradientFrom} onChange={(e) => setGradientFrom(e.target.value)}
+                  className="w-12 h-10 rounded-lg border border-border cursor-pointer" />
+                <Input value={gradientFrom} onChange={(e) => setGradientFrom(e.target.value)}
+                  placeholder="#e69500" className="font-mono text-sm" />
+              </div>
+            </div>
+
+            {/* Gradient To */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Warna Akhir (To)</Label>
+              <div className="flex items-center gap-3">
+                <input type="color" value={gradientTo} onChange={(e) => setGradientTo(e.target.value)}
+                  className="w-12 h-10 rounded-lg border border-border cursor-pointer" />
+                <Input value={gradientTo} onChange={(e) => setGradientTo(e.target.value)}
+                  placeholder="#d97706" className="font-mono text-sm" />
+              </div>
+            </div>
+
+            {/* Gradient Angle */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Sudut Gradien ({gradientAngle}°)</Label>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={gradientAngle}
+                onChange={(e) => setGradientAngle(e.target.value)}
+                className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>0°</span><span>90°</span><span>180°</span><span>270°</span><span>360°</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Gradient Target */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Terapkan Gradien Pada</Label>
+            <div className="grid grid-cols-3 gap-3 max-w-md">
+              {[
+                { id: "hero" as const, label: "Hero Only" },
+                { id: "sections" as const, label: "All Sections" },
+                { id: "all" as const, label: "Full Page" },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => setGradientTarget(opt.id)}
+                  className={`px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
+                    gradientTarget === opt.id
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-secondary"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Gradient Preview */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Preview Gradien</Label>
+            <div className="h-24 rounded-xl border border-border overflow-hidden" style={{ background: gradientCSS }}>
+              <div className="h-full flex items-center justify-center">
+                <span className="text-white text-sm font-medium drop-shadow-lg px-4 text-center">
+                  {gradientAngle}° — {gradientFrom} → {gradientTo}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <div className="flex items-center gap-4">
         <Button onClick={handleSaveAll} disabled={saving} className="gap-2">
           {saving ? <><Loader2 className="animate-spin" size={16} /> Saving...</> : <><Check size={16} /> Save All Colors</>}
