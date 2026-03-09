@@ -34,12 +34,14 @@ const moreNavItems = [
 const NavbarModern = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
+  const isServicesPage = location.pathname.startsWith("/services");
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -50,10 +52,27 @@ const NavbarModern = () => {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+
+      if (!isHomePage) return;
+      const sections = [...coreNavItems, ...moreNavItems].map(item => item.href.replace("#", ""));
+      let current = "";
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120) {
+            current = sectionId;
+          }
+        }
+      }
+      if (window.scrollY < 100) current = "";
+      setActiveSection(current);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, href: string) => {
     e.preventDefault();
