@@ -92,7 +92,7 @@ const HeroModern = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.5 }}
-              className="flex flex-wrap gap-3 pt-2"
+              className="flex flex-wrap gap-2 sm:gap-3 pt-2"
             >
               <a
                 href={heroData.cta_primary_link || "#works"}
