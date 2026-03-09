@@ -164,16 +164,22 @@ const Navbar = () => {
             </Link>
 
             {/* Core nav items */}
-            {coreNavItems.map((link) => (
-              <a
-                key={link.href}
-                href={isHomePage ? link.href : `/${link.href}`}
-                onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
-              >
-                {link.label}
-              </a>
-            ))}
+            {coreNavItems.map((link) => {
+              const sectionId = link.href.replace("#", "");
+              const isActive = isHomePage && activeSection === sectionId;
+              return (
+                <a
+                  key={link.href}
+                  href={isHomePage ? link.href : `/${link.href}`}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                  className={`text-xs lg:text-sm transition-colors duration-300 link-underline tracking-wide ${
+                    isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
 
             {/* More dropdown - only show on homepage */}
             {isHomePage && (
