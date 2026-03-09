@@ -220,6 +220,15 @@
     position: relative;
   }
 
+  /* Alternating backgrounds */
+  .sections-soft > section:nth-child(odd) {
+    background-color: hsl(var(--background));
+  }
+
+  .sections-soft > section:nth-child(even) {
+    background-color: hsl(var(--secondary) / 0.1);
+  }
+
   .sections-soft > section::before {
     content: '';
     position: absolute;
@@ -227,7 +236,7 @@
     left: 0;
     right: 0;
     height: 120px;
-    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
+    background: linear-gradient(to bottom, hsl(var(--background) / 0.6), transparent);
     pointer-events: none;
     z-index: 1;
   }
@@ -239,12 +248,11 @@
     left: 0;
     right: 0;
     height: 120px;
-    background: linear-gradient(to top, hsl(var(--background)), transparent);
+    background: linear-gradient(to top, hsl(var(--background) / 0.6), transparent);
     pointer-events: none;
     z-index: 1;
   }
 
-  /* First and last sections: only need one-sided fade */
   .sections-soft > section:first-child::before {
     display: none;
   }
