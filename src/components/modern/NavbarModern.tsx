@@ -291,6 +291,26 @@ const NavbarModern = () => {
 
           {/* Mobile */}
           <div className="flex items-center gap-1 sm:hidden">
+            {/* More dropdown on mobile */}
+            {isHomePage && moreNavItems.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-0.5 p-2 text-sm text-muted-foreground hover:text-foreground rounded-full transition-all">
+                  More <ChevronDown size={12} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[150px] rounded-xl p-1">
+                  {moreNavItems.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={(e) => handleSmoothScroll(e, link.href)}
+                      className="block px-3 py-2 text-sm rounded-lg cursor-pointer transition-colors text-foreground hover:bg-accent/50"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <LanguageSwitcher />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
