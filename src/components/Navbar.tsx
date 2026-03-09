@@ -35,20 +35,39 @@ const moreNavItems = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
   const isHomePage = location.pathname === "/";
+  const isServicesPage = location.pathname.startsWith("/services");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+
+      // Scroll spy: detect active section
+      if (!isHomePage) return;
+      const sections = [...coreNavItems, ...moreNavItems].map(item => item.href.replace("#", ""));
+      let current = "";
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120) {
+            current = sectionId;
+          }
+        }
+      }
+      // If at top of page, no section is active (Home is active)
+      if (window.scrollY < 100) current = "";
+      setActiveSection(current);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, href: string) => {
     e.preventDefault();
@@ -135,40 +154,58 @@ const Navbar = () => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
-              className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
+              className={`text-xs lg:text-sm transition-colors duration-300 link-underline tracking-wide ${
+                isHomePage && activeSection === "" && !isServicesPage
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               Home
             </Link>
 
             {/* Core nav items */}
-            {coreNavItems.map((link) => (
-              <a
-                key={link.href}
-                href={isHomePage ? link.href : `/${link.href}`}
-                onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
-              >
-                {link.label}
-              </a>
-            ))}
+            {coreNavItems.map((link) => {
+              const sectionId = link.href.replace("#", "");
+              const isActive = isHomePage && activeSection === sectionId;
+              return (
+                <a
+                  key={link.href}
+                  href={isHomePage ? link.href : `/${link.href}`}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                  className={`text-xs lg:text-sm transition-colors duration-300 link-underline tracking-wide ${
+                    isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
 
             {/* More dropdown - only show on homepage */}
             {isHomePage && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
+                <DropdownMenuTrigger className={`flex items-center gap-1 text-xs lg:text-sm transition-colors duration-300 tracking-wide ${
+                  isHomePage && moreNavItems.some(item => activeSection === item.href.replace("#", ""))
+                    ? "text-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}>
                   More
                   <ChevronDown size={14} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[160px]">
-                  {moreNavItems.map((link) => (
-                    <DropdownMenuItem
-                      key={link.href}
-                      onClick={(e) => handleSmoothScroll(e, link.href)}
-                      className="cursor-pointer"
-                    >
-                      {link.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {moreNavItems.map((link) => {
+                    const sectionId = link.href.replace("#", "");
+                    const isActive = activeSection === sectionId;
+                    return (
+                      <DropdownMenuItem
+                        key={link.href}
+                        onClick={(e) => handleSmoothScroll(e, link.href)}
+                        className={`cursor-pointer ${isActive ? "bg-accent font-medium" : ""}`}
+                      >
+                        {link.label}
+                      </DropdownMenuItem>
+                    );
+                  })}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
@@ -176,7 +213,11 @@ const Navbar = () => {
             {/* Services - external page */}
             <Link
               to="/services"
-              className="text-xs lg:text-sm text-primary hover:text-primary/80 transition-colors duration-300 link-underline tracking-wide font-medium"
+              className={`text-xs lg:text-sm transition-colors duration-300 link-underline tracking-wide ${
+                isServicesPage
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               Services
             </Link>
