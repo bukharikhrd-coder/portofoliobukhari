@@ -209,8 +209,9 @@ const AdminSoftwareTools = () => {
                       {isEditing ? (
                         <div className="space-y-4">
                           <div className="flex items-start gap-3">
-                            <button type="button" onClick={() => setShowIconPicker(true)} className="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
-                              {EditIcon ? <EditIcon size={24} className="text-primary" /> : <Smile size={24} className="text-muted-foreground" />}
+                            <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} size={48} />
+                            <button type="button" onClick={() => setShowIconPicker(true)} className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
+                              {EditIcon ? <EditIcon size={20} className="text-primary" /> : <Smile size={20} className="text-muted-foreground" />}
                             </button>
                             <div className="flex-1 space-y-2">
                               <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:border-primary focus:outline-none" />
