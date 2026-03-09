@@ -94,11 +94,11 @@ const AdminTechStack = () => {
 
   const addItem = async () => {
     if (!newItem.name.trim()) return;
-    const { data, error } = await supabase.from("tech_stack").insert({ name: newItem.name.trim(), category: newItem.category, icon_name: newItem.icon_name || null, order_index: items.length }).select().single();
+    const { data, error } = await supabase.from("tech_stack").insert({ name: newItem.name.trim(), category: newItem.category, icon_name: newItem.icon_name || null, order_index: items.length, logo_url: newItem.logo_url || null }).select().single();
     if (error) toast.error("Failed to add item");
     else {
       setItems([...items, data]);
-      setNewItem({ name: "", category: "Frontend", icon_name: "" });
+      setNewItem({ name: "", category: "Frontend", icon_name: "", logo_url: null });
       toast.success("Item added!");
     }
   };
