@@ -112,7 +112,7 @@ const Index = () => {
           <div id="home" className={getGradientClass("hero")}>
             {isModern ? <HeroModern /> : <Hero />}
           </div>
-          <div className={`sections-soft ${getGradientClass("section")}`}>
+          <div className={`sections-soft ${getGradientClass("section")}`} style={{ background: 'var(--gradient-flow)' }}>
             {renderSections()}
           </div>
         </main>
