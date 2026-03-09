@@ -45,24 +45,24 @@ const HeroModern = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-background">
       {/* Decorative blobs */}
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-20 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/5 rounded-full blur-3xl" />
       
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-12 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
           {/* Text side */}
           <motion.div 
-            className="space-y-6 order-2 lg:order-1"
+            className="space-y-4 md:space-y-6 order-2 lg:order-1"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <div className="space-y-2">
+            <div className="space-y-1 md:space-y-2">
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="text-2xl md:text-3xl text-foreground/80 font-body"
+                className="text-lg sm:text-2xl md:text-3xl text-foreground/80 font-body"
               >
                 Halo 👋 <TranslatedText>Saya</TranslatedText>
               </motion.p>
