@@ -138,7 +138,7 @@ const AdminEducation = () => {
                 <div className="flex gap-2">
                   <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground"><Save size={18} /> Save</button>
                   <button onClick={() => setEditingId(null)} className="flex items-center gap-2 px-4 py-2 border border-border"><X size={18} /> Cancel</button>
-                </div>
+                </div></div>
               </div>
             ) : (
               <div className={`flex items-start justify-between ${!(edu as any).is_visible ? 'opacity-50' : ''}`}>

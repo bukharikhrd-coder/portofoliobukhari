@@ -238,8 +238,10 @@ const AdminTechStack = () => {
                                 </div>
                               ) : (
                                 <div className="flex items-center gap-3">
-                                  <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg">
-                                    {ItemIcon ? <ItemIcon size={24} className="text-primary" /> : <span className="text-lg font-bold text-primary">{item.name.charAt(0)}</span>}
+                                <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg overflow-hidden">
+                                    {item.logo_url ? (
+                                      <img src={item.logo_url} alt={item.name} className="w-full h-full object-contain p-1" />
+                                    ) : ItemIcon ? <ItemIcon size={24} className="text-primary" /> : <span className="text-lg font-bold text-primary">{item.name.charAt(0)}</span>}
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-medium truncate">{item.name}</h4>
