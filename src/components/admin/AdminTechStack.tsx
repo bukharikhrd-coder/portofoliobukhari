@@ -39,9 +39,9 @@ const categories = ["Frontend", "Backend", "Design", "DevOps", "Other"];
 const AdminTechStack = () => {
   const [items, setItems] = useState<TechItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newItem, setNewItem] = useState({ name: "", category: "Frontend", icon_name: "" });
+  const [newItem, setNewItem] = useState({ name: "", category: "Frontend", icon_name: "", logo_url: null as string | null });
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", category: "", icon_name: "" });
+  const [editForm, setEditForm] = useState({ name: "", category: "", icon_name: "", logo_url: null as string | null });
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [iconPickerTarget, setIconPickerTarget] = useState<"new" | string>("new");
 
