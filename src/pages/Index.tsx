@@ -108,7 +108,7 @@ const Index = () => {
       </Helmet>
 
       <div className={`min-h-screen bg-background overflow-x-hidden ${getGradientClass("hero") && getGradientClass("section") ? "gradient-section" : ""}`}>
-        {isModern ? <NavbarModern /> : <Navbar />}
+        {isModern ? <><ScrollProgress /><NavbarModern /></> : <Navbar />}
         <main>
           <div id="home" className={getGradientClass("hero")}>
             {isModern ? <HeroModern /> : <Hero />}
