@@ -273,8 +273,35 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setUITemplateState(template);
   };
 
+  const refreshCustomSettings = () => {
+    // Re-fetch and re-apply
+    setSettingsLoaded(false);
+    supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", [
+        "color_theme", "ui_template",
+        "custom_bg_dark", "custom_bg_light",
+        "custom_font_dark", "custom_font_light",
+        "custom_accent_hex",
+        "accent_mode", "accent_gradient_from", "accent_gradient_to", "selected_accent_gradient",
+        "gradient_enabled", "gradient_from", "gradient_to",
+        "gradient_angle", "gradient_target",
+      ])
+      .then(({ data }) => {
+        if (data) {
+          const settings: Record<string, string> = {};
+          for (const s of data) {
+            if (s.value) settings[s.key] = s.value;
+          }
+          customSettingsRef.current = settings;
+          setSettingsLoaded(true);
+        }
+      });
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, colorTheme, uiTemplate, setThemeMode, setColorTheme, setUITemplate }}>
+    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, colorTheme, uiTemplate, setThemeMode, setColorTheme, setUITemplate, refreshCustomSettings }}>
       {children}
     </ThemeContext.Provider>
   );
