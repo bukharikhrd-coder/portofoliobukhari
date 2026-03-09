@@ -120,12 +120,13 @@ const HeroModern = () => {
             </motion.div>
           </motion.div>
 
-          {/* Photo side */}
+          {/* Photo side with parallax */}
           <motion.div
             className="relative order-1 lg:order-2 flex justify-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
+            style={{ y: photoY, scale: photoScale }}
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ delay: 0.2, duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <div className="relative">
               {/* Background gradient circle */}
