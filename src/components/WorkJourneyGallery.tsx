@@ -193,40 +193,74 @@ const WorkJourneyGallery = () => {
           </h2>
         </motion.div>
 
-        {/* Year filter tabs */}
-        {years.length > 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-10"
-          >
-            <button
-              onClick={() => setActiveYear("all")}
-              className={`px-4 md:px-5 py-1.5 md:py-2 text-xs md:text-sm tracking-wide rounded-full transition-all duration-300 ${
-                activeYear === "all"
-                  ? "btn-gradient shadow-lg"
-                  : "bg-secondary text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <TranslatedText>All</TranslatedText>
-            </button>
-            {years.map((year) => (
+        {/* Filter tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          viewport={{ once: true }}
+          className="space-y-3 mb-8 md:mb-10"
+        >
+          {/* Year filter */}
+          {years.length > 1 && (
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+              <span className="text-xs text-muted-foreground self-center mr-1">Tahun:</span>
               <button
-                key={year}
-                onClick={() => setActiveYear(year)}
+                onClick={() => setActiveYear("all")}
                 className={`px-4 md:px-5 py-1.5 md:py-2 text-xs md:text-sm tracking-wide rounded-full transition-all duration-300 ${
-                  activeYear === year
+                  activeYear === "all"
                     ? "btn-gradient shadow-lg"
                     : "bg-secondary text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {year}
+                <TranslatedText>All</TranslatedText>
               </button>
-            ))}
-          </motion.div>
-        )}
+              {years.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => setActiveYear(year)}
+                  className={`px-4 md:px-5 py-1.5 md:py-2 text-xs md:text-sm tracking-wide rounded-full transition-all duration-300 ${
+                    activeYear === year
+                      ? "btn-gradient shadow-lg"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Category filter */}
+          {categories.length > 1 && (
+            <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+              <span className="text-xs text-muted-foreground self-center mr-1">Momen:</span>
+              <button
+                onClick={() => setActiveCategory("all")}
+                className={`px-4 md:px-5 py-1.5 md:py-2 text-xs md:text-sm tracking-wide rounded-full transition-all duration-300 ${
+                  activeCategory === "all"
+                    ? "btn-gradient shadow-lg"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <TranslatedText>All</TranslatedText>
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 md:px-5 py-1.5 md:py-2 text-xs md:text-sm tracking-wide rounded-full transition-all duration-300 ${
+                    activeCategory === cat
+                      ? "btn-gradient shadow-lg"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
+        </motion.div>
 
         {/* Grouped horizontal scrolls */}
         <div className="space-y-8 md:space-y-10">
