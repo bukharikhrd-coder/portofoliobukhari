@@ -112,7 +112,7 @@ const Index = () => {
           <div id="home" className={getGradientClass("hero")}>
             {isModern ? <HeroModern /> : <Hero />}
           </div>
-          <div className={getGradientClass("section")}>
+          <div className={`sections-soft ${getGradientClass("section")}`}>
             {renderSections()}
           </div>
         </main>

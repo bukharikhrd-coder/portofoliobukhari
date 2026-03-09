@@ -18,7 +18,7 @@ const TrainingsModern = () => {
 
   if (isLoading) {
     return (
-      <section className="py-20 px-6 bg-secondary/20">
+      <section className="py-20 px-6 bg-secondary/10">
         <div className="max-w-6xl mx-auto">
           <div className="animate-pulse space-y-8">
             <div className="h-8 bg-muted rounded-xl w-1/3 mx-auto" />
@@ -32,7 +32,7 @@ const TrainingsModern = () => {
   }
 
   return (
-    <section id="trainings" className="py-12 md:py-20 px-4 md:px-6 bg-secondary/20">
+    <section id="trainings" className="py-12 md:py-20 px-4 md:px-6 bg-secondary/10">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
