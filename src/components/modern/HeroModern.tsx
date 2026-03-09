@@ -19,6 +19,15 @@ interface HeroContent {
 const HeroModern = () => {
   const [content, setContent] = useState<HeroContent | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const photoY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const photoScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   useEffect(() => {
     const fetchContent = async () => {
