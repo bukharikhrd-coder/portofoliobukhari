@@ -90,7 +90,8 @@ const AdminSoftwareTools = () => {
       const { error } = await supabase.from("video_tools").update({
         name: formData.name,
         icon_name: formData.icon_name || null,
-        proficiency_level: formData.proficiency_level
+        proficiency_level: formData.proficiency_level,
+        logo_url: formData.logo_url || null
       }).eq("id", editingId);
       
       if (error) toast.error("Failed to update");
