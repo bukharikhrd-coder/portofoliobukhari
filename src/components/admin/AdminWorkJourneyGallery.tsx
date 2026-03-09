@@ -29,10 +29,37 @@ const AdminWorkJourneyGallery = () => {
     category: "",
   });
   const [editItem, setEditItem] = useState<JourneyItem | null>(null);
+  const [showYearFilter, setShowYearFilter] = useState(true);
+  const [showCategoryFilter, setShowCategoryFilter] = useState(true);
 
   useEffect(() => {
     fetchItems();
+    fetchFilterSettings();
   }, []);
+
+  const fetchFilterSettings = async () => {
+    const { data } = await supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", ["journey_show_year_filter", "journey_show_category_filter"]);
+    if (data) {
+      data.forEach((s) => {
+        if (s.key === "journey_show_year_filter") setShowYearFilter(s.value !== "false");
+        if (s.key === "journey_show_category_filter") setShowCategoryFilter(s.value !== "false");
+      });
+    }
+  };
+
+  const toggleFilterSetting = async (key: string, value: boolean, setter: (v: boolean) => void) => {
+    setter(value);
+    const { data: existing } = await supabase.from("site_settings").select("id").eq("key", key).maybeSingle();
+    if (existing) {
+      await supabase.from("site_settings").update({ value: String(value) }).eq("key", key);
+    } else {
+      await supabase.from("site_settings").insert({ key, value: String(value) });
+    }
+    toast.success("Filter setting updated");
+  };
 
   const fetchItems = async () => {
     const { data, error } = await supabase
@@ -376,6 +403,31 @@ const AdminWorkJourneyGallery = () => {
           No gallery items yet. Click "Add Item" to get started.
         </div>
       )}
+
+      {/* Filter visibility settings */}
+      <div className="mt-8 p-4 bg-secondary/50 rounded-lg border border-border">
+        <h3 className="text-sm font-semibold mb-3">Filter Options (Public Page)</h3>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showYearFilter}
+              onChange={(e) => toggleFilterSetting("journey_show_year_filter", e.target.checked, setShowYearFilter)}
+              className="w-4 h-4 rounded border-border accent-primary"
+            />
+            <span className="text-sm">Show Year Filter</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showCategoryFilter}
+              onChange={(e) => toggleFilterSetting("journey_show_category_filter", e.target.checked, setShowCategoryFilter)}
+              className="w-4 h-4 rounded border-border accent-primary"
+            />
+            <span className="text-sm">Show Category/Momen Filter</span>
+          </label>
+        </div>
+      </div>
     </div>
   );
 };
