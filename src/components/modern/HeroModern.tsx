@@ -60,12 +60,13 @@ const HeroModern = () => {
       
       <div className="container mx-auto px-3 sm:px-6 lg:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
-          {/* Text side */}
+          {/* Text side with parallax */}
           <motion.div 
             className="space-y-4 md:space-y-6 order-2 lg:order-1"
+            style={{ y: textY }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <div className="space-y-1 md:space-y-2">
               <motion.p
