@@ -118,7 +118,9 @@ const AdminEducation = () => {
               <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground disabled:opacity-50"><Save size={18} /> Save</button>
               <button onClick={() => { setIsAdding(false); setFormData({}); }} className="flex items-center gap-2 px-4 py-2 border border-border"><X size={18} /> Cancel</button>
             </div>
-            </div></div>
+            </div>
+          </div>
+          </div>
         )}
 
         {educations?.map((edu) => (
