@@ -82,7 +82,7 @@ const AdminTrainings = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-trainings'] });
-      setNewTraining({ title: '', organization: '', year: '', description: '', certificate_url: '' });
+      setNewTraining({ title: '', organization: '', year: '', description: '', certificate_url: '', logo_url: null });
       setIsAdding(false);
       toast.success('Training added successfully');
     },
