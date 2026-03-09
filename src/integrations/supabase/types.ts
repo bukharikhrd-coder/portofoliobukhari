@@ -256,6 +256,7 @@ export type Database = {
           is_current: boolean | null
           is_visible: boolean
           location: string | null
+          logo_url: string | null
           order_index: number | null
           start_year: string
           updated_at: string
@@ -271,6 +272,7 @@ export type Database = {
           is_current?: boolean | null
           is_visible?: boolean
           location?: string | null
+          logo_url?: string | null
           order_index?: number | null
           start_year: string
           updated_at?: string
@@ -286,6 +288,7 @@ export type Database = {
           is_current?: boolean | null
           is_visible?: boolean
           location?: string | null
+          logo_url?: string | null
           order_index?: number | null
           start_year?: string
           updated_at?: string
@@ -601,6 +604,7 @@ export type Database = {
           icon_name: string | null
           id: string
           is_visible: boolean
+          logo_url: string | null
           name: string
           order_index: number | null
         }
@@ -610,6 +614,7 @@ export type Database = {
           icon_name?: string | null
           id?: string
           is_visible?: boolean
+          logo_url?: string | null
           name: string
           order_index?: number | null
         }
@@ -619,6 +624,7 @@ export type Database = {
           icon_name?: string | null
           id?: string
           is_visible?: boolean
+          logo_url?: string | null
           name?: string
           order_index?: number | null
         }
@@ -631,6 +637,7 @@ export type Database = {
           description: string | null
           id: string
           is_visible: boolean
+          logo_url: string | null
           order_index: number | null
           organization: string | null
           title: string
@@ -643,6 +650,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_visible?: boolean
+          logo_url?: string | null
           order_index?: number | null
           organization?: string | null
           title: string
@@ -655,6 +663,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_visible?: boolean
+          logo_url?: string | null
           order_index?: number | null
           organization?: string | null
           title?: string
@@ -732,6 +741,7 @@ export type Database = {
           icon_name: string | null
           id: string
           is_visible: boolean
+          logo_url: string | null
           name: string
           order_index: number | null
           proficiency_level: string | null
@@ -741,6 +751,7 @@ export type Database = {
           icon_name?: string | null
           id?: string
           is_visible?: boolean
+          logo_url?: string | null
           name: string
           order_index?: number | null
           proficiency_level?: string | null
@@ -750,6 +761,7 @@ export type Database = {
           icon_name?: string | null
           id?: string
           is_visible?: boolean
+          logo_url?: string | null
           name?: string
           order_index?: number | null
           proficiency_level?: string | null

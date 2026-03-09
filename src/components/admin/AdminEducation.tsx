@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff } from "lucide-react";
+import LogoUpload from "./LogoUpload";
 
 interface Education {
   id: string;
@@ -15,6 +16,7 @@ interface Education {
   description: string | null;
   location: string | null;
   order_index: number;
+  logo_url: string | null;
 }
 
 const AdminEducation = () => {
@@ -86,7 +88,7 @@ const AdminEducation = () => {
         <button
           onClick={() => {
             setIsAdding(true);
-            setFormData({ institution: "", degree: "", start_year: "", order_index: (educations?.length || 0) + 1 });
+            setFormData({ institution: "", degree: "", start_year: "", order_index: (educations?.length || 0) + 1, logo_url: null });
           }}
           className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
         >
@@ -97,6 +99,12 @@ const AdminEducation = () => {
       <div className="space-y-4">
         {isAdding && (
           <div className="bg-card border border-primary p-6 space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-muted-foreground">Logo</label>
+                <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} />
+              </div>
+              <div className="flex-1 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" placeholder="Institution *" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
               <input type="text" placeholder="Degree *" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
@@ -110,6 +118,8 @@ const AdminEducation = () => {
               <button onClick={handleSave} disabled={saveMutation.isPending} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground disabled:opacity-50"><Save size={18} /> Save</button>
               <button onClick={() => { setIsAdding(false); setFormData({}); }} className="flex items-center gap-2 px-4 py-2 border border-border"><X size={18} /> Cancel</button>
             </div>
+            </div>
+          </div>
           </div>
         )}
 
@@ -117,12 +127,15 @@ const AdminEducation = () => {
           <div key={edu.id} className="bg-card border border-border p-6">
             {editingId === edu.id ? (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.field_of_study || ""} onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.start_year || ""} onChange={(e) => setFormData({ ...formData, start_year: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.end_year || ""} onChange={(e) => setFormData({ ...formData, end_year: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                <div className="flex items-start gap-4">
+                  <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} size={48} />
+                  <div className="flex-1 space-y-2">
+                    <input type="text" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.field_of_study || ""} onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.start_year || ""} onChange={(e) => setFormData({ ...formData, start_year: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.end_year || ""} onChange={(e) => setFormData({ ...formData, end_year: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                  </div>
                 </div>
                 <textarea value={formData.description || ""} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none min-h-[100px]" />
                 <div className="flex gap-2">

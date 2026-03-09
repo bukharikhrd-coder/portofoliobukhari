@@ -51,8 +51,12 @@ const EducationModern = () => {
               className="bg-card border border-border/50 rounded-2xl p-5 md:p-7 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
               <div className="flex items-start gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <GraduationCap className="text-primary" size={20} />
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {(edu as any).logo_url ? (
+                    <img src={(edu as any).logo_url} alt={edu.institution} className="w-full h-full object-contain p-1.5" />
+                  ) : (
+                    <GraduationCap className="text-primary" size={20} />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base md:text-xl font-semibold text-foreground">

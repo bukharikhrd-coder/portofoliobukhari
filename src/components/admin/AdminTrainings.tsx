@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Trash2, Plus, Award, Pencil, X, Check, Eye, EyeOff } from "lucide-react";
+import LogoUpload from "./LogoUpload";
 import { SortableList, SortableItemWrapper } from "./SortableList";
 import {
   DndContext,
@@ -32,6 +33,7 @@ interface Training {
   description: string | null;
   certificate_url: string | null;
   order_index: number | null;
+  logo_url: string | null;
 }
 
 const AdminTrainings = () => {
@@ -44,7 +46,8 @@ const AdminTrainings = () => {
     organization: '',
     year: '',
     description: '',
-    certificate_url: ''
+    certificate_url: '',
+    logo_url: null as string | null
   });
   const [isAdding, setIsAdding] = useState(false);
 
@@ -79,7 +82,7 @@ const AdminTrainings = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-trainings'] });
-      setNewTraining({ title: '', organization: '', year: '', description: '', certificate_url: '' });
+      setNewTraining({ title: '', organization: '', year: '', description: '', certificate_url: '', logo_url: null });
       setIsAdding(false);
       toast.success('Training added successfully');
     },
@@ -161,10 +164,18 @@ const AdminTrainings = () => {
         <Card className="border-primary/50">
           <CardHeader><CardTitle className="text-lg">Add New Training</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Input placeholder="Training Title *" value={newTraining.title} onChange={(e) => setNewTraining({ ...newTraining, title: e.target.value })} />
-            <div className="grid grid-cols-2 gap-4">
-              <Input placeholder="Organization" value={newTraining.organization} onChange={(e) => setNewTraining({ ...newTraining, organization: e.target.value })} />
-              <Input placeholder="Year" value={newTraining.year} onChange={(e) => setNewTraining({ ...newTraining, year: e.target.value })} />
+            <div className="flex items-start gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-muted-foreground">Logo</label>
+                <LogoUpload currentLogo={newTraining.logo_url} onLogoChange={(url) => setNewTraining({ ...newTraining, logo_url: url })} />
+              </div>
+              <div className="flex-1 space-y-4">
+                <Input placeholder="Training Title *" value={newTraining.title} onChange={(e) => setNewTraining({ ...newTraining, title: e.target.value })} />
+                <div className="grid grid-cols-2 gap-4">
+                  <Input placeholder="Organization" value={newTraining.organization} onChange={(e) => setNewTraining({ ...newTraining, organization: e.target.value })} />
+                  <Input placeholder="Year" value={newTraining.year} onChange={(e) => setNewTraining({ ...newTraining, year: e.target.value })} />
+                </div>
+              </div>
             </div>
             <Textarea placeholder="Description" value={newTraining.description} onChange={(e) => setNewTraining({ ...newTraining, description: e.target.value })} />
             <Input placeholder="Certificate URL (optional)" value={newTraining.certificate_url} onChange={(e) => setNewTraining({ ...newTraining, certificate_url: e.target.value })} />
@@ -185,10 +196,15 @@ const AdminTrainings = () => {
                   <CardContent className="p-4">
                     {editingId === training.id ? (
                       <div className="space-y-4">
-                        <Input placeholder="Training Title" value={editForm.title || ''} onChange={(e) => setEditForm({ ...editForm, title: e.target.value })} />
-                        <div className="grid grid-cols-2 gap-4">
-                          <Input placeholder="Organization" value={editForm.organization || ''} onChange={(e) => setEditForm({ ...editForm, organization: e.target.value })} />
-                          <Input placeholder="Year" value={editForm.year || ''} onChange={(e) => setEditForm({ ...editForm, year: e.target.value })} />
+                        <div className="flex items-start gap-4">
+                          <LogoUpload currentLogo={(editForm as any).logo_url || null} onLogoChange={(url) => setEditForm({ ...editForm, logo_url: url })} size={48} />
+                          <div className="flex-1 space-y-4">
+                            <Input placeholder="Training Title" value={editForm.title || ''} onChange={(e) => setEditForm({ ...editForm, title: e.target.value })} />
+                            <div className="grid grid-cols-2 gap-4">
+                              <Input placeholder="Organization" value={editForm.organization || ''} onChange={(e) => setEditForm({ ...editForm, organization: e.target.value })} />
+                              <Input placeholder="Year" value={editForm.year || ''} onChange={(e) => setEditForm({ ...editForm, year: e.target.value })} />
+                            </div>
+                          </div>
                         </div>
                         <Textarea placeholder="Description" value={editForm.description || ''} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} />
                         <Input placeholder="Certificate URL" value={editForm.certificate_url || ''} onChange={(e) => setEditForm({ ...editForm, certificate_url: e.target.value })} />
@@ -199,8 +215,12 @@ const AdminTrainings = () => {
                       </div>
                     ) : (
                       <div className={`flex items-start gap-4 ${!(training as any).is_visible ? 'opacity-50' : ''}`}>
-                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Award className="w-5 h-5 text-primary" />
+                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center overflow-hidden">
+                          {(training as any).logo_url ? (
+                            <img src={(training as any).logo_url} alt={training.title} className="w-full h-full object-contain p-1" />
+                          ) : (
+                            <Award className="w-5 h-5 text-primary" />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">

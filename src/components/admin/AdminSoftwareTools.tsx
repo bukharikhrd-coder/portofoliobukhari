@@ -6,6 +6,7 @@ import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconPicker from "./IconPicker";
+import LogoUpload from "./LogoUpload";
 import { SortableItemWrapper } from "./SortableList";
 import {
   DndContext,
@@ -29,6 +30,7 @@ interface ToolItem {
   icon_name: string | null;
   proficiency_level: string | null;
   order_index: number | null;
+  logo_url: string | null;
 }
 
 const proficiencyLevels = ["Expert", "Advanced", "Intermediate", "Beginner"];
@@ -38,7 +40,7 @@ const AdminSoftwareTools = () => {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 });
+  const [formData, setFormData] = useState({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: "" as string | null });
   const [showIconPicker, setShowIconPicker] = useState(false);
 
   const sensors = useSensors(
@@ -88,7 +90,8 @@ const AdminSoftwareTools = () => {
       const { error } = await supabase.from("video_tools").update({
         name: formData.name,
         icon_name: formData.icon_name || null,
-        proficiency_level: formData.proficiency_level
+        proficiency_level: formData.proficiency_level,
+        logo_url: formData.logo_url || null
       }).eq("id", editingId);
       
       if (error) toast.error("Failed to update");
@@ -102,7 +105,8 @@ const AdminSoftwareTools = () => {
         name: formData.name,
         icon_name: formData.icon_name || null,
         proficiency_level: formData.proficiency_level,
-        order_index: items.length
+        order_index: items.length,
+        logo_url: formData.logo_url || null
       }).select().single();
       
       if (error) toast.error("Failed to add");
@@ -112,7 +116,7 @@ const AdminSoftwareTools = () => {
         setIsAdding(false);
       }
     }
-    setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 });
+    setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: null });
   };
 
   const deleteTool = async (id: string) => {
@@ -126,7 +130,7 @@ const AdminSoftwareTools = () => {
 
   const startEdit = (tool: ToolItem) => {
     setEditingId(tool.id);
-    setFormData({ name: tool.name, icon_name: tool.icon_name || "", proficiency_level: tool.proficiency_level || "Intermediate", order_index: tool.order_index || 0 });
+    setFormData({ name: tool.name, icon_name: tool.icon_name || "", proficiency_level: tool.proficiency_level || "Intermediate", order_index: tool.order_index || 0, logo_url: tool.logo_url || null });
   };
 
   const getProficiencyColor = (level: string | null) => {
@@ -151,7 +155,7 @@ const AdminSoftwareTools = () => {
       </div>
 
       {!isAdding && (
-        <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => { setIsAdding(true); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: items.length }); }} className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
+        <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => { setIsAdding(true); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: items.length, logo_url: null }); }} className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
           <Plus size={20} /> Add New Tool
         </motion.button>
       )}
@@ -162,7 +166,11 @@ const AdminSoftwareTools = () => {
             <h3 className="font-medium text-lg mb-4">Add New Tool</h3>
             <div className="flex gap-4 flex-wrap items-end">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-muted-foreground">Icon</label>
+                <label className="text-xs text-muted-foreground">Logo</label>
+                <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-muted-foreground">Icon (fallback)</label>
                 <button type="button" onClick={() => setShowIconPicker(true)} className="w-14 h-14 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
                   {FormIcon ? <FormIcon size={24} className="text-primary" /> : <Smile size={24} className="text-muted-foreground" />}
                 </button>
@@ -179,7 +187,7 @@ const AdminSoftwareTools = () => {
               </div>
               <div className="flex gap-2">
                 <button onClick={saveTool} disabled={!formData.name.trim()} className="h-[50px] px-6 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 flex items-center gap-2"><Check size={18} /> Save</button>
-                <button onClick={() => { setIsAdding(false); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 }); }} className="h-[50px] px-4 border border-border rounded-lg"><X size={18} /></button>
+                <button onClick={() => { setIsAdding(false); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: null }); }} className="h-[50px] px-4 border border-border rounded-lg"><X size={18} /></button>
               </div>
             </div>
           </motion.div>
@@ -201,8 +209,9 @@ const AdminSoftwareTools = () => {
                       {isEditing ? (
                         <div className="space-y-4">
                           <div className="flex items-start gap-3">
-                            <button type="button" onClick={() => setShowIconPicker(true)} className="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
-                              {EditIcon ? <EditIcon size={24} className="text-primary" /> : <Smile size={24} className="text-muted-foreground" />}
+                            <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} size={48} />
+                            <button type="button" onClick={() => setShowIconPicker(true)} className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
+                              {EditIcon ? <EditIcon size={20} className="text-primary" /> : <Smile size={20} className="text-muted-foreground" />}
                             </button>
                             <div className="flex-1 space-y-2">
                               <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:border-primary focus:outline-none" />
@@ -212,14 +221,16 @@ const AdminSoftwareTools = () => {
                             </div>
                           </div>
                           <div className="flex gap-2 justify-end">
-                            <button onClick={() => { setEditingId(null); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 }); }} className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"><X size={18} /></button>
+                            <button onClick={() => { setEditingId(null); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: null }); }} className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"><X size={18} /></button>
                             <button onClick={saveTool} className="p-2 text-primary hover:bg-primary/10 rounded-lg"><Check size={18} /></button>
                           </div>
                         </div>
                       ) : (
                         <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl">
-                            {ToolIcon ? <ToolIcon size={26} className="text-primary" /> : <span className="text-xl font-bold text-primary">{tool.name.charAt(0)}</span>}
+                          <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl overflow-hidden">
+                            {tool.logo_url ? (
+                              <img src={tool.logo_url} alt={tool.name} className="w-full h-full object-contain p-1.5" />
+                            ) : ToolIcon ? <ToolIcon size={26} className="text-primary" /> : <span className="text-xl font-bold text-primary">{tool.name.charAt(0)}</span>}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">

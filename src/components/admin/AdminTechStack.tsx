@@ -6,6 +6,7 @@ import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconPicker from "./IconPicker";
+import LogoUpload from "./LogoUpload";
 import { SortableItemWrapper } from "./SortableList";
 import {
   DndContext,
@@ -30,6 +31,7 @@ interface TechItem {
   icon_name: string | null;
   order_index: number | null;
   is_visible: boolean;
+  logo_url: string | null;
 }
 
 const categories = ["Frontend", "Backend", "Design", "DevOps", "Other"];
@@ -37,9 +39,9 @@ const categories = ["Frontend", "Backend", "Design", "DevOps", "Other"];
 const AdminTechStack = () => {
   const [items, setItems] = useState<TechItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [newItem, setNewItem] = useState({ name: "", category: "Frontend", icon_name: "" });
+  const [newItem, setNewItem] = useState({ name: "", category: "Frontend", icon_name: "", logo_url: null as string | null });
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ name: "", category: "", icon_name: "" });
+  const [editForm, setEditForm] = useState({ name: "", category: "", icon_name: "", logo_url: null as string | null });
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [iconPickerTarget, setIconPickerTarget] = useState<"new" | string>("new");
 
@@ -92,23 +94,23 @@ const AdminTechStack = () => {
 
   const addItem = async () => {
     if (!newItem.name.trim()) return;
-    const { data, error } = await supabase.from("tech_stack").insert({ name: newItem.name.trim(), category: newItem.category, icon_name: newItem.icon_name || null, order_index: items.length }).select().single();
+    const { data, error } = await supabase.from("tech_stack").insert({ name: newItem.name.trim(), category: newItem.category, icon_name: newItem.icon_name || null, order_index: items.length, logo_url: newItem.logo_url || null }).select().single();
     if (error) toast.error("Failed to add item");
     else {
       setItems([...items, data]);
-      setNewItem({ name: "", category: "Frontend", icon_name: "" });
+      setNewItem({ name: "", category: "Frontend", icon_name: "", logo_url: null });
       toast.success("Item added!");
     }
   };
 
   const startEdit = (item: TechItem) => {
     setEditingId(item.id);
-    setEditForm({ name: item.name, category: item.category || "Other", icon_name: item.icon_name || "" });
+    setEditForm({ name: item.name, category: item.category || "Other", icon_name: item.icon_name || "", logo_url: item.logo_url || null });
   };
 
   const saveEdit = async () => {
     if (!editingId || !editForm.name.trim()) return;
-    const { error } = await supabase.from("tech_stack").update({ name: editForm.name.trim(), category: editForm.category, icon_name: editForm.icon_name || null }).eq("id", editingId);
+    const { error } = await supabase.from("tech_stack").update({ name: editForm.name.trim(), category: editForm.category, icon_name: editForm.icon_name || null, logo_url: editForm.logo_url || null }).eq("id", editingId);
     if (error) toast.error("Failed to update");
     else {
       setItems(items.map(item => item.id === editingId ? { ...item, name: editForm.name.trim(), category: editForm.category, icon_name: editForm.icon_name || null } : item));
@@ -166,7 +168,11 @@ const AdminTechStack = () => {
         <h3 className="font-medium text-lg mb-4">Add New Technology</h3>
         <div className="flex gap-3 flex-wrap items-end">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-muted-foreground">Icon</label>
+            <label className="text-xs text-muted-foreground">Logo</label>
+            <LogoUpload currentLogo={newItem.logo_url} onLogoChange={(url) => setNewItem({ ...newItem, logo_url: url })} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-muted-foreground">Icon (fallback)</label>
             <button type="button" onClick={() => openIconPicker("new")} className="w-14 h-14 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
               {NewItemIcon ? <NewItemIcon size={24} className="text-primary" /> : <Smile size={24} className="text-muted-foreground" />}
             </button>
@@ -212,8 +218,9 @@ const AdminTechStack = () => {
                           <SortableItemWrapper key={item.id} id={item.id} disabled={editingId !== null}>
                             <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className={`relative p-4 bg-card border rounded-xl transition-all ${isEditing ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"} ${!item.is_visible ? "opacity-50" : ""}`}>
                               {isEditing ? (
-                                <div className="space-y-3">
+                                  <div className="space-y-3">
                                   <div className="flex items-start gap-3">
+                                    <LogoUpload currentLogo={editForm.logo_url} onLogoChange={(url) => setEditForm({ ...editForm, logo_url: url })} size={48} />
                                     <button type="button" onClick={() => openIconPicker(item.id)} className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-lg hover:border-primary transition-all">
                                       {EditIcon ? <EditIcon size={22} className="text-primary" /> : <Smile size={22} className="text-muted-foreground" />}
                                     </button>
@@ -231,8 +238,10 @@ const AdminTechStack = () => {
                                 </div>
                               ) : (
                                 <div className="flex items-center gap-3">
-                                  <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg">
-                                    {ItemIcon ? <ItemIcon size={24} className="text-primary" /> : <span className="text-lg font-bold text-primary">{item.name.charAt(0)}</span>}
+                                <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg overflow-hidden">
+                                    {item.logo_url ? (
+                                      <img src={item.logo_url} alt={item.name} className="w-full h-full object-contain p-1" />
+                                    ) : ItemIcon ? <ItemIcon size={24} className="text-primary" /> : <span className="text-lg font-bold text-primary">{item.name.charAt(0)}</span>}
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-medium truncate">{item.name}</h4>

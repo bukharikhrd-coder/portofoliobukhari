@@ -71,8 +71,12 @@ const SoftwareToolsModern = () => {
             return (
               <motion.div key={tool.id} initial={{ opacity: 0, y: 30, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }} viewport={{ once: true, margin: "-20px" }} className="group">
                 <div className="bg-card border border-border/50 rounded-2xl p-4 md:p-6 text-center hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
-                  <div className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-all">
-                    <IconComponent className="text-primary transition-colors w-5 h-5 md:w-7 md:h-7" />
+                  <div className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-all overflow-hidden">
+                    {(tool as any).logo_url ? (
+                      <img src={(tool as any).logo_url} alt={tool.name} className="w-full h-full object-contain p-1.5" />
+                    ) : (
+                      <IconComponent className="text-primary transition-colors w-5 h-5 md:w-7 md:h-7" />
+                    )}
                   </div>
                   <h3 className="font-medium text-foreground mb-2 group-hover:text-primary transition-colors text-sm md:text-base">{tool.name}</h3>
                   <span className={`inline-block px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium rounded-full border ${getProficiencyBadge(originalLevel)}`}>
