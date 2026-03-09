@@ -83,7 +83,7 @@ const HeroModern = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
             >
-              <TranslatedText as="p" className="text-muted-foreground text-base md:text-lg max-w-lg leading-relaxed">
+              <TranslatedText as="p" className="text-muted-foreground text-sm md:text-lg max-w-lg leading-relaxed">
                 {heroData.description || ""}
               </TranslatedText>
             </motion.div>
