@@ -218,8 +218,9 @@ const AdminTechStack = () => {
                           <SortableItemWrapper key={item.id} id={item.id} disabled={editingId !== null}>
                             <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className={`relative p-4 bg-card border rounded-xl transition-all ${isEditing ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/50"} ${!item.is_visible ? "opacity-50" : ""}`}>
                               {isEditing ? (
-                                <div className="space-y-3">
+                                  <div className="space-y-3">
                                   <div className="flex items-start gap-3">
+                                    <LogoUpload currentLogo={editForm.logo_url} onLogoChange={(url) => setEditForm({ ...editForm, logo_url: url })} size={48} />
                                     <button type="button" onClick={() => openIconPicker(item.id)} className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-lg hover:border-primary transition-all">
                                       {EditIcon ? <EditIcon size={22} className="text-primary" /> : <Smile size={22} className="text-muted-foreground" />}
                                     </button>
