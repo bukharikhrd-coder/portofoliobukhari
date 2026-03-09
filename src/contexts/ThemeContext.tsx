@@ -14,6 +14,7 @@ interface ThemeContextType {
   setThemeMode: (mode: ThemeMode) => void;
   setColorTheme: (color: ColorTheme) => void;
   setUITemplate: (template: UITemplate) => void;
+  refreshCustomSettings: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
