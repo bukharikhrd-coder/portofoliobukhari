@@ -184,20 +184,28 @@ const Navbar = () => {
             {/* More dropdown - only show on homepage */}
             {isHomePage && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 tracking-wide">
+                <DropdownMenuTrigger className={`flex items-center gap-1 text-xs lg:text-sm transition-colors duration-300 tracking-wide ${
+                  isHomePage && moreNavItems.some(item => activeSection === item.href.replace("#", ""))
+                    ? "text-foreground font-medium"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}>
                   More
                   <ChevronDown size={14} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[160px]">
-                  {moreNavItems.map((link) => (
-                    <DropdownMenuItem
-                      key={link.href}
-                      onClick={(e) => handleSmoothScroll(e, link.href)}
-                      className="cursor-pointer"
-                    >
-                      {link.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {moreNavItems.map((link) => {
+                    const sectionId = link.href.replace("#", "");
+                    const isActive = activeSection === sectionId;
+                    return (
+                      <DropdownMenuItem
+                        key={link.href}
+                        onClick={(e) => handleSmoothScroll(e, link.href)}
+                        className={`cursor-pointer ${isActive ? "bg-accent font-medium" : ""}`}
+                      >
+                        {link.label}
+                      </DropdownMenuItem>
+                    );
+                  })}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
@@ -205,7 +213,11 @@ const Navbar = () => {
             {/* Services - external page */}
             <Link
               to="/services"
-              className="text-xs lg:text-sm text-primary hover:text-primary/80 transition-colors duration-300 link-underline tracking-wide font-medium"
+              className={`text-xs lg:text-sm transition-colors duration-300 link-underline tracking-wide ${
+                isServicesPage
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               Services
             </Link>
