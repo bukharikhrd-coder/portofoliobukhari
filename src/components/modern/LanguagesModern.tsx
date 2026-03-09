@@ -48,7 +48,7 @@ const Languages = () => {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           {translatedLanguages?.map((lang, index) => (
             <motion.div key={lang.id} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay: index * 0.1 }} viewport={{ once: true }}
               className="bg-card border border-border/50 rounded-2xl p-5 md:p-6 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
