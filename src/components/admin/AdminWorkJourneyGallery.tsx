@@ -110,6 +110,7 @@ const AdminWorkJourneyGallery = () => {
         description: editItem.description,
         image_url: editItem.image_url,
         year: editItem.year,
+        category: editItem.category,
       })
       .eq("id", editItem.id);
 
