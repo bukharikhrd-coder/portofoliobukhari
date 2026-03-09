@@ -110,7 +110,7 @@ const AdminTechStack = () => {
 
   const saveEdit = async () => {
     if (!editingId || !editForm.name.trim()) return;
-    const { error } = await supabase.from("tech_stack").update({ name: editForm.name.trim(), category: editForm.category, icon_name: editForm.icon_name || null }).eq("id", editingId);
+    const { error } = await supabase.from("tech_stack").update({ name: editForm.name.trim(), category: editForm.category, icon_name: editForm.icon_name || null, logo_url: editForm.logo_url || null }).eq("id", editingId);
     if (error) toast.error("Failed to update");
     else {
       setItems(items.map(item => item.id === editingId ? { ...item, name: editForm.name.trim(), category: editForm.category, icon_name: editForm.icon_name || null } : item));
