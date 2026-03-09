@@ -227,8 +227,10 @@ const AdminSoftwareTools = () => {
                         </div>
                       ) : (
                         <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl">
-                            {ToolIcon ? <ToolIcon size={26} className="text-primary" /> : <span className="text-xl font-bold text-primary">{tool.name.charAt(0)}</span>}
+                          <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl overflow-hidden">
+                            {tool.logo_url ? (
+                              <img src={tool.logo_url} alt={tool.name} className="w-full h-full object-contain p-1.5" />
+                            ) : ToolIcon ? <ToolIcon size={26} className="text-primary" /> : <span className="text-xl font-bold text-primary">{tool.name.charAt(0)}</span>}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
