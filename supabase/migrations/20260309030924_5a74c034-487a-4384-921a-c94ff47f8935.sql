@@ -1,0 +1,1 @@
+ALTER TABLE public.work_journey_gallery ADD COLUMN category text NULL DEFAULT NULL;

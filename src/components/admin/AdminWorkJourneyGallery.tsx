@@ -11,6 +11,7 @@ interface JourneyItem {
   description: string | null;
   image_url: string;
   year: string | null;
+  category: string | null;
   order_index: number | null;
   is_visible: boolean;
 }
@@ -25,6 +26,7 @@ const AdminWorkJourneyGallery = () => {
     description: "",
     image_url: "",
     year: "",
+    category: "",
   });
   const [editItem, setEditItem] = useState<JourneyItem | null>(null);
 
@@ -77,6 +79,7 @@ const AdminWorkJourneyGallery = () => {
         description: newItem.description.trim() || null,
         image_url: newItem.image_url,
         year: newItem.year.trim() || null,
+        category: newItem.category.trim() || null,
         order_index: items.length,
       })
       .select()
@@ -86,7 +89,7 @@ const AdminWorkJourneyGallery = () => {
       toast.error("Failed to add item");
     } else {
       setItems([...items, data]);
-      setNewItem({ title: "", description: "", image_url: "", year: "" });
+      setNewItem({ title: "", description: "", image_url: "", year: "", category: "" });
       setIsAdding(false);
       toast.success("Item added!");
     }
@@ -107,6 +110,7 @@ const AdminWorkJourneyGallery = () => {
         description: editItem.description,
         image_url: editItem.image_url,
         year: editItem.year,
+        category: editItem.category,
       })
       .eq("id", editItem.id);
 
@@ -170,7 +174,7 @@ const AdminWorkJourneyGallery = () => {
             label="Gallery Image"
           />
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">Title *</label>
               <input
@@ -189,6 +193,16 @@ const AdminWorkJourneyGallery = () => {
                 onChange={(e) => setNewItem({ ...newItem, year: e.target.value })}
                 className="w-full px-4 py-3 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
                 placeholder="e.g., 2024"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">Category / Moment</label>
+              <input
+                type="text"
+                value={newItem.category}
+                onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                className="w-full px-4 py-3 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
+                placeholder="e.g., Seminar, Workshop, Award"
               />
             </div>
           </div>
@@ -215,7 +229,7 @@ const AdminWorkJourneyGallery = () => {
             <button
               onClick={() => {
                 setIsAdding(false);
-                setNewItem({ title: "", description: "", image_url: "", year: "" });
+                setNewItem({ title: "", description: "", image_url: "", year: "", category: "" });
               }}
               className="px-6 py-3 border border-border text-foreground font-medium flex items-center gap-2 hover:border-primary transition-all duration-300"
             >
@@ -259,6 +273,13 @@ const AdminWorkJourneyGallery = () => {
                         onChange={(e) => setEditItem({ ...editItem, year: e.target.value })}
                         className="w-24 px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
                         placeholder="Year"
+                      />
+                      <input
+                        type="text"
+                        value={editItem.category || ""}
+                        onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
+                        className="w-32 px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
+                        placeholder="Category"
                       />
                       <input
                         type="text"
@@ -307,6 +328,9 @@ const AdminWorkJourneyGallery = () => {
                   <div className="flex items-center gap-2 mt-0.5">
                     {item.year && (
                       <span className="text-primary text-xs">{item.year}</span>
+                    )}
+                    {item.category && (
+                      <span className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded">{item.category}</span>
                     )}
                     {item.description && (
                       <span className="text-muted-foreground text-xs truncate">{item.description}</span>
