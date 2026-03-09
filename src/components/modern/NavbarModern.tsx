@@ -40,8 +40,28 @@ const NavbarModern = () => {
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const { data: sectionConfig } = useSectionConfig();
   const isHomePage = location.pathname === "/";
   const isServicesPage = location.pathname.startsWith("/services");
+
+  const { coreNavItems, moreNavItems } = useMemo(() => {
+    if (!sectionConfig || sectionConfig.length === 0) {
+      return {
+        coreNavItems: coreSectionKeys.map(k => sectionNavMap[k]).filter(Boolean),
+        moreNavItems: Object.entries(sectionNavMap)
+          .filter(([k]) => !coreSectionKeys.includes(k))
+          .map(([, v]) => v),
+      };
+    }
+    const visibleSections = sectionConfig.filter(s => s.is_visible);
+    const core = visibleSections
+      .filter(s => coreSectionKeys.includes(s.section_key) && sectionNavMap[s.section_key])
+      .map(s => sectionNavMap[s.section_key]);
+    const more = visibleSections
+      .filter(s => !coreSectionKeys.includes(s.section_key) && sectionNavMap[s.section_key])
+      .map(s => sectionNavMap[s.section_key]);
+    return { coreNavItems: core, moreNavItems: more };
+  }, [sectionConfig]);
 
   useEffect(() => {
     const fetchProfileImage = async () => {
