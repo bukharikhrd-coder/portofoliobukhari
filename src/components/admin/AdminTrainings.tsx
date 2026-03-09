@@ -164,10 +164,18 @@ const AdminTrainings = () => {
         <Card className="border-primary/50">
           <CardHeader><CardTitle className="text-lg">Add New Training</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Input placeholder="Training Title *" value={newTraining.title} onChange={(e) => setNewTraining({ ...newTraining, title: e.target.value })} />
-            <div className="grid grid-cols-2 gap-4">
-              <Input placeholder="Organization" value={newTraining.organization} onChange={(e) => setNewTraining({ ...newTraining, organization: e.target.value })} />
-              <Input placeholder="Year" value={newTraining.year} onChange={(e) => setNewTraining({ ...newTraining, year: e.target.value })} />
+            <div className="flex items-start gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-muted-foreground">Logo</label>
+                <LogoUpload currentLogo={newTraining.logo_url} onLogoChange={(url) => setNewTraining({ ...newTraining, logo_url: url })} />
+              </div>
+              <div className="flex-1 space-y-4">
+                <Input placeholder="Training Title *" value={newTraining.title} onChange={(e) => setNewTraining({ ...newTraining, title: e.target.value })} />
+                <div className="grid grid-cols-2 gap-4">
+                  <Input placeholder="Organization" value={newTraining.organization} onChange={(e) => setNewTraining({ ...newTraining, organization: e.target.value })} />
+                  <Input placeholder="Year" value={newTraining.year} onChange={(e) => setNewTraining({ ...newTraining, year: e.target.value })} />
+                </div>
+              </div>
             </div>
             <Textarea placeholder="Description" value={newTraining.description} onChange={(e) => setNewTraining({ ...newTraining, description: e.target.value })} />
             <Input placeholder="Certificate URL (optional)" value={newTraining.certificate_url} onChange={(e) => setNewTraining({ ...newTraining, certificate_url: e.target.value })} />
