@@ -40,7 +40,7 @@ const AdminSoftwareTools = () => {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 });
+  const [formData, setFormData] = useState({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: "" as string | null });
   const [showIconPicker, setShowIconPicker] = useState(false);
 
   const sensors = useSensors(
