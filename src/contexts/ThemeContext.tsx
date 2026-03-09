@@ -161,6 +161,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             "accent_mode", "accent_gradient_from", "accent_gradient_to", "selected_accent_gradient",
             "gradient_enabled", "gradient_from", "gradient_to",
             "gradient_angle", "gradient_target",
+            "color_template_mode", "selected_color_template",
           ]);
 
         if (data) {
