@@ -329,6 +329,9 @@ const AdminWorkJourneyGallery = () => {
                     {item.year && (
                       <span className="text-primary text-xs">{item.year}</span>
                     )}
+                    {item.category && (
+                      <span className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded">{item.category}</span>
+                    )}
                     {item.description && (
                       <span className="text-muted-foreground text-xs truncate">{item.description}</span>
                     )}
