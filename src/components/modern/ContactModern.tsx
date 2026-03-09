@@ -65,9 +65,9 @@ const ContactModern = () => {
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12" ref={ref}>
         <div className="grid lg:grid-cols-2 gap-10 md:gap-16">
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, x: -30, filter: "blur(6px)" }}
+            animate={isInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
             className="space-y-6 md:space-y-8"
           >
             <div>
