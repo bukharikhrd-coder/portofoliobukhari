@@ -219,12 +219,14 @@ const Navbar = () => {
                     const sectionId = link.href.replace("#", "");
                     const isActive = activeSection === sectionId;
                     return (
-                      <DropdownMenuItem
-                        key={link.href}
-                        onClick={(e) => handleSmoothScroll(e, link.href)}
-                        className={`cursor-pointer ${isActive ? "bg-accent font-medium" : ""}`}
-                      >
-                        {link.label}
+                      <DropdownMenuItem key={link.href} asChild className={isActive ? "bg-accent font-medium" : ""}>
+                        <a
+                          href={link.href}
+                          onClick={(e) => handleSmoothScroll(e, link.href)}
+                          className="cursor-pointer w-full"
+                        >
+                          {link.label}
+                        </a>
                       </DropdownMenuItem>
                     );
                   })}
