@@ -125,8 +125,8 @@ const NavbarModern = () => {
           : ""
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between h-20">
+      <div className="container mx-auto px-3 sm:px-6 lg:px-12">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo - rounded, modern */}
           <Link
             to="/"
@@ -295,7 +295,7 @@ const NavbarModern = () => {
             exit={{ opacity: 0, height: 0 }}
             className="sm:hidden bg-background/95 backdrop-blur-xl border-b border-border/50 overflow-hidden"
           >
-            <div className="container mx-auto px-6 py-6 space-y-2">
+            <div className="container mx-auto px-3 py-4 space-y-2">
               <Link to="/" onClick={() => { setIsOpen(false); if (isHomePage) window.scrollTo({ top: 0, behavior: "smooth" }); }}
                 className="block px-4 py-3 text-lg text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-xl transition-colors">
                 Home
