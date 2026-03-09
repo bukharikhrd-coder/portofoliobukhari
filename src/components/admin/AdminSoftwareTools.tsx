@@ -116,7 +116,7 @@ const AdminSoftwareTools = () => {
         setIsAdding(false);
       }
     }
-    setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 });
+    setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: null });
   };
 
   const deleteTool = async (id: string) => {
