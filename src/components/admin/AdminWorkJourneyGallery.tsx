@@ -229,7 +229,7 @@ const AdminWorkJourneyGallery = () => {
             <button
               onClick={() => {
                 setIsAdding(false);
-                setNewItem({ title: "", description: "", image_url: "", year: "" });
+                setNewItem({ title: "", description: "", image_url: "", year: "", category: "" });
               }}
               className="px-6 py-3 border border-border text-foreground font-medium flex items-center gap-2 hover:border-primary transition-all duration-300"
             >
