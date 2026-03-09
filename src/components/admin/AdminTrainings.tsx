@@ -46,7 +46,8 @@ const AdminTrainings = () => {
     organization: '',
     year: '',
     description: '',
-    certificate_url: ''
+    certificate_url: '',
+    logo_url: null as string | null
   });
   const [isAdding, setIsAdding] = useState(false);
 
