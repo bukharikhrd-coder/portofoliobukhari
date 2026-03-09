@@ -101,6 +101,8 @@ const WorkJourneyGalleryModern = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeYear, setActiveYear] = useState<string>("all");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [showYearFilter, setShowYearFilter] = useState(true);
+  const [showCategoryFilter, setShowCategoryFilter] = useState(true);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -109,7 +111,17 @@ const WorkJourneyGalleryModern = () => {
       if (data && !error) setItems(data);
       setLoading(false);
     };
+    const fetchFilterSettings = async () => {
+      const { data } = await supabase.from("site_settings").select("key, value").in("key", ["journey_show_year_filter", "journey_show_category_filter"]);
+      if (data) {
+        data.forEach((s) => {
+          if (s.key === "journey_show_year_filter") setShowYearFilter(s.value !== "false");
+          if (s.key === "journey_show_category_filter") setShowCategoryFilter(s.value !== "false");
+        });
+      }
+    };
     fetchItems();
+    fetchFilterSettings();
   }, []);
 
   const { items: translatedItems } = useTranslatedContent(items.length > 0 ? items : undefined, ["title", "description"]);
