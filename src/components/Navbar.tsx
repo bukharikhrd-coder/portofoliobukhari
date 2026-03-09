@@ -47,10 +47,27 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+
+      // Scroll spy: detect active section
+      if (!isHomePage) return;
+      const sections = [...coreNavItems, ...moreNavItems].map(item => item.href.replace("#", ""));
+      let current = "";
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120) {
+            current = sectionId;
+          }
+        }
+      }
+      // If at top of page, no section is active (Home is active)
+      if (window.scrollY < 100) current = "";
+      setActiveSection(current);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, href: string) => {
     e.preventDefault();
