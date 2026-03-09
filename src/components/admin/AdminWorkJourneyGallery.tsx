@@ -79,6 +79,7 @@ const AdminWorkJourneyGallery = () => {
         description: newItem.description.trim() || null,
         image_url: newItem.image_url,
         year: newItem.year.trim() || null,
+        category: newItem.category.trim() || null,
         order_index: items.length,
       })
       .select()
