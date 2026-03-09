@@ -39,7 +39,7 @@ const WorkJourneyGalleryModern = () => {
   const getTranslatedSelected = () => { if (!selectedImage) return null; return displayItems.find(i => i.id === selectedImage.id) || selectedImage; };
 
   if (loading) {
-    return <section id="journey" className="py-20 relative overflow-hidden bg-secondary/20"><div className="container mx-auto px-6 flex items-center justify-center min-h-[200px]"><Loader2 className="animate-spin text-primary" size={32} /></div></section>;
+    return <section id="journey" className="py-20 relative overflow-hidden bg-secondary/10"><div className="container mx-auto px-6 flex items-center justify-center min-h-[200px]"><Loader2 className="animate-spin text-primary" size={32} /></div></section>;
   }
   if (items.length === 0) return null;
 

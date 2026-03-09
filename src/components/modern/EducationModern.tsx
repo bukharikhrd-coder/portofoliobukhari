@@ -18,7 +18,7 @@ const EducationModern = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 px-6 bg-secondary/20">
+      <section className="py-24 px-6 bg-secondary/10">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse space-y-8">
             {[1, 2].map((i) => <div key={i} className="h-32 bg-muted rounded-2xl" />)}
