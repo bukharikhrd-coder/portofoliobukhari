@@ -23,10 +23,10 @@ const sectionNavMap: Record<string, { href: string; label: string }> = {
   education: { href: "#education", label: "Education" },
   trainings: { href: "#trainings", label: "Training" },
   languages: { href: "#languages", label: "Languages" },
-  videoportfolio: { href: "#videoportfolio", label: "Video Portfolio" },
-  techstack: { href: "#techstack", label: "Tech Stack" },
-  softwaretools: { href: "#softwaretools", label: "Tools" },
-  workjourney: { href: "#workjourney", label: "Work Journey" },
+  videoportfolio: { href: "#video-portfolio", label: "Video Portfolio" },
+  techstack: { href: "#tech", label: "Tech Stack" },
+  softwaretools: { href: "#software-tools", label: "Tools" },
+  workjourney: { href: "#journey", label: "Work Journey" },
 };
 
 // Core sections always shown in main bar (if visible)
