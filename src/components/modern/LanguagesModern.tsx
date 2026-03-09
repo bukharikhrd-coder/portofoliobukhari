@@ -26,7 +26,7 @@ const Languages = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 px-6 bg-background">
+      <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse flex gap-4 flex-wrap">
             {[1, 2, 3].map((i) => <div key={i} className="h-16 w-40 bg-muted rounded-2xl" />)}
