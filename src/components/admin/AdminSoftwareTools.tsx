@@ -6,6 +6,7 @@ import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconPicker from "./IconPicker";
+import LogoUpload from "./LogoUpload";
 import { SortableItemWrapper } from "./SortableList";
 import {
   DndContext,
