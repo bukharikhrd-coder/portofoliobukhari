@@ -221,7 +221,7 @@ const AdminSoftwareTools = () => {
                             </div>
                           </div>
                           <div className="flex gap-2 justify-end">
-                            <button onClick={() => { setEditingId(null); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 }); }} className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"><X size={18} /></button>
+                            <button onClick={() => { setEditingId(null); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: null }); }} className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg"><X size={18} /></button>
                             <button onClick={saveTool} className="p-2 text-primary hover:bg-primary/10 rounded-lg"><Check size={18} /></button>
                           </div>
                         </div>
