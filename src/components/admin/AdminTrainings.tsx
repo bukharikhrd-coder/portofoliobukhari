@@ -196,10 +196,15 @@ const AdminTrainings = () => {
                   <CardContent className="p-4">
                     {editingId === training.id ? (
                       <div className="space-y-4">
-                        <Input placeholder="Training Title" value={editForm.title || ''} onChange={(e) => setEditForm({ ...editForm, title: e.target.value })} />
-                        <div className="grid grid-cols-2 gap-4">
-                          <Input placeholder="Organization" value={editForm.organization || ''} onChange={(e) => setEditForm({ ...editForm, organization: e.target.value })} />
-                          <Input placeholder="Year" value={editForm.year || ''} onChange={(e) => setEditForm({ ...editForm, year: e.target.value })} />
+                        <div className="flex items-start gap-4">
+                          <LogoUpload currentLogo={(editForm as any).logo_url || null} onLogoChange={(url) => setEditForm({ ...editForm, logo_url: url })} size={48} />
+                          <div className="flex-1 space-y-4">
+                            <Input placeholder="Training Title" value={editForm.title || ''} onChange={(e) => setEditForm({ ...editForm, title: e.target.value })} />
+                            <div className="grid grid-cols-2 gap-4">
+                              <Input placeholder="Organization" value={editForm.organization || ''} onChange={(e) => setEditForm({ ...editForm, organization: e.target.value })} />
+                              <Input placeholder="Year" value={editForm.year || ''} onChange={(e) => setEditForm({ ...editForm, year: e.target.value })} />
+                            </div>
+                          </div>
                         </div>
                         <Textarea placeholder="Description" value={editForm.description || ''} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} />
                         <Input placeholder="Certificate URL" value={editForm.certificate_url || ''} onChange={(e) => setEditForm({ ...editForm, certificate_url: e.target.value })} />
