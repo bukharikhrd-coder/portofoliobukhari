@@ -52,7 +52,7 @@ const VideoPortfolioModern = () => {
   };
 
   if (isLoading) {
-    return <section id="video-portfolio" className="py-20 px-6 bg-background"><div className="max-w-6xl mx-auto flex items-center justify-center min-h-[200px]"><Loader2 className="animate-spin text-primary" size={32} /></div></section>;
+    return <section id="video-portfolio" className="py-20 px-6"><div className="max-w-6xl mx-auto flex items-center justify-center min-h-[200px]"><Loader2 className="animate-spin text-primary" size={32} /></div></section>;
   }
   if (!videos?.length) return null;
 
