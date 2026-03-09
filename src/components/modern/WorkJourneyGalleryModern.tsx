@@ -185,7 +185,7 @@ const WorkJourneyGalleryModern = () => {
   const translatedSelected = getTranslatedSelected();
 
   return (
-    <section id="journey" className="py-12 md:py-20 relative overflow-hidden">
+    <section id="journey" className="py-8 md:py-20 relative overflow-hidden">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
         {/* Header */}
         <motion.div

@@ -50,7 +50,7 @@ const SoftwareToolsModern = () => {
   if (!tools || tools.length === 0) return null;
 
   return (
-    <section id="software-tools" className="py-12 md:py-20 px-3 sm:px-4 md:px-6">
+    <section id="software-tools" className="py-8 md:py-20 px-3 sm:px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true, margin: "-50px" }} className="mb-8 md:mb-12">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
@@ -64,7 +64,7 @@ const SoftwareToolsModern = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-5">
           {displayTools.map((tool, index) => {
             const IconComponent = getIcon(tool.icon_name);
             const originalLevel = tools?.find(t => t.id === tool.id)?.proficiency_level || null;
