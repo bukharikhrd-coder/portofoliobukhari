@@ -129,18 +129,19 @@ const AdminEducation = () => {
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} size={48} />
-                  <div className="flex-1 space-y-4">
-                  <input type="text" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.field_of_study || ""} onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.start_year || ""} onChange={(e) => setFormData({ ...formData, start_year: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
-                  <input type="text" value={formData.end_year || ""} onChange={(e) => setFormData({ ...formData, end_year: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                  <div className="flex-1 space-y-2">
+                    <input type="text" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.field_of_study || ""} onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.start_year || ""} onChange={(e) => setFormData({ ...formData, start_year: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                    <input type="text" value={formData.end_year || ""} onChange={(e) => setFormData({ ...formData, end_year: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
+                  </div>
                 </div>
                 <textarea value={formData.description || ""} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="w-full px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none min-h-[100px]" />
                 <div className="flex gap-2">
                   <button onClick={handleSave} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground"><Save size={18} /> Save</button>
                   <button onClick={() => setEditingId(null)} className="flex items-center gap-2 px-4 py-2 border border-border"><X size={18} /> Cancel</button>
-                </div></div>
+                </div>
               </div>
             ) : (
               <div className={`flex items-start justify-between ${!(edu as any).is_visible ? 'opacity-50' : ''}`}>
