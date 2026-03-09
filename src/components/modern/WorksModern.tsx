@@ -81,7 +81,7 @@ const WorksModern = () => {
           ))}
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {filteredProjects.map((project, index) => (
             <motion.article key={project.id} initial={{ opacity: 0, y: 30, filter: "blur(4px)" }} animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}} transition={{ duration: 0.6, delay: 0.2 + index * 0.08, ease: [0.25, 0.1, 0.25, 1] }} className="group cursor-pointer">
               <div className="relative aspect-[4/3] overflow-hidden bg-card rounded-2xl mb-4 md:mb-5 shadow-sm">
