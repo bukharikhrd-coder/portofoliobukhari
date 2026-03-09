@@ -55,8 +55,8 @@ const HeroModern = () => {
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden bg-background">
       {/* Decorative blobs with parallax */}
-      <div className="absolute top-20 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/5 rounded-full blur-3xl" />
+      <motion.div style={{ opacity: bgOpacity }} className="absolute top-20 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 rounded-full blur-3xl" />
+      <motion.div style={{ opacity: bgOpacity }} className="absolute bottom-0 left-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/5 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-3 sm:px-6 lg:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
