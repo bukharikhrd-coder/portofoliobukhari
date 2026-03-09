@@ -833,6 +833,7 @@ export type Database = {
       }
       work_journey_gallery: {
         Row: {
+          category: string | null
           created_at: string
           description: string | null
           id: string
@@ -844,6 +845,7 @@ export type Database = {
           year: string | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -855,6 +857,7 @@ export type Database = {
           year?: string | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           description?: string | null
           id?: string
