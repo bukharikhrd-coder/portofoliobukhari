@@ -175,7 +175,7 @@ const AdminColorTheme = () => {
       }
 
       setColorTheme(selectedColor);
-      applyCustomColors();
+      refreshCustomSettings();
       toast.success("Theme colors saved!");
     } catch (error) {
       console.error("Error saving:", error);
