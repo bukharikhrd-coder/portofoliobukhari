@@ -46,7 +46,7 @@ const WorkJourneyGalleryModern = () => {
   const translatedSelected = getTranslatedSelected();
 
   return (
-    <section id="journey" className="py-12 md:py-20 relative overflow-hidden bg-secondary/10">
+    <section id="journey" className="py-12 md:py-20 relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 lg:px-12">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true, margin: "-50px" }} className="text-center mb-8 md:mb-12">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
