@@ -199,7 +199,7 @@ const Contact = () => {
               <button
                 type="submit"
                 disabled={sending}
-                className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 bg-primary text-primary-foreground font-medium tracking-wide flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50 text-sm md:text-base"
+                className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 btn-gradient font-medium tracking-wide flex items-center justify-center gap-2 hover:opacity-90 transition-all duration-300 disabled:opacity-50 text-sm md:text-base"
               >
                 {sending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                 <TranslatedText>{sending ? "SENDING..." : "SEND MESSAGE"}</TranslatedText>
