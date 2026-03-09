@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Trash2, Plus, Award, Pencil, X, Check, Eye, EyeOff } from "lucide-react";
+import LogoUpload from "./LogoUpload";
 import { SortableList, SortableItemWrapper } from "./SortableList";
 import {
   DndContext,
