@@ -155,7 +155,7 @@ const AdminSoftwareTools = () => {
       </div>
 
       {!isAdding && (
-        <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => { setIsAdding(true); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: items.length }); }} className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
+        <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => { setIsAdding(true); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: items.length, logo_url: null }); }} className="w-full p-4 border-2 border-dashed border-border rounded-xl text-muted-foreground hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2">
           <Plus size={20} /> Add New Tool
         </motion.button>
       )}
