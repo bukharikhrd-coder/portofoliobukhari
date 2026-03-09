@@ -215,7 +215,11 @@ const NavbarModern = () => {
 
             <Link
               to="/services"
-              className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-all shadow-md shadow-primary/20 ${
+                isServicesPage
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-primary/80 text-primary-foreground hover:bg-primary"
+              }`}
             >
               Services
             </Link>
