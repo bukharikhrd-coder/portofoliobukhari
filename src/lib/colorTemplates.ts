@@ -1,0 +1,159 @@
+export interface ColorTemplate {
+  id: string;
+  label: string;
+  description: string;
+  // Accent
+  accentMode: "solid" | "gradient";
+  accentHex: string;
+  accentGradientFrom?: string;
+  accentGradientTo?: string;
+  // Background
+  bgDark: string;
+  bgLight: string;
+  // Font
+  fontDark: string;
+  fontLight: string;
+  // Optional background gradient
+  gradientEnabled: boolean;
+  gradientFrom?: string;
+  gradientTo?: string;
+  gradientAngle?: string;
+  gradientTarget?: "hero" | "sections" | "all";
+}
+
+export const COLOR_TEMPLATE_PRESETS: ColorTemplate[] = [
+  {
+    id: "classic-amber",
+    label: "Classic Amber",
+    description: "Tema gelap elegan dengan aksen emas",
+    accentMode: "solid",
+    accentHex: "#e69500",
+    bgDark: "#0a0a0a",
+    bgLight: "#fafafa",
+    fontDark: "#f5f5f5",
+    fontLight: "#1a1a1a",
+    gradientEnabled: false,
+  },
+  {
+    id: "ocean-blue",
+    label: "Ocean Blue",
+    description: "Biru laut modern dengan gradient segar",
+    accentMode: "gradient",
+    accentHex: "#0066cc",
+    accentGradientFrom: "#0066cc",
+    accentGradientTo: "#00d4ff",
+    bgDark: "#0a1628",
+    bgLight: "#f0f7ff",
+    fontDark: "#e8f0fe",
+    fontLight: "#0a1628",
+    gradientEnabled: false,
+  },
+  {
+    id: "sunset-fire",
+    label: "Sunset Fire",
+    description: "Hangat dan dramatis dengan nuansa api",
+    accentMode: "gradient",
+    accentHex: "#ff6b35",
+    accentGradientFrom: "#ff6b35",
+    accentGradientTo: "#ffa500",
+    bgDark: "#1a0a00",
+    bgLight: "#fff8f0",
+    fontDark: "#ffe8d6",
+    fontLight: "#2d1810",
+    gradientEnabled: false,
+  },
+  {
+    id: "forest-green",
+    label: "Forest Green",
+    description: "Alami dan segar seperti hutan",
+    accentMode: "gradient",
+    accentHex: "#16a085",
+    accentGradientFrom: "#134e5e",
+    accentGradientTo: "#16a085",
+    bgDark: "#0a1a14",
+    bgLight: "#f0faf5",
+    fontDark: "#d4f0e7",
+    fontLight: "#0a1a14",
+    gradientEnabled: false,
+  },
+  {
+    id: "royal-purple",
+    label: "Royal Purple",
+    description: "Mewah dan misterius dengan ungu kerajaan",
+    accentMode: "gradient",
+    accentHex: "#8b5cf6",
+    accentGradientFrom: "#667eea",
+    accentGradientTo: "#764ba2",
+    bgDark: "#0f0a1a",
+    bgLight: "#f5f0ff",
+    fontDark: "#e8dff5",
+    fontLight: "#1a0f2e",
+    gradientEnabled: false,
+  },
+  {
+    id: "rose-gold",
+    label: "Rose Gold",
+    description: "Feminin dan premium dengan sentuhan pink",
+    accentMode: "gradient",
+    accentHex: "#f093fb",
+    accentGradientFrom: "#f093fb",
+    accentGradientTo: "#f5576c",
+    bgDark: "#1a0a14",
+    bgLight: "#fff0f5",
+    fontDark: "#fde8f0",
+    fontLight: "#2d1018",
+    gradientEnabled: false,
+  },
+  {
+    id: "neon-cyber",
+    label: "Neon Cyber",
+    description: "Futuristik dan berani dengan neon",
+    accentMode: "gradient",
+    accentHex: "#00ffff",
+    accentGradientFrom: "#ff00ff",
+    accentGradientTo: "#00ffff",
+    bgDark: "#050510",
+    bgLight: "#f0f0ff",
+    fontDark: "#e0e0ff",
+    fontLight: "#10101a",
+    gradientEnabled: false,
+  },
+  {
+    id: "midnight-gold",
+    label: "Midnight Gold",
+    description: "Gelap premium dengan aksen emas mewah",
+    accentMode: "gradient",
+    accentHex: "#ffd700",
+    accentGradientFrom: "#f7971e",
+    accentGradientTo: "#ffd200",
+    bgDark: "#0d0d0d",
+    bgLight: "#fffef5",
+    fontDark: "#f0ead6",
+    fontLight: "#1a1a0a",
+    gradientEnabled: false,
+  },
+  {
+    id: "arctic-white",
+    label: "Arctic White",
+    description: "Minimalis bersih dengan aksen biru es",
+    accentMode: "solid",
+    accentHex: "#3b82f6",
+    bgDark: "#111827",
+    bgLight: "#ffffff",
+    fontDark: "#f3f4f6",
+    fontLight: "#111827",
+    gradientEnabled: false,
+  },
+  {
+    id: "crimson-dark",
+    label: "Crimson Dark",
+    description: "Gelap dan intens dengan merah berani",
+    accentMode: "solid",
+    accentHex: "#dc2626",
+    bgDark: "#1a0505",
+    bgLight: "#fff5f5",
+    fontDark: "#fecaca",
+    fontLight: "#1a0505",
+    gradientEnabled: false,
+  },
+];
