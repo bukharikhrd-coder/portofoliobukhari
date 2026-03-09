@@ -3,6 +3,7 @@ import { useSectionConfig } from "@/hooks/useSectionConfig";
 import { useTheme } from "@/contexts/ThemeContext";
 import Navbar from "@/components/Navbar";
 import NavbarModern from "@/components/modern/NavbarModern";
+import ScrollProgress from "@/components/modern/ScrollProgress";
 import Hero from "@/components/Hero";
 import HeroModern from "@/components/modern/HeroModern";
 import About from "@/components/About";
