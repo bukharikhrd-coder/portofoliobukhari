@@ -154,7 +154,11 @@ const Navbar = () => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
-              className="text-xs lg:text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 link-underline tracking-wide"
+              className={`text-xs lg:text-sm transition-colors duration-300 link-underline tracking-wide ${
+                isHomePage && activeSection === "" && !isServicesPage
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               Home
             </Link>
