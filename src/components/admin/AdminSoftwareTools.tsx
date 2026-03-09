@@ -187,7 +187,7 @@ const AdminSoftwareTools = () => {
               </div>
               <div className="flex gap-2">
                 <button onClick={saveTool} disabled={!formData.name.trim()} className="h-[50px] px-6 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 flex items-center gap-2"><Check size={18} /> Save</button>
-                <button onClick={() => { setIsAdding(false); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0 }); }} className="h-[50px] px-4 border border-border rounded-lg"><X size={18} /></button>
+                <button onClick={() => { setIsAdding(false); setFormData({ name: "", icon_name: "", proficiency_level: "Intermediate", order_index: 0, logo_url: null }); }} className="h-[50px] px-4 border border-border rounded-lg"><X size={18} /></button>
               </div>
             </div>
           </motion.div>
