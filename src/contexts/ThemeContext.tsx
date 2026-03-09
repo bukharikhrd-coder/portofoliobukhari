@@ -232,6 +232,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     ];
     propsToReset.forEach(p => root.style.removeProperty(p));
 
+    const settings = customSettingsRef.current;
+
     // 3. Check template mode
     const isTemplateMode = settings.color_template_mode === "true";
     const selectedTemplateId = settings.selected_color_template;
