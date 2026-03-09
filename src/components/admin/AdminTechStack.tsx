@@ -168,7 +168,11 @@ const AdminTechStack = () => {
         <h3 className="font-medium text-lg mb-4">Add New Technology</h3>
         <div className="flex gap-3 flex-wrap items-end">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-muted-foreground">Icon</label>
+            <label className="text-xs text-muted-foreground">Logo</label>
+            <LogoUpload currentLogo={newItem.logo_url} onLogoChange={(url) => setNewItem({ ...newItem, logo_url: url })} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs text-muted-foreground">Icon (fallback)</label>
             <button type="button" onClick={() => openIconPicker("new")} className="w-14 h-14 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
               {NewItemIcon ? <NewItemIcon size={24} className="text-primary" /> : <Smile size={24} className="text-muted-foreground" />}
             </button>
