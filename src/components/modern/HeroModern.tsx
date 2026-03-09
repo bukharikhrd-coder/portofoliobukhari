@@ -118,8 +118,8 @@ const HeroModern = () => {
           >
             <div className="relative">
               {/* Background gradient circle */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/5 rounded-[2rem] -rotate-3 scale-105" />
-              <div className="relative overflow-hidden rounded-[2rem] aspect-[4/5] max-w-md w-full shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/5 rounded-[1.5rem] md:rounded-[2rem] -rotate-3 scale-105" />
+              <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] aspect-[4/5] max-w-[240px] sm:max-w-xs md:max-w-md w-full mx-auto shadow-2xl">
                 <img
                   src={profileImageUrl || profilePhoto}
                   alt="Profile"
