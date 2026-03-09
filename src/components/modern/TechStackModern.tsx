@@ -60,7 +60,7 @@ const TechStackModern = () => {
           {displayTech.map((tech, index) => {
             const IconComponent = getIcon(tech.icon_name);
             return (
-              <motion.div key={tech.id} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.3) }} viewport={{ once: true, margin: "-20px" }} className="group">
+              <motion.div key={tech.id} initial={{ opacity: 0, y: 25, scale: 0.95 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.3), ease: [0.25, 0.1, 0.25, 1] }} viewport={{ once: true, margin: "-20px" }} className="group">
                 <div className="relative p-4 md:p-8 bg-card border border-border/50 hover:border-primary/30 transition-all duration-500 rounded-2xl hover:shadow-lg hover:shadow-primary/5">
                   <div className="mb-4 md:mb-6">
                     <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">

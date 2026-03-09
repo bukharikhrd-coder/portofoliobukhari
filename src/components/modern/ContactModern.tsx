@@ -112,9 +112,9 @@ const ContactModern = () => {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0, x: 30, filter: "blur(6px)" }}
+            animate={isInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 bg-card rounded-3xl p-6 md:p-8 shadow-lg border border-border/50">
               <div className="grid sm:grid-cols-2 gap-4 md:gap-6">

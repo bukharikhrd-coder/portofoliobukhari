@@ -44,10 +44,10 @@ const EducationModern = () => {
           {translatedEducations?.map((edu, index) => (
             <motion.div
               key={edu.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 25, filter: "blur(4px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.6, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+              viewport={{ once: true, margin: "-40px" }}
               className="bg-card border border-border/50 rounded-2xl p-5 md:p-7 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
               <div className="flex items-start gap-3 md:gap-4">
