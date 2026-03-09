@@ -115,23 +115,39 @@ const WorkJourneyGalleryModern = () => {
   const { items: translatedItems } = useTranslatedContent(items.length > 0 ? items : undefined, ["title", "description"]);
   const displayItems = translatedItems.length > 0 ? translatedItems : items;
 
-  // Get unique years sorted descending
   const years = [...new Set(items.map((i) => i.year || "Other"))].sort((a, b) => {
     if (a === "Other") return 1;
     if (b === "Other") return -1;
     return b.localeCompare(a);
   });
 
-  // Group items by year
+  const categories = [...new Set(items.map((i) => i.category || "Other"))].sort((a, b) => {
+    if (a === "Other") return 1;
+    if (b === "Other") return -1;
+    return a.localeCompare(b);
+  });
+
+  // Filter items by year and category
+  const filteredDisplayItems = displayItems.filter((item, idx) => {
+    const original = items[idx] || item;
+    const yearMatch = activeYear === "all" || (original.year || "Other") === activeYear;
+    const catMatch = activeCategory === "all" || (original.category || "Other") === activeCategory;
+    return yearMatch && catMatch;
+  });
+
+  // Group filtered items by year
   const groupedItems: Record<string, JourneyItem[]> = {};
-  displayItems.forEach((item) => {
+  filteredDisplayItems.forEach((item) => {
     const key = item.year || "Other";
     if (!groupedItems[key]) groupedItems[key] = [];
     groupedItems[key].push(item);
   });
 
-  // Filter by active year
-  const filteredYears = activeYear === "all" ? years : years.filter((y) => y === activeYear);
+  const filteredYears = Object.keys(groupedItems).sort((a, b) => {
+    if (a === "Other") return 1;
+    if (b === "Other") return -1;
+    return b.localeCompare(a);
+  });
 
   const openLightbox = (item: JourneyItem, _index: number) => {
     const globalIndex = items.findIndex((i) => i.id === item.id);
