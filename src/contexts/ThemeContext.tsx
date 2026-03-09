@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 type ThemeMode = "dark" | "light" | "system";
@@ -14,6 +14,7 @@ interface ThemeContextType {
   setThemeMode: (mode: ThemeMode) => void;
   setColorTheme: (color: ColorTheme) => void;
   setUITemplate: (template: UITemplate) => void;
+  refreshCustomSettings: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -26,7 +27,7 @@ function getSystemTheme(): ResolvedTheme {
 }
 
 export const COLOR_THEMES: { id: ColorTheme; label: string; hue: number; saturation: number }[] = [
-  { id: "amber", label: "Amber (Default)", hue: 38, saturation: 92 },
+  { id: "amber", label: "Amber", hue: 38, saturation: 92 },
   { id: "blue", label: "Blue", hue: 217, saturation: 91 },
   { id: "cyan", label: "Cyan", hue: 189, saturation: 94 },
   { id: "green", label: "Green", hue: 142, saturation: 71 },
@@ -60,35 +61,54 @@ function hexToHSL(hex: string) {
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
 
-function applyCustomColorsFromSettings(settings: Record<string, string>) {
+/**
+ * Apply ALL custom colors based on current dark/light state.
+ * This must be called AFTER the .dark/.light class is set on <html>.
+ */
+function applyAllCustomColors(settings: Record<string, string>, isDark: boolean) {
   const root = document.documentElement;
-  const isDark = root.classList.contains("dark") || !root.classList.contains("light");
 
+  // Background
   const bgHex = isDark ? settings.custom_bg_dark : settings.custom_bg_light;
   if (bgHex) {
     const hsl = hexToHSL(bgHex);
     root.style.setProperty("--background", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    // Also update card bg to be slightly different
+    const cardL = isDark ? Math.min(hsl.l + 3, 100) : Math.min(hsl.l + 2, 100);
+    root.style.setProperty("--card", `${hsl.h} ${hsl.s}% ${cardL}%`);
+    root.style.setProperty("--popover", `${hsl.h} ${hsl.s}% ${cardL}%`);
   }
 
+  // Foreground / Font
   const fgHex = isDark ? settings.custom_font_dark : settings.custom_font_light;
   if (fgHex) {
     const hsl = hexToHSL(fgHex);
     root.style.setProperty("--foreground", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
     root.style.setProperty("--card-foreground", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--popover-foreground", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
   }
 
-  if (settings.custom_accent_hex) {
+  // Accent / Primary
+  const accentMode = settings.accent_mode || "solid";
+  if (accentMode === "gradient" && settings.accent_gradient_from && settings.accent_gradient_to) {
+    const fromHSL = hexToHSL(settings.accent_gradient_from);
+    root.style.setProperty("--primary", `${fromHSL.h} ${fromHSL.s}% ${isDark ? fromHSL.l : Math.max(fromHSL.l - 5, 0)}%`);
+    root.style.setProperty("--accent", `${fromHSL.h} ${fromHSL.s}% ${isDark ? fromHSL.l : Math.max(fromHSL.l - 5, 0)}%`);
+    root.style.setProperty("--ring", `${fromHSL.h} ${fromHSL.s}% ${fromHSL.l}%`);
+    root.style.setProperty("--accent-gradient", `linear-gradient(135deg, ${settings.accent_gradient_from}, ${settings.accent_gradient_to})`);
+  } else if (settings.custom_accent_hex) {
     const hsl = hexToHSL(settings.custom_accent_hex);
-    root.style.setProperty("--primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
-    root.style.setProperty("--accent", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
-    root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    const lightness = isDark ? hsl.l : Math.max(hsl.l - 5, 0);
+    root.style.setProperty("--primary", `${hsl.h} ${hsl.s}% ${lightness}%`);
+    root.style.setProperty("--accent", `${hsl.h} ${hsl.s}% ${lightness}%`);
+    root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${lightness}%`);
+    root.style.removeProperty("--accent-gradient");
   }
 
-  // Apply gradient
+  // Background gradient
   if (settings.gradient_enabled === "true" && settings.gradient_from && settings.gradient_to) {
     const angle = settings.gradient_angle || "135";
-    const gradient = `linear-gradient(${angle}deg, ${settings.gradient_from}, ${settings.gradient_to})`;
-    root.style.setProperty("--custom-gradient", gradient);
+    root.style.setProperty("--custom-gradient", `linear-gradient(${angle}deg, ${settings.gradient_from}, ${settings.gradient_to})`);
     root.style.setProperty("--gradient-enabled", "1");
     root.style.setProperty("--gradient-target", settings.gradient_target || "hero");
   } else {
@@ -115,7 +135,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   });
 
   const [uiTemplate, setUITemplateState] = useState<UITemplate>("editorial");
-  const [customSettings, setCustomSettings] = useState<Record<string, string>>({});
+  const customSettingsRef = useRef<Record<string, string>>({});
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
     if (themeMode === "system") return getSystemTheme();
@@ -134,6 +155,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             "custom_bg_dark", "custom_bg_light",
             "custom_font_dark", "custom_font_light",
             "custom_accent_hex",
+            "accent_mode", "accent_gradient_from", "accent_gradient_to", "selected_accent_gradient",
             "gradient_enabled", "gradient_from", "gradient_to",
             "gradient_angle", "gradient_target",
           ]);
@@ -152,7 +174,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             setUITemplateState(settings.ui_template as UITemplate);
           }
 
-          setCustomSettings(settings);
+          customSettingsRef.current = settings;
+          setSettingsLoaded(true);
         }
       } catch (error) {
         console.error("Error fetching theme settings:", error);
@@ -181,46 +204,52 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, [themeMode]);
 
-  // Apply dark/light class to document
+  // MASTER EFFECT: Apply dark/light class + all colors in one place
   useEffect(() => {
     const root = document.documentElement;
-    if (resolvedTheme === "light") {
-      root.classList.add("light");
-      root.classList.remove("dark");
-    } else {
+    const isDark = resolvedTheme === "dark";
+
+    // 1. Set the class
+    if (isDark) {
       root.classList.add("dark");
       root.classList.remove("light");
+    } else {
+      root.classList.add("light");
+      root.classList.remove("dark");
     }
-  }, [resolvedTheme]);
 
-  // Unified effect: apply color preset + custom overrides whenever theme/color/settings change
-  useEffect(() => {
-    const root = document.documentElement;
+    // 2. Clear any inline style overrides so CSS defaults take effect first
+    const propsToReset = [
+      "--background", "--foreground", "--card", "--card-foreground",
+      "--popover", "--popover-foreground", "--primary", "--accent",
+      "--ring", "--accent-gradient", "--custom-gradient",
+      "--gradient-enabled", "--gradient-target",
+      "--gradient-gold", "--shadow-glow",
+    ];
+    propsToReset.forEach(p => root.style.removeProperty(p));
+
+    // 3. Apply color preset
     const colorConfig = COLOR_THEMES.find(t => t.id === colorTheme);
-    const hasCustomAccent = !!customSettings.custom_accent_hex;
+    const settings = customSettingsRef.current;
+    const hasCustomAccent = !!(settings.custom_accent_hex || settings.accent_mode === "gradient");
 
-    // 1. Apply color preset (only if no custom accent override)
     if (colorConfig && !hasCustomAccent) {
       const { hue, saturation } = colorConfig;
-      const lightness = resolvedTheme === "dark" ? 50 : 45;
+      const lightness = isDark ? 50 : 45;
       const gradientEnd = hue > 10 ? hue - 10 : hue + 350;
 
       root.style.setProperty("--primary", `${hue} ${saturation}% ${lightness}%`);
       root.style.setProperty("--accent", `${hue} ${saturation}% ${lightness}%`);
       root.style.setProperty("--ring", `${hue} ${saturation}% ${lightness}%`);
       root.style.setProperty("--gradient-gold", `linear-gradient(135deg, hsl(${hue} ${saturation}% ${lightness}%) 0%, hsl(${gradientEnd} ${saturation}% ${lightness - 5}%) 100%)`);
-      root.style.setProperty("--shadow-glow", `0 0 60px hsl(${hue} ${saturation}% ${lightness}% / ${resolvedTheme === "dark" ? 0.15 : 0.2})`);
+      root.style.setProperty("--shadow-glow", `0 0 60px hsl(${hue} ${saturation}% ${lightness}% / ${isDark ? 0.15 : 0.2})`);
     }
 
-    // 2. Apply custom color overrides (re-runs on every theme toggle)
-    if (Object.keys(customSettings).length > 0) {
-      // Small delay to ensure dark/light class is applied first
-      const timer = setTimeout(() => {
-        applyCustomColorsFromSettings(customSettings);
-      }, 30);
-      return () => clearTimeout(timer);
+    // 4. Apply custom overrides from DB settings (bg, font, accent, gradient)
+    if (Object.keys(settings).length > 0) {
+      applyAllCustomColors(settings, isDark);
     }
-  }, [colorTheme, resolvedTheme, customSettings]);
+  }, [resolvedTheme, colorTheme, settingsLoaded]);
 
   // Prevent flash on initial load
   useEffect(() => {
@@ -244,8 +273,35 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setUITemplateState(template);
   };
 
+  const refreshCustomSettings = () => {
+    // Re-fetch and re-apply
+    setSettingsLoaded(false);
+    supabase
+      .from("site_settings")
+      .select("key, value")
+      .in("key", [
+        "color_theme", "ui_template",
+        "custom_bg_dark", "custom_bg_light",
+        "custom_font_dark", "custom_font_light",
+        "custom_accent_hex",
+        "accent_mode", "accent_gradient_from", "accent_gradient_to", "selected_accent_gradient",
+        "gradient_enabled", "gradient_from", "gradient_to",
+        "gradient_angle", "gradient_target",
+      ])
+      .then(({ data }) => {
+        if (data) {
+          const settings: Record<string, string> = {};
+          for (const s of data) {
+            if (s.value) settings[s.key] = s.value;
+          }
+          customSettingsRef.current = settings;
+          setSettingsLoaded(true);
+        }
+      });
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, colorTheme, uiTemplate, setThemeMode, setColorTheme, setUITemplate }}>
+    <ThemeContext.Provider value={{ theme: resolvedTheme, themeMode, colorTheme, uiTemplate, setThemeMode, setColorTheme, setUITemplate, refreshCustomSettings }}>
       {children}
     </ThemeContext.Provider>
   );

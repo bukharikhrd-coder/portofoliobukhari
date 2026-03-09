@@ -24,7 +24,7 @@ const ACCENT_GRADIENT_PRESETS = [
 ];
 
 const AdminColorTheme = () => {
-  const { colorTheme, setColorTheme, themeMode, setThemeMode } = useTheme();
+  const { colorTheme, setColorTheme, themeMode, setThemeMode, refreshCustomSettings } = useTheme();
   const [saving, setSaving] = useState(false);
   const [selectedColor, setSelectedColor] = useState(colorTheme);
   const [accentMode, setAccentMode] = useState<"solid" | "gradient">("solid");
@@ -175,7 +175,7 @@ const AdminColorTheme = () => {
       }
 
       setColorTheme(selectedColor);
-      applyCustomColors();
+      refreshCustomSettings();
       toast.success("Theme colors saved!");
     } catch (error) {
       console.error("Error saving:", error);
