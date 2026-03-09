@@ -188,7 +188,11 @@ const NavbarModern = () => {
 
             {isHomePage && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-all">
+                <DropdownMenuTrigger className={`flex items-center gap-1 px-3 py-2 text-sm rounded-full transition-all ${
+                  moreNavItems.some(item => activeSection === item.href.replace("#", ""))
+                    ? "text-foreground bg-secondary/80 font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                }`}>
                   More <ChevronDown size={14} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[160px] rounded-xl">
