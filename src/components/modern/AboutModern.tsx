@@ -112,9 +112,9 @@ const AboutModern = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.7, delay: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
               className="space-y-3 md:space-y-4"
             >
               <TranslatedText as="p" className="text-muted-foreground text-base md:text-lg leading-relaxed">
