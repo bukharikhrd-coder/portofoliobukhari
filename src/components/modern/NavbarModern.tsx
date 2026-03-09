@@ -196,15 +196,19 @@ const NavbarModern = () => {
                   More <ChevronDown size={14} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[160px] rounded-xl">
-                  {moreNavItems.map((link) => (
-                    <DropdownMenuItem
-                      key={link.href}
-                      onClick={(e) => handleSmoothScroll(e, link.href)}
-                      className="cursor-pointer rounded-lg"
-                    >
-                      {link.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {moreNavItems.map((link) => {
+                    const sectionId = link.href.replace("#", "");
+                    const isActive = activeSection === sectionId;
+                    return (
+                      <DropdownMenuItem
+                        key={link.href}
+                        onClick={(e) => handleSmoothScroll(e, link.href)}
+                        className={`cursor-pointer rounded-lg ${isActive ? "bg-accent font-medium" : ""}`}
+                      >
+                        {link.label}
+                      </DropdownMenuItem>
+                    );
+                  })}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
