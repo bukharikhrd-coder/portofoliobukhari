@@ -72,9 +72,9 @@ const AboutModern = () => {
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
         <div className="grid lg:grid-cols-12 gap-8 md:gap-16 items-center" ref={ref}>
           <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, x: -40, filter: "blur(8px)" }}
+            animate={isInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
             className="lg:col-span-5"
           >
             <div className="relative max-w-xs mx-auto lg:max-w-none">
