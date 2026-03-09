@@ -125,7 +125,9 @@ const AdminEducation = () => {
           <div key={edu.id} className="bg-card border border-border p-6">
             {editingId === edu.id ? (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-4">
+                  <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} size={48} />
+                  <div className="flex-1 space-y-4">
                   <input type="text" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
                   <input type="text" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
                   <input type="text" value={formData.field_of_study || ""} onChange={(e) => setFormData({ ...formData, field_of_study: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
