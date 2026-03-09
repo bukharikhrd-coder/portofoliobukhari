@@ -3,6 +3,7 @@ import { useSectionConfig } from "@/hooks/useSectionConfig";
 import { useTheme } from "@/contexts/ThemeContext";
 import Navbar from "@/components/Navbar";
 import NavbarModern from "@/components/modern/NavbarModern";
+import ScrollProgress from "@/components/modern/ScrollProgress";
 import Hero from "@/components/Hero";
 import HeroModern from "@/components/modern/HeroModern";
 import About from "@/components/About";
@@ -107,7 +108,7 @@ const Index = () => {
       </Helmet>
 
       <div className={`min-h-screen bg-background overflow-x-hidden ${getGradientClass("hero") && getGradientClass("section") ? "gradient-section" : ""}`}>
-        {isModern ? <NavbarModern /> : <Navbar />}
+        {isModern ? <><ScrollProgress /><NavbarModern /></> : <Navbar />}
         <main>
           <div id="home" className={getGradientClass("hero")}>
             {isModern ? <HeroModern /> : <Hero />}

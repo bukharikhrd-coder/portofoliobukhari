@@ -72,9 +72,9 @@ const AboutModern = () => {
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
         <div className="grid lg:grid-cols-12 gap-8 md:gap-16 items-center" ref={ref}>
           <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, x: -40, filter: "blur(8px)" }}
+            animate={isInView ? { opacity: 1, x: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
             className="lg:col-span-5"
           >
             <div className="relative max-w-xs mx-auto lg:max-w-none">
@@ -97,9 +97,9 @@ const AboutModern = () => {
 
           <div className="lg:col-span-7 space-y-6 md:space-y-8">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
+              animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             >
               <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
                 <TranslatedText>{aboutData.section_label || "About Me"}</TranslatedText>
@@ -112,9 +112,9 @@ const AboutModern = () => {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.7, delay: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
               className="space-y-3 md:space-y-4"
             >
               <TranslatedText as="p" className="text-muted-foreground text-base md:text-lg leading-relaxed">

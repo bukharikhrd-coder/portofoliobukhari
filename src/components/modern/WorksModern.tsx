@@ -58,7 +58,7 @@ const WorksModern = () => {
   return (
     <section id="works" className="py-12 md:py-32 relative overflow-hidden">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12" ref={ref}>
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="text-center mb-10 md:mb-16">
+        <motion.div initial={{ opacity: 0, y: 30, filter: "blur(6px)" }} animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}} transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }} className="text-center mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
             <TranslatedText>Portfolio</TranslatedText>
           </span>
@@ -83,7 +83,7 @@ const WorksModern = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {filteredProjects.map((project, index) => (
-            <motion.article key={project.id} initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }} className="group cursor-pointer">
+            <motion.article key={project.id} initial={{ opacity: 0, y: 30, filter: "blur(4px)" }} animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}} transition={{ duration: 0.6, delay: 0.2 + index * 0.08, ease: [0.25, 0.1, 0.25, 1] }} className="group cursor-pointer">
               <div className="relative aspect-[4/3] overflow-hidden bg-card rounded-2xl mb-4 md:mb-5 shadow-sm">
                 {project.image_url && (
                   <img src={project.image_url} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />

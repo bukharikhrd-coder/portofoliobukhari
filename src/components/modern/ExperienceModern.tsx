@@ -31,7 +31,7 @@ const ExperienceModern = () => {
   return (
     <section id="experience" className="py-12 md:py-24 px-3 sm:px-4 md:px-6">
       <div className="max-w-4xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="mb-10 md:mb-16">
+        <motion.div initial={{ opacity: 0, y: 25, filter: "blur(6px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }} viewport={{ once: true }} className="mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
             <TranslatedText>Career</TranslatedText>
           </span>
@@ -44,10 +44,10 @@ const ExperienceModern = () => {
           {translatedExperiences?.map((exp, index) => (
             <motion.div
               key={exp.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 25, filter: "blur(4px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.6, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+              viewport={{ once: true, margin: "-40px" }}
               className="bg-card border border-border/50 rounded-2xl p-5 md:p-7 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
               <div className="flex flex-col gap-2 mb-3">

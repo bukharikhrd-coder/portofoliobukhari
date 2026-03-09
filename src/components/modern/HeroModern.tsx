@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import profilePhoto from "@/assets/profile-photo.png";
@@ -18,6 +19,15 @@ interface HeroContent {
 const HeroModern = () => {
   const [content, setContent] = useState<HeroContent | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const photoY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const photoScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -43,19 +53,20 @@ const HeroModern = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-background">
-      {/* Decorative blobs */}
-      <div className="absolute top-20 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/5 rounded-full blur-3xl" />
+    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden bg-background">
+      {/* Decorative blobs with parallax */}
+      <motion.div style={{ opacity: bgOpacity }} className="absolute top-20 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-primary/10 rounded-full blur-3xl" />
+      <motion.div style={{ opacity: bgOpacity }} className="absolute bottom-0 left-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/5 rounded-full blur-3xl" />
       
       <div className="container mx-auto px-3 sm:px-6 lg:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
-          {/* Text side */}
+          {/* Text side with parallax */}
           <motion.div 
             className="space-y-4 md:space-y-6 order-2 lg:order-1"
+            style={{ y: textY }}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <div className="space-y-1 md:space-y-2">
               <motion.p
@@ -109,12 +120,13 @@ const HeroModern = () => {
             </motion.div>
           </motion.div>
 
-          {/* Photo side */}
+          {/* Photo side with parallax */}
           <motion.div
             className="relative order-1 lg:order-2 flex justify-center"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
+            style={{ y: photoY, scale: photoScale }}
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ delay: 0.2, duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <div className="relative">
               {/* Background gradient circle */}
