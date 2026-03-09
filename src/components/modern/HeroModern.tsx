@@ -130,14 +130,14 @@ const HeroModern = () => {
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-4 -right-4 w-16 h-16 bg-primary/20 rounded-2xl backdrop-blur-sm flex items-center justify-center text-2xl"
+                className="absolute -top-2 -right-2 md:-top-4 md:-right-4 w-10 h-10 md:w-16 md:h-16 bg-primary/20 rounded-xl md:rounded-2xl backdrop-blur-sm flex items-center justify-center text-lg md:text-2xl"
               >
                 💻
               </motion.div>
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-4 -left-4 w-14 h-14 bg-primary/20 rounded-2xl backdrop-blur-sm flex items-center justify-center text-xl"
+                className="absolute -bottom-2 -left-2 md:-bottom-4 md:-left-4 w-9 h-9 md:w-14 md:h-14 bg-primary/20 rounded-xl md:rounded-2xl backdrop-blur-sm flex items-center justify-center text-base md:text-xl"
               >
                 🎨
               </motion.div>

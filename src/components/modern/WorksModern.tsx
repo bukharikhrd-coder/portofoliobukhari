@@ -56,8 +56,8 @@ const WorksModern = () => {
   );
 
   return (
-    <section id="works" className="py-16 md:py-32 relative overflow-hidden">
-      <div className="container mx-auto px-4 md:px-6 lg:px-12" ref={ref}>
+    <section id="works" className="py-12 md:py-32 relative overflow-hidden">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12" ref={ref}>
         <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="text-center mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
             <TranslatedText>Portfolio</TranslatedText>

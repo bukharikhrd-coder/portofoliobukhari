@@ -39,7 +39,7 @@ const FooterModern = () => {
 
   return (
     <footer className="py-10 md:py-14 border-t border-border/50 bg-secondary/20">
-      <div className="container mx-auto px-4 md:px-6 lg:px-12">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
           <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6">
             <Link to="/" className="flex items-center gap-2">
