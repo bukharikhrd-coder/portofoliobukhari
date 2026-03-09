@@ -35,12 +35,14 @@ const moreNavItems = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
 
   const isHomePage = location.pathname === "/";
+  const isServicesPage = location.pathname.startsWith("/services");
 
   useEffect(() => {
     const handleScroll = () => {
