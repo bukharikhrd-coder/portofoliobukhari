@@ -34,12 +34,14 @@ const moreNavItems = [
 const NavbarModern = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("");
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const { user, isAdmin } = useAuth();
   const { theme, themeMode, setThemeMode } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/";
+  const isServicesPage = location.pathname.startsWith("/services");
 
   useEffect(() => {
     const fetchProfileImage = async () => {
@@ -50,10 +52,27 @@ const NavbarModern = () => {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+
+      if (!isHomePage) return;
+      const sections = [...coreNavItems, ...moreNavItems].map(item => item.href.replace("#", ""));
+      let current = "";
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120) {
+            current = sectionId;
+          }
+        }
+      }
+      if (window.scrollY < 100) current = "";
+      setActiveSection(current);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, href: string) => {
     e.preventDefault();
@@ -139,44 +158,68 @@ const NavbarModern = () => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
-              className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-all duration-300"
+              className={`px-3 py-2 text-sm rounded-full transition-all duration-300 ${
+                isHomePage && activeSection === "" && !isServicesPage
+                  ? "text-foreground bg-secondary/80 font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+              }`}
             >
               Home
             </Link>
 
-            {coreNavItems.map((link) => (
-              <a
-                key={link.href}
-                href={isHomePage ? link.href : `/${link.href}`}
-                onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-all duration-300"
-              >
-                {link.label}
-              </a>
-            ))}
+            {coreNavItems.map((link) => {
+              const sectionId = link.href.replace("#", "");
+              const isActive = isHomePage && activeSection === sectionId;
+              return (
+                <a
+                  key={link.href}
+                  href={isHomePage ? link.href : `/${link.href}`}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                  className={`px-3 py-2 text-sm rounded-full transition-all duration-300 ${
+                    isActive
+                      ? "text-foreground bg-secondary/80 font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
 
             {isHomePage && (
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-all">
+                <DropdownMenuTrigger className={`flex items-center gap-1 px-3 py-2 text-sm rounded-full transition-all ${
+                  moreNavItems.some(item => activeSection === item.href.replace("#", ""))
+                    ? "text-foreground bg-secondary/80 font-medium"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                }`}>
                   More <ChevronDown size={14} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[160px] rounded-xl">
-                  {moreNavItems.map((link) => (
-                    <DropdownMenuItem
-                      key={link.href}
-                      onClick={(e) => handleSmoothScroll(e, link.href)}
-                      className="cursor-pointer rounded-lg"
-                    >
-                      {link.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {moreNavItems.map((link) => {
+                    const sectionId = link.href.replace("#", "");
+                    const isActive = activeSection === sectionId;
+                    return (
+                      <DropdownMenuItem
+                        key={link.href}
+                        onClick={(e) => handleSmoothScroll(e, link.href)}
+                        className={`cursor-pointer rounded-lg ${isActive ? "bg-accent font-medium" : ""}`}
+                      >
+                        {link.label}
+                      </DropdownMenuItem>
+                    );
+                  })}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
 
             <Link
               to="/services"
-              className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-all shadow-md shadow-primary/20 ${
+                isServicesPage
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-primary/80 text-primary-foreground hover:bg-primary"
+              }`}
             >
               Services
             </Link>
