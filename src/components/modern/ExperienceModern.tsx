@@ -31,7 +31,7 @@ const ExperienceModern = () => {
   return (
     <section id="experience" className="py-12 md:py-24 px-3 sm:px-4 md:px-6">
       <div className="max-w-4xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="mb-10 md:mb-16">
+        <motion.div initial={{ opacity: 0, y: 25, filter: "blur(6px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }} viewport={{ once: true }} className="mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
             <TranslatedText>Career</TranslatedText>
           </span>
