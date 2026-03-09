@@ -1,35 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { 
-  LayoutDashboard, 
-  FileText, 
-  Briefcase, 
-  User, 
-  Mail, 
-  LogOut,
-  Menu,
-  X,
-  ChevronDown,
-  Home,
-  Code,
-  GraduationCap,
-  Globe,
-  Wrench,
-  Play,
-  BarChart3,
-  Images,
-  Award,
-  Layers,
-  Share2,
-  FileUp,
-  Palette,
-  Layout,
-  Settings,
-  Package,
-  ShoppingCart
+  LayoutDashboard, FileText, Briefcase, User, Mail, LogOut, Menu, X,
+  ChevronDown, Home, Code, GraduationCap, Globe, Wrench, Play,
+  BarChart3, Images, Award, Layers, Share2, FileUp, Palette, Layout,
+  Settings, Package, ShoppingCart
 } from "lucide-react";
 import AdminHero from "@/components/admin/AdminHero";
 import AdminAbout from "@/components/admin/AdminAbout";
@@ -56,29 +34,65 @@ import AdminClientOrders from "@/components/admin/AdminClientOrders";
 
 type TabType = "hero" | "about" | "experience" | "education" | "trainings" | "languages" | "projects" | "contact" | "messages" | "techstack" | "softwaretools" | "videoportfolio" | "analytics" | "journeygallery" | "sectionorder" | "footersocial" | "cvmanager" | "colortheme" | "uitemplate" | "settings" | "servicepackages" | "clientorders";
 
-const navItems: { id: TabType; label: string; icon: any }[] = [
-  { id: "analytics", label: "Analytics", icon: BarChart3 },
-  { id: "settings", label: "Settings", icon: Settings },
-  { id: "servicepackages", label: "Service Packages", icon: Package },
-  { id: "clientorders", label: "Client Orders", icon: ShoppingCart },
-  { id: "cvmanager", label: "CV Manager", icon: FileUp },
-  { id: "colortheme", label: "Color Theme", icon: Palette },
-  { id: "uitemplate", label: "UI Template", icon: Layout },
-  { id: "sectionorder", label: "Section Order", icon: Layers },
-  { id: "hero", label: "Hero Section", icon: Home },
-  { id: "about", label: "About Me", icon: User },
-  { id: "experience", label: "Experience", icon: Briefcase },
-  { id: "education", label: "Education", icon: GraduationCap },
-  { id: "trainings", label: "Training & Certifications", icon: Award },
-  { id: "languages", label: "Languages", icon: Globe },
-  { id: "projects", label: "Projects", icon: FileText },
-  { id: "techstack", label: "Tech Stack", icon: Code },
-  { id: "softwaretools", label: "Tools & Software", icon: Wrench },
-  { id: "videoportfolio", label: "Video Portfolio", icon: Play },
-  { id: "journeygallery", label: "Work Journey", icon: Images },
-  { id: "contact", label: "Contact Info", icon: FileText },
-  { id: "footersocial", label: "Footer Social Links", icon: Share2 },
-  { id: "messages", label: "Messages", icon: Mail },
+const NAV_GROUPS = [
+  { 
+    group: "Overview", 
+    icon: BarChart3,
+    items: [
+      { id: "analytics" as TabType, label: "Analytics", icon: BarChart3 },
+      { id: "settings" as TabType, label: "Settings", icon: Settings },
+    ]
+  },
+  { 
+    group: "Services", 
+    icon: Package,
+    items: [
+      { id: "servicepackages" as TabType, label: "Packages", icon: Package },
+      { id: "clientorders" as TabType, label: "Orders", icon: ShoppingCart },
+    ]
+  },
+  { 
+    group: "Content", 
+    icon: FileText,
+    items: [
+      { id: "hero" as TabType, label: "Hero", icon: Home },
+      { id: "about" as TabType, label: "About", icon: User },
+      { id: "experience" as TabType, label: "Experience", icon: Briefcase },
+      { id: "education" as TabType, label: "Education", icon: GraduationCap },
+      { id: "trainings" as TabType, label: "Trainings", icon: Award },
+      { id: "languages" as TabType, label: "Languages", icon: Globe },
+    ]
+  },
+  { 
+    group: "Portfolio", 
+    icon: Code,
+    items: [
+      { id: "projects" as TabType, label: "Projects", icon: FileText },
+      { id: "techstack" as TabType, label: "Tech Stack", icon: Code },
+      { id: "softwaretools" as TabType, label: "Tools", icon: Wrench },
+      { id: "videoportfolio" as TabType, label: "Videos", icon: Play },
+      { id: "journeygallery" as TabType, label: "Journey", icon: Images },
+    ]
+  },
+  { 
+    group: "Appearance", 
+    icon: Palette,
+    items: [
+      { id: "colortheme" as TabType, label: "Colors", icon: Palette },
+      { id: "uitemplate" as TabType, label: "Template", icon: Layout },
+      { id: "sectionorder" as TabType, label: "Sections", icon: Layers },
+      { id: "cvmanager" as TabType, label: "CV File", icon: FileUp },
+    ]
+  },
+  { 
+    group: "Communication", 
+    icon: Mail,
+    items: [
+      { id: "contact" as TabType, label: "Contact", icon: FileText },
+      { id: "footersocial" as TabType, label: "Social", icon: Share2 },
+      { id: "messages" as TabType, label: "Messages", icon: Mail },
+    ]
+  },
 ];
 
 const Admin = () => {
@@ -87,22 +101,14 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState<TabType>("analytics");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
-  const [stats, setStats] = useState({
-    projects: 0,
-    messages: 0,
-    unreadMessages: 0,
-  });
+  const [stats, setStats] = useState({ projects: 0, messages: 0, unreadMessages: 0 });
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
-    }
+    if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    if (user) {
-      fetchStats();
-    }
+    if (user) fetchStats();
   }, [user]);
 
   const fetchStats = async () => {
@@ -111,7 +117,6 @@ const Admin = () => {
       supabase.from("contact_messages").select("id", { count: "exact" }),
       supabase.from("contact_messages").select("id", { count: "exact" }).eq("is_read", false),
     ]);
-
     setStats({
       projects: projectsRes.count || 0,
       messages: messagesRes.count || 0,
@@ -128,6 +133,8 @@ const Admin = () => {
     setCollapsedGroups(prev => ({ ...prev, [group]: !prev[group] }));
   }, []);
 
+  const activeLabel = NAV_GROUPS.flatMap(g => g.items).find(i => i.id === activeTab)?.label || "Dashboard";
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -138,186 +145,163 @@ const Admin = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "analytics":
-        return <AdminAnalytics />;
-      case "settings":
-        return <AdminSettings />;
-      case "servicepackages":
-        return <AdminServicePackages />;
-      case "clientorders":
-        return <AdminClientOrders />;
-      case "cvmanager":
-        return <AdminCVManager />;
-      case "colortheme":
-        return <AdminColorTheme />;
-      case "uitemplate":
-        return <AdminUITemplate />;
-      case "sectionorder":
-        return <AdminSectionOrder />;
-      case "hero":
-        return <AdminHero />;
-      case "about":
-        return <AdminAbout />;
-      case "experience":
-        return <AdminExperience />;
-      case "education":
-        return <AdminEducation />;
-      case "trainings":
-        return <AdminTrainings />;
-      case "languages":
-        return <AdminLanguages />;
-      case "projects":
-        return <AdminProjects onUpdate={fetchStats} />;
-      case "techstack":
-        return <AdminTechStack />;
-      case "softwaretools":
-        return <AdminSoftwareTools />;
-      case "videoportfolio":
-        return <AdminVideoPortfolio />;
-      case "journeygallery":
-        return <AdminWorkJourneyGallery />;
-      case "contact":
-        return <AdminContact />;
-      case "footersocial":
-        return <AdminFooterSocial />;
-      case "messages":
-        return <AdminMessages onUpdate={fetchStats} />;
-      default:
-        return null;
+      case "analytics": return <AdminAnalytics />;
+      case "settings": return <AdminSettings />;
+      case "servicepackages": return <AdminServicePackages />;
+      case "clientorders": return <AdminClientOrders />;
+      case "cvmanager": return <AdminCVManager />;
+      case "colortheme": return <AdminColorTheme />;
+      case "uitemplate": return <AdminUITemplate />;
+      case "sectionorder": return <AdminSectionOrder />;
+      case "hero": return <AdminHero />;
+      case "about": return <AdminAbout />;
+      case "experience": return <AdminExperience />;
+      case "education": return <AdminEducation />;
+      case "trainings": return <AdminTrainings />;
+      case "languages": return <AdminLanguages />;
+      case "projects": return <AdminProjects onUpdate={fetchStats} />;
+      case "techstack": return <AdminTechStack />;
+      case "softwaretools": return <AdminSoftwareTools />;
+      case "videoportfolio": return <AdminVideoPortfolio />;
+      case "journeygallery": return <AdminWorkJourneyGallery />;
+      case "contact": return <AdminContact />;
+      case "footersocial": return <AdminFooterSocial />;
+      case "messages": return <AdminMessages onUpdate={fetchStats} />;
+      default: return null;
     }
   };
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Mobile fixed header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-card border-b border-border flex items-center justify-between px-4">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-md hover:bg-secondary"
-        >
-          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+      {/* Mobile header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-12 bg-card/95 backdrop-blur-md border-b border-border flex items-center justify-between px-3">
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-md hover:bg-secondary">
+          {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
         <div className="flex items-center gap-2">
-          <LayoutDashboard className="text-primary" size={18} />
-          <span className="font-display text-lg">ADMIN</span>
+          <LayoutDashboard className="text-primary" size={16} />
+          <span className="font-display text-sm font-bold tracking-wider">ADMIN</span>
+          <span className="text-muted-foreground text-xs">/ {activeLabel}</span>
         </div>
-        <div className="w-9" /> {/* Spacer for centering */}
+        <div className="w-8" />
       </div>
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border transform transition-all duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] flex flex-col ${
-          sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 lg:translate-x-0 lg:opacity-100"
+        className={`fixed inset-y-0 left-0 z-40 w-56 bg-card/95 backdrop-blur-md border-r border-border transform transition-all duration-300 flex flex-col ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        {/* Logo Header - hidden on mobile (shown in top bar instead) */}
-        <div className="shrink-0 p-6 border-b border-border hidden lg:block">
-          <Link to="/" className="flex items-center gap-2">
-            <LayoutDashboard className="text-primary" size={24} />
-            <span className="font-display text-xl">ADMIN</span>
-          </Link>
+        {/* Logo */}
+        <div className="shrink-0 px-4 py-3 border-b border-border hidden lg:flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+            <LayoutDashboard className="text-primary" size={14} />
+          </div>
+          <div>
+            <span className="font-display text-sm font-bold tracking-wider">ADMIN</span>
+            <p className="text-[10px] text-muted-foreground -mt-0.5">Dashboard</p>
+          </div>
         </div>
 
-        {/* Mobile spacer for fixed header */}
-        <div className="shrink-0 h-14 lg:hidden" />
+        <div className="shrink-0 h-12 lg:hidden" />
 
-        {/* Scrollable Navigation */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-          {[
-            { group: "Overview", items: ["analytics", "settings"] },
-            { group: "Services", items: ["servicepackages", "clientorders"] },
-            { group: "Content", items: ["hero", "about", "experience", "education", "trainings", "languages"] },
-            { group: "Portfolio", items: ["projects", "techstack", "softwaretools", "videoportfolio", "journeygallery"] },
-            { group: "Tools", items: ["cvmanager", "colortheme", "uitemplate", "sectionorder"] },
-            { group: "Communication", items: ["contact", "footersocial", "messages"] },
-          ].map((group) => {
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5">
+          {NAV_GROUPS.map((group) => {
             const isCollapsed = collapsedGroups[group.group] ?? false;
-            const hasActiveItem = group.items.includes(activeTab);
+            const hasActiveItem = group.items.some(i => i.id === activeTab);
+            const GroupIcon = group.icon;
             return (
-              <div key={group.group} className="mb-1">
+              <div key={group.group}>
                 <button
                   onClick={() => toggleGroup(group.group)}
-                  className="w-full flex items-center justify-between px-3 py-1.5 group"
+                  className="w-full flex items-center gap-2 px-2 py-1.5 group rounded-md hover:bg-secondary/50 transition-colors"
                 >
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">
+                  <GroupIcon size={12} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors flex-1 text-left">
                     {group.group}
-                    {hasActiveItem && isCollapsed && (
-                      <span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-primary" />
-                    )}
-                  </p>
+                  </span>
+                  {hasActiveItem && isCollapsed && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  )}
                   <ChevronDown
-                    size={12}
+                    size={10}
                     className={`text-muted-foreground transition-transform duration-200 ${isCollapsed ? "-rotate-90" : ""}`}
                   />
                 </button>
-                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isCollapsed ? "max-h-0 opacity-0" : "max-h-[500px] opacity-100"}`}>
-                  {group.items.map((itemId) => {
-                    const item = navItems.find((n) => n.id === itemId);
-                    if (!item) return null;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => {
-                          setActiveTab(item.id);
-                          setSidebarOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-3 px-3 py-2 text-left transition-all duration-200 rounded-md text-sm ${
-                          activeTab === item.id
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                        }`}
-                      >
-                        <item.icon size={16} />
-                        <span className="font-medium truncate">{item.label}</span>
-                        {item.id === "messages" && stats.unreadMessages > 0 && (
-                          <span className="ml-auto bg-destructive text-destructive-foreground text-xs px-1.5 py-0.5 rounded-full">
-                            {stats.unreadMessages}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
+                <AnimatePresence initial={false}>
+                  {!isCollapsed && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="ml-2 border-l border-border/50 pl-1 space-y-0.5 py-0.5">
+                        {group.items.map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => { setActiveTab(item.id); setSidebarOpen(false); }}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 text-left transition-all duration-150 rounded-md text-xs ${
+                              activeTab === item.id
+                                ? "bg-primary text-primary-foreground font-semibold"
+                                : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
+                            }`}
+                          >
+                            <item.icon size={13} />
+                            <span className="truncate">{item.label}</span>
+                            {item.id === "messages" && stats.unreadMessages > 0 && (
+                              <span className="ml-auto bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0.5 rounded-full leading-none">
+                                {stats.unreadMessages}
+                              </span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
         </nav>
 
-        {/* Fixed Footer */}
-        <div className="shrink-0 p-3 border-t border-border space-y-0.5">
+        {/* Footer */}
+        <div className="shrink-0 px-2 py-2 border-t border-border space-y-0.5">
           <Link
             to="/"
-            className="w-full flex items-center gap-3 px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-secondary transition-all duration-200 rounded-md text-sm"
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary/70 transition-all rounded-md text-xs"
           >
-            <Home size={16} />
-            <span className="font-medium">View Site</span>
+            <Home size={13} />
+            <span>View Site</span>
           </Link>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2 text-muted-foreground hover:text-destructive hover:bg-secondary transition-all duration-200 rounded-md text-sm"
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all rounded-md text-xs"
           >
-            <LogOut size={16} />
-            <span className="font-medium">Sign Out</span>
+            <LogOut size={13} />
+            <span>Sign Out</span>
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 pt-16 lg:pt-0 p-4 lg:p-8 overflow-auto lg:ml-64 min-w-0">
+      {/* Main */}
+      <main className="flex-1 pt-14 lg:pt-0 p-4 lg:p-6 overflow-auto lg:ml-56 min-w-0">
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
         >
           {renderContent()}
         </motion.div>
       </main>
 
-      {/* Overlay for mobile */}
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden animate-fade-in"
+          className="fixed inset-0 bg-background/60 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
