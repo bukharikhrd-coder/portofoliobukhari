@@ -101,29 +101,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("themeMode") as ThemeMode;
-      if (stored && ["dark", "light", "system"].includes(stored)) {
-        return stored;
-      }
+      if (stored && ["dark", "light", "system"].includes(stored)) return stored;
     }
-    return "dark"; // Default to dark theme
+    return "dark";
   });
 
   const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("colorTheme") as ColorTheme;
-      if (stored && COLOR_THEMES.some(t => t.id === stored)) {
-        return stored;
-      }
+      if (stored && COLOR_THEMES.some(t => t.id === stored)) return stored;
     }
-    return "amber"; // Default to amber
+    return "amber";
   });
 
   const [uiTemplate, setUITemplateState] = useState<UITemplate>("editorial");
+  const [customSettings, setCustomSettings] = useState<Record<string, string>>({});
 
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
-    if (themeMode === "system") {
-      return getSystemTheme();
-    }
+    if (themeMode === "system") return getSystemTheme();
     return themeMode as ResolvedTheme;
   });
 
@@ -134,14 +129,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         const { data } = await supabase
           .from("site_settings")
           .select("key, value")
-          .in("key", ["color_theme", "ui_template", "custom_bg_dark", "custom_bg_light", "custom_font_dark", "custom_font_light", "custom_accent_hex", "gradient_enabled", "gradient_from", "gradient_to", "gradient_angle", "gradient_target"]);
-        
+          .in("key", [
+            "color_theme", "ui_template",
+            "custom_bg_dark", "custom_bg_light",
+            "custom_font_dark", "custom_font_light",
+            "custom_accent_hex",
+            "gradient_enabled", "gradient_from", "gradient_to",
+            "gradient_angle", "gradient_target",
+          ]);
+
         if (data) {
           const settings: Record<string, string> = {};
           for (const s of data) {
             if (s.value) settings[s.key] = s.value;
           }
-          
+
           if (settings.color_theme && COLOR_THEMES.some(t => t.id === settings.color_theme)) {
             setColorThemeState(settings.color_theme as ColorTheme);
             localStorage.setItem("colorTheme", settings.color_theme);
@@ -150,28 +152,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
             setUITemplateState(settings.ui_template as UITemplate);
           }
 
-          // Apply custom colors after a tick so the theme class is set
-          setTimeout(() => {
-            applyCustomColorsFromSettings(settings);
-          }, 150);
+          setCustomSettings(settings);
         }
       } catch (error) {
         console.error("Error fetching theme settings:", error);
       }
     };
-
     fetchSettings();
   }, []);
 
   // Listen for system theme changes
   useEffect(() => {
     if (themeMode !== "system") return;
-
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => {
       setResolvedTheme(e.matches ? "dark" : "light");
     };
-
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [themeMode]);
@@ -185,15 +181,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, [themeMode]);
 
-  // Apply theme to document with smooth transition
+  // Apply dark/light class to document
   useEffect(() => {
     const root = document.documentElement;
-    
-    // Remove no-transition class to enable smooth transitions
-    requestAnimationFrame(() => {
-      root.classList.remove("no-transition");
-    });
-    
     if (resolvedTheme === "light") {
       root.classList.add("light");
       root.classList.remove("dark");
@@ -203,34 +193,40 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, [resolvedTheme]);
 
-  // Apply color theme CSS variables
+  // Unified effect: apply color preset + custom overrides whenever theme/color/settings change
   useEffect(() => {
     const root = document.documentElement;
     const colorConfig = COLOR_THEMES.find(t => t.id === colorTheme);
-    
-    if (colorConfig) {
+    const hasCustomAccent = !!customSettings.custom_accent_hex;
+
+    // 1. Apply color preset (only if no custom accent override)
+    if (colorConfig && !hasCustomAccent) {
       const { hue, saturation } = colorConfig;
       const lightness = resolvedTheme === "dark" ? 50 : 45;
       const gradientEnd = hue > 10 ? hue - 10 : hue + 350;
-      
+
       root.style.setProperty("--primary", `${hue} ${saturation}% ${lightness}%`);
       root.style.setProperty("--accent", `${hue} ${saturation}% ${lightness}%`);
       root.style.setProperty("--ring", `${hue} ${saturation}% ${lightness}%`);
       root.style.setProperty("--gradient-gold", `linear-gradient(135deg, hsl(${hue} ${saturation}% ${lightness}%) 0%, hsl(${gradientEnd} ${saturation}% ${lightness - 5}%) 100%)`);
       root.style.setProperty("--shadow-glow", `0 0 60px hsl(${hue} ${saturation}% ${lightness}% / ${resolvedTheme === "dark" ? 0.15 : 0.2})`);
     }
-  }, [colorTheme, resolvedTheme]);
 
-  // Add no-transition class on initial load to prevent flash
+    // 2. Apply custom color overrides (re-runs on every theme toggle)
+    if (Object.keys(customSettings).length > 0) {
+      // Small delay to ensure dark/light class is applied first
+      const timer = setTimeout(() => {
+        applyCustomColorsFromSettings(customSettings);
+      }, 30);
+      return () => clearTimeout(timer);
+    }
+  }, [colorTheme, resolvedTheme, customSettings]);
+
+  // Prevent flash on initial load
   useEffect(() => {
     const root = document.documentElement;
     root.classList.add("no-transition");
-    
-    // Remove it after a short delay
-    const timer = setTimeout(() => {
-      root.classList.remove("no-transition");
-    }, 100);
-    
+    const timer = setTimeout(() => root.classList.remove("no-transition"), 100);
     return () => clearTimeout(timer);
   }, []);
 
