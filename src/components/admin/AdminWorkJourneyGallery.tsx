@@ -89,7 +89,7 @@ const AdminWorkJourneyGallery = () => {
       toast.error("Failed to add item");
     } else {
       setItems([...items, data]);
-      setNewItem({ title: "", description: "", image_url: "", year: "" });
+      setNewItem({ title: "", description: "", image_url: "", year: "", category: "" });
       setIsAdding(false);
       toast.success("Item added!");
     }
