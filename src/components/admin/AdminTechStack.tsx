@@ -105,7 +105,7 @@ const AdminTechStack = () => {
 
   const startEdit = (item: TechItem) => {
     setEditingId(item.id);
-    setEditForm({ name: item.name, category: item.category || "Other", icon_name: item.icon_name || "" });
+    setEditForm({ name: item.name, category: item.category || "Other", icon_name: item.icon_name || "", logo_url: item.logo_url || null });
   };
 
   const saveEdit = async () => {
