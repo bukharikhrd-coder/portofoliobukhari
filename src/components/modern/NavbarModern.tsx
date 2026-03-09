@@ -94,18 +94,13 @@ const NavbarModern = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHomePage]);
 
-  const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, href: string) => {
-    e.preventDefault();
-    setIsOpen(false);
-    if (!isHomePage && href.startsWith("#")) {
-      navigate("/" + href);
-      return;
-    }
+  const scrollToElement = useCallback((href: string) => {
     if (href === "#" || href === "/#") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    const element = document.querySelector(href.replace("/#", "#"));
+    const targetId = href.replace("/#", "#");
+    const element = document.querySelector(targetId);
     if (element) {
       const navHeight = 80;
       window.scrollTo({
@@ -113,7 +108,18 @@ const NavbarModern = () => {
         behavior: "smooth",
       });
     }
-  }, [isHomePage, navigate]);
+  }, []);
+
+  const handleSmoothScroll = useCallback((e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    if (!isHomePage && href.startsWith("#")) {
+      navigate("/" + href);
+      return;
+    }
+    // Use setTimeout to allow dropdown to close before scrolling
+    setTimeout(() => scrollToElement(href), 50);
+  }, [isHomePage, navigate, scrollToElement]);
 
   useEffect(() => {
     if (location.hash && isHomePage) {
