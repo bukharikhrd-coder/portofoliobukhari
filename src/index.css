@@ -214,4 +214,42 @@
   .gradient-section {
     background: var(--custom-gradient, none);
   }
+
+  /* Soft section transitions — eliminates harsh boundaries between sections */
+  .sections-soft > section {
+    position: relative;
+  }
+
+  .sections-soft > section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .sections-soft > section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to top, hsl(var(--background)), transparent);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* First and last sections: only need one-sided fade */
+  .sections-soft > section:first-child::before {
+    display: none;
+  }
+
+  .sections-soft > section:last-child::after {
+    display: none;
+  }
 }
