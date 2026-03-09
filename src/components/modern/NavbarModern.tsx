@@ -167,16 +167,24 @@ const NavbarModern = () => {
               Home
             </Link>
 
-            {coreNavItems.map((link) => (
-              <a
-                key={link.href}
-                href={isHomePage ? link.href : `/${link.href}`}
-                onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 rounded-full transition-all duration-300"
-              >
-                {link.label}
-              </a>
-            ))}
+            {coreNavItems.map((link) => {
+              const sectionId = link.href.replace("#", "");
+              const isActive = isHomePage && activeSection === sectionId;
+              return (
+                <a
+                  key={link.href}
+                  href={isHomePage ? link.href : `/${link.href}`}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                  className={`px-3 py-2 text-sm rounded-full transition-all duration-300 ${
+                    isActive
+                      ? "text-foreground bg-secondary/80 font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
 
             {isHomePage && (
               <DropdownMenu>
