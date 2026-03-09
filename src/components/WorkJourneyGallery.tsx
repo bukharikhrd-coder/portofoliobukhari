@@ -214,7 +214,7 @@ const WorkJourneyGallery = () => {
           className="space-y-3 mb-8 md:mb-10"
         >
           {/* Year filter */}
-          {years.length > 1 && (
+          {showYearFilter && years.length > 1 && (
             <div className="flex flex-wrap justify-center gap-2 md:gap-3">
               <span className="text-xs text-muted-foreground self-center mr-1">Tahun:</span>
               <button
