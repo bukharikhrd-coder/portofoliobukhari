@@ -16,6 +16,7 @@ interface Education {
   description: string | null;
   location: string | null;
   order_index: number;
+  logo_url: string | null;
 }
 
 const AdminEducation = () => {
