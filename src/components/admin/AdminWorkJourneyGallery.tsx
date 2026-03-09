@@ -174,7 +174,7 @@ const AdminWorkJourneyGallery = () => {
             label="Gallery Image"
           />
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm text-muted-foreground">Title *</label>
               <input
@@ -193,6 +193,16 @@ const AdminWorkJourneyGallery = () => {
                 onChange={(e) => setNewItem({ ...newItem, year: e.target.value })}
                 className="w-full px-4 py-3 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
                 placeholder="e.g., 2024"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm text-muted-foreground">Category / Moment</label>
+              <input
+                type="text"
+                value={newItem.category}
+                onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                className="w-full px-4 py-3 bg-background border border-border text-foreground focus:border-primary focus:outline-none transition-colors"
+                placeholder="e.g., Seminar, Workshop, Award"
               />
             </div>
           </div>
