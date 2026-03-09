@@ -18,7 +18,7 @@ const TrainingsModern = () => {
 
   if (isLoading) {
     return (
-      <section className="py-20 px-6 bg-secondary/10">
+      <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="animate-pulse space-y-8">
             <div className="h-8 bg-muted rounded-xl w-1/3 mx-auto" />
