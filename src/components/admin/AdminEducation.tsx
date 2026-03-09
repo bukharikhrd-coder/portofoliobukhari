@@ -88,7 +88,7 @@ const AdminEducation = () => {
         <button
           onClick={() => {
             setIsAdding(true);
-            setFormData({ institution: "", degree: "", start_year: "", order_index: (educations?.length || 0) + 1 });
+            setFormData({ institution: "", degree: "", start_year: "", order_index: (educations?.length || 0) + 1, logo_url: null });
           }}
           className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90"
         >
