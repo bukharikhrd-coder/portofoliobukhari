@@ -44,7 +44,7 @@ const TechStackModern = () => {
   return (
     <section id="tech" className="py-12 md:py-20">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true, margin: "-50px" }} className="text-center mb-8 md:mb-12">
+        <motion.div initial={{ opacity: 0, y: 25, filter: "blur(6px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }} viewport={{ once: true, margin: "-50px" }} className="text-center mb-8 md:mb-12">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
             <TranslatedText>Technologies</TranslatedText>
           </span>
