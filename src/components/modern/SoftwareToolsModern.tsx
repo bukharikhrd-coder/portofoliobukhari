@@ -64,7 +64,7 @@ const SoftwareToolsModern = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
           {displayTools.map((tool, index) => {
             const IconComponent = getIcon(tool.icon_name);
             const originalLevel = tools?.find(t => t.id === tool.id)?.proficiency_level || null;
