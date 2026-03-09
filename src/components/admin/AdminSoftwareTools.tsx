@@ -130,7 +130,7 @@ const AdminSoftwareTools = () => {
 
   const startEdit = (tool: ToolItem) => {
     setEditingId(tool.id);
-    setFormData({ name: tool.name, icon_name: tool.icon_name || "", proficiency_level: tool.proficiency_level || "Intermediate", order_index: tool.order_index || 0 });
+    setFormData({ name: tool.name, icon_name: tool.icon_name || "", proficiency_level: tool.proficiency_level || "Intermediate", order_index: tool.order_index || 0, logo_url: tool.logo_url || null });
   };
 
   const getProficiencyColor = (level: string | null) => {
