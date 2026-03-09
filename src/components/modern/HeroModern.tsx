@@ -96,13 +96,13 @@ const HeroModern = () => {
             >
               <a
                 href={heroData.cta_primary_link || "#works"}
-                className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-full hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25"
+                className="px-5 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 transition-all duration-300 shadow-lg shadow-primary/25"
               >
                 <TranslatedText>{heroData.cta_primary_text || "VIEW WORKS"}</TranslatedText>
               </a>
               <a
                 href={heroData.cta_secondary_link || "#contact"}
-                className="px-6 py-3 border-2 border-primary text-primary font-medium rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                className="px-5 sm:px-6 py-2.5 sm:py-3 border-2 border-primary text-primary text-sm font-medium rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <TranslatedText>{heroData.cta_secondary_text || "GET IN TOUCH"}</TranslatedText>
               </a>
