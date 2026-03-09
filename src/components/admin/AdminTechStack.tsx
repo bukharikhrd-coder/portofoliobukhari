@@ -31,6 +31,7 @@ interface TechItem {
   icon_name: string | null;
   order_index: number | null;
   is_visible: boolean;
+  logo_url: string | null;
 }
 
 const categories = ["Frontend", "Backend", "Design", "DevOps", "Other"];
