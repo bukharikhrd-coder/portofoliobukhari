@@ -100,6 +100,7 @@ const WorkJourneyGalleryModern = () => {
   const [selectedImage, setSelectedImage] = useState<JourneyItem | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeYear, setActiveYear] = useState<string>("all");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
 
   useEffect(() => {
     const fetchItems = async () => {
