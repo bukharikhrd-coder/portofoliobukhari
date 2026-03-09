@@ -166,7 +166,11 @@ const AdminSoftwareTools = () => {
             <h3 className="font-medium text-lg mb-4">Add New Tool</h3>
             <div className="flex gap-4 flex-wrap items-end">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-muted-foreground">Icon</label>
+                <label className="text-xs text-muted-foreground">Logo</label>
+                <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-muted-foreground">Icon (fallback)</label>
                 <button type="button" onClick={() => setShowIconPicker(true)} className="w-14 h-14 flex items-center justify-center bg-secondary border-2 border-dashed border-border rounded-xl hover:border-primary transition-all">
                   {FormIcon ? <FormIcon size={24} className="text-primary" /> : <Smile size={24} className="text-muted-foreground" />}
                 </button>
