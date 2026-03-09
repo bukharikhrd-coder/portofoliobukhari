@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Save, X, Eye, EyeOff } from "lucide-react";
+import LogoUpload from "./LogoUpload";
 
 interface Education {
   id: string;
