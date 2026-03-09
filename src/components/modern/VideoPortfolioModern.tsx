@@ -52,12 +52,12 @@ const VideoPortfolioModern = () => {
   };
 
   if (isLoading) {
-    return <section id="video-portfolio" className="py-20 px-6 bg-background"><div className="max-w-6xl mx-auto flex items-center justify-center min-h-[200px]"><Loader2 className="animate-spin text-primary" size={32} /></div></section>;
+    return <section id="video-portfolio" className="py-20 px-6"><div className="max-w-6xl mx-auto flex items-center justify-center min-h-[200px]"><Loader2 className="animate-spin text-primary" size={32} /></div></section>;
   }
   if (!videos?.length) return null;
 
   return (
-    <section id="video-portfolio" className="py-12 md:py-20 px-4 md:px-6 bg-background">
+    <section id="video-portfolio" className="py-12 md:py-20 px-4 md:px-6">
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true, margin: "-50px" }} className="mb-8 md:mb-12">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">

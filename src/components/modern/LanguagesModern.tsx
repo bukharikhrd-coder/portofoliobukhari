@@ -26,7 +26,7 @@ const Languages = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 px-6 bg-background">
+      <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse flex gap-4 flex-wrap">
             {[1, 2, 3].map((i) => <div key={i} className="h-16 w-40 bg-muted rounded-2xl" />)}
@@ -37,7 +37,7 @@ const Languages = () => {
   }
 
   return (
-    <section id="languages" className="py-16 md:py-24 px-4 md:px-6 bg-background">
+    <section id="languages" className="py-16 md:py-24 px-4 md:px-6">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">

@@ -18,7 +18,7 @@ const EducationModern = () => {
 
   if (isLoading) {
     return (
-      <section className="py-24 px-6 bg-secondary/10">
+      <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse space-y-8">
             {[1, 2].map((i) => <div key={i} className="h-32 bg-muted rounded-2xl" />)}
@@ -29,7 +29,7 @@ const EducationModern = () => {
   }
 
   return (
-    <section id="education" className="py-16 md:py-24 px-4 md:px-6 bg-secondary/10">
+    <section id="education" className="py-16 md:py-24 px-4 md:px-6">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="mb-10 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-medium rounded-full tracking-wide">
