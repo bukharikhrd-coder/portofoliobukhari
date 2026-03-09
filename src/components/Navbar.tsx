@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Settings, Sun, Moon, Monitor, ChevronDown } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useSectionConfig } from "@/hooks/useSectionConfig";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,24 +14,23 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-// Core navigation items (always visible)
-const coreNavItems = [
-  { href: "#about", label: "About" },
-  { href: "#works", label: "Works" },
-  { href: "#contact", label: "Contact" },
-];
+// Map section_key → nav href & label
+const sectionNavMap: Record<string, { href: string; label: string }> = {
+  about: { href: "#about", label: "About" },
+  works: { href: "#works", label: "Works" },
+  contact: { href: "#contact", label: "Contact" },
+  experience: { href: "#experience", label: "Experience" },
+  education: { href: "#education", label: "Education" },
+  trainings: { href: "#trainings", label: "Training" },
+  languages: { href: "#languages", label: "Languages" },
+  videoportfolio: { href: "#videoportfolio", label: "Video Portfolio" },
+  techstack: { href: "#techstack", label: "Tech Stack" },
+  softwaretools: { href: "#softwaretools", label: "Tools" },
+  workjourney: { href: "#workjourney", label: "Work Journey" },
+};
 
-// More menu items (grouped in dropdown)
-const moreNavItems = [
-  { href: "#experience", label: "Experience" },
-  { href: "#education", label: "Education" },
-  { href: "#trainings", label: "Training" },
-  { href: "#languages", label: "Languages" },
-  { href: "#videoportfolio", label: "Video Portfolio" },
-  { href: "#techstack", label: "Tech Stack" },
-  { href: "#softwaretools", label: "Tools" },
-  { href: "#workjourney", label: "Work Journey" },
-];
+// Core sections always shown in main bar (if visible)
+const coreSectionKeys = ["about", "works", "contact"];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
