@@ -105,7 +105,8 @@ const AdminSoftwareTools = () => {
         name: formData.name,
         icon_name: formData.icon_name || null,
         proficiency_level: formData.proficiency_level,
-        order_index: items.length
+        order_index: items.length,
+        logo_url: formData.logo_url || null
       }).select().single();
       
       if (error) toast.error("Failed to add");
