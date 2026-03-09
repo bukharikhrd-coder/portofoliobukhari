@@ -30,6 +30,7 @@ interface ToolItem {
   icon_name: string | null;
   proficiency_level: string | null;
   order_index: number | null;
+  logo_url: string | null;
 }
 
 const proficiencyLevels = ["Expert", "Advanced", "Intermediate", "Beginner"];
