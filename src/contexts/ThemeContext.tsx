@@ -232,9 +232,51 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     ];
     propsToReset.forEach(p => root.style.removeProperty(p));
 
-    // 3. Apply color preset
+    // 3. Check template mode
+    const isTemplateMode = settings.color_template_mode === "true";
+    const selectedTemplateId = settings.selected_color_template;
+
+    if (isTemplateMode && selectedTemplateId) {
+      const template = COLOR_TEMPLATE_PRESETS.find(t => t.id === selectedTemplateId);
+      if (template) {
+        // Apply template colors
+        const bgHex = isDark ? template.bgDark : template.bgLight;
+        const bgHSL = hexToHSL(bgHex);
+        root.style.setProperty("--background", `${bgHSL.h} ${bgHSL.s}% ${bgHSL.l}%`);
+        const cardL = isDark ? Math.min(bgHSL.l + 3, 100) : Math.min(bgHSL.l + 2, 100);
+        root.style.setProperty("--card", `${bgHSL.h} ${bgHSL.s}% ${cardL}%`);
+        root.style.setProperty("--popover", `${bgHSL.h} ${bgHSL.s}% ${cardL}%`);
+
+        const fgHex = isDark ? template.fontDark : template.fontLight;
+        const fgHSL = hexToHSL(fgHex);
+        root.style.setProperty("--foreground", `${fgHSL.h} ${fgHSL.s}% ${fgHSL.l}%`);
+        root.style.setProperty("--card-foreground", `${fgHSL.h} ${fgHSL.s}% ${fgHSL.l}%`);
+        root.style.setProperty("--popover-foreground", `${fgHSL.h} ${fgHSL.s}% ${fgHSL.l}%`);
+
+        if (template.accentMode === "gradient" && template.accentGradientFrom && template.accentGradientTo) {
+          const fromHSL = hexToHSL(template.accentGradientFrom);
+          root.style.setProperty("--primary", `${fromHSL.h} ${fromHSL.s}% ${isDark ? fromHSL.l : Math.max(fromHSL.l - 5, 0)}%`);
+          root.style.setProperty("--accent", `${fromHSL.h} ${fromHSL.s}% ${isDark ? fromHSL.l : Math.max(fromHSL.l - 5, 0)}%`);
+          root.style.setProperty("--ring", `${fromHSL.h} ${fromHSL.s}% ${fromHSL.l}%`);
+          root.style.setProperty("--accent-gradient", `linear-gradient(135deg, ${template.accentGradientFrom}, ${template.accentGradientTo})`);
+          root.style.setProperty("--gradient-gold", `linear-gradient(135deg, ${template.accentGradientFrom}, ${template.accentGradientTo})`);
+          root.style.setProperty("--shadow-glow", `0 0 60px hsl(${fromHSL.h} ${fromHSL.s}% ${fromHSL.l}% / ${isDark ? 0.15 : 0.2})`);
+        } else {
+          const accentHSL = hexToHSL(template.accentHex);
+          const lightness = isDark ? accentHSL.l : Math.max(accentHSL.l - 5, 0);
+          root.style.setProperty("--primary", `${accentHSL.h} ${accentHSL.s}% ${lightness}%`);
+          root.style.setProperty("--accent", `${accentHSL.h} ${accentHSL.s}% ${lightness}%`);
+          root.style.setProperty("--ring", `${accentHSL.h} ${accentHSL.s}% ${lightness}%`);
+          const gradientEnd = accentHSL.h > 10 ? accentHSL.h - 10 : accentHSL.h + 350;
+          root.style.setProperty("--gradient-gold", `linear-gradient(135deg, hsl(${accentHSL.h} ${accentHSL.s}% ${lightness}%) 0%, hsl(${gradientEnd} ${accentHSL.s}% ${lightness - 5}%) 100%)`);
+          root.style.setProperty("--shadow-glow", `0 0 60px hsl(${accentHSL.h} ${accentHSL.s}% ${lightness}% / ${isDark ? 0.15 : 0.2})`);
+        }
+        return; // Template mode handles everything
+      }
+    }
+
+    // 4. Apply color preset (non-template mode)
     const colorConfig = COLOR_THEMES.find(t => t.id === colorTheme);
-    const settings = customSettingsRef.current;
     const hasCustomAccent = !!(settings.custom_accent_hex || settings.accent_mode === "gradient");
 
     if (colorConfig && !hasCustomAccent) {
@@ -249,7 +291,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.style.setProperty("--shadow-glow", `0 0 60px hsl(${hue} ${saturation}% ${lightness}% / ${isDark ? 0.15 : 0.2})`);
     }
 
-    // 4. Apply custom overrides from DB settings (bg, font, accent, gradient)
+    // 5. Apply custom overrides from DB settings (bg, font, accent, gradient)
     if (Object.keys(settings).length > 0) {
       applyAllCustomColors(settings, isDark);
     }
