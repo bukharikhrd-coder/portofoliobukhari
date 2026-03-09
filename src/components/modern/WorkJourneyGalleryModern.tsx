@@ -10,6 +10,7 @@ interface JourneyItem {
   description: string | null;
   image_url: string;
   year: string | null;
+  category: string | null;
   order_index: number | null;
 }
 
