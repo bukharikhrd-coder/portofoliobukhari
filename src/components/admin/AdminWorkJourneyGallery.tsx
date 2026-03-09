@@ -26,6 +26,7 @@ const AdminWorkJourneyGallery = () => {
     description: "",
     image_url: "",
     year: "",
+    category: "",
   });
   const [editItem, setEditItem] = useState<JourneyItem | null>(null);
 
