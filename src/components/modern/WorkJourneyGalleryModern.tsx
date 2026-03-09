@@ -244,7 +244,7 @@ const WorkJourneyGalleryModern = () => {
           )}
 
           {/* Category / Moment filter */}
-          {categories.length > 1 && (
+          {showCategoryFilter && categories.length > 1 && (
             <div className="flex flex-wrap justify-center gap-2 md:gap-3">
               <span className="text-xs text-muted-foreground self-center mr-1">Momen:</span>
               <button
