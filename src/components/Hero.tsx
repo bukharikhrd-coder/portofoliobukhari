@@ -113,7 +113,7 @@ const Hero = () => {
             >
               <a
                 href={heroData.cta_primary_link || "#works"}
-                className="px-6 md:px-8 py-3 md:py-4 bg-primary text-primary-foreground font-medium tracking-wide hover:bg-primary/90 transition-all duration-300 text-center text-sm md:text-base"
+                className="px-6 md:px-8 py-3 md:py-4 btn-gradient font-medium tracking-wide hover:opacity-90 transition-all duration-300 text-center text-sm md:text-base"
               >
                 <TranslatedText>{heroData.cta_primary_text || "VIEW WORKS"}</TranslatedText>
               </a>
