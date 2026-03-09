@@ -95,7 +95,9 @@ function applyAllCustomColors(settings: Record<string, string>, isDark: boolean)
     root.style.setProperty("--primary", `${fromHSL.h} ${fromHSL.s}% ${isDark ? fromHSL.l : Math.max(fromHSL.l - 5, 0)}%`);
     root.style.setProperty("--accent", `${fromHSL.h} ${fromHSL.s}% ${isDark ? fromHSL.l : Math.max(fromHSL.l - 5, 0)}%`);
     root.style.setProperty("--ring", `${fromHSL.h} ${fromHSL.s}% ${fromHSL.l}%`);
-    root.style.setProperty("--accent-gradient", `linear-gradient(135deg, ${settings.accent_gradient_from}, ${settings.accent_gradient_to})`);
+    const gradientValue = `linear-gradient(135deg, ${settings.accent_gradient_from}, ${settings.accent_gradient_to})`;
+    root.style.setProperty("--accent-gradient", gradientValue);
+    root.style.setProperty("--gradient-gold", gradientValue);
   } else if (settings.custom_accent_hex) {
     const hsl = hexToHSL(settings.custom_accent_hex);
     const lightness = isDark ? hsl.l : Math.max(hsl.l - 5, 0);
