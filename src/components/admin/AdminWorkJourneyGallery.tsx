@@ -276,6 +276,13 @@ const AdminWorkJourneyGallery = () => {
                       />
                       <input
                         type="text"
+                        value={editItem.category || ""}
+                        onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
+                        className="w-32 px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
+                        placeholder="Category"
+                      />
+                      <input
+                        type="text"
                         value={editItem.description || ""}
                         onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
                         className="flex-1 px-3 py-2 bg-background border border-border text-foreground text-sm focus:border-primary focus:outline-none transition-colors"
