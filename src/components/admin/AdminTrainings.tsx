@@ -33,6 +33,7 @@ interface Training {
   description: string | null;
   certificate_url: string | null;
   order_index: number | null;
+  logo_url: string | null;
 }
 
 const AdminTrainings = () => {
