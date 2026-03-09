@@ -99,6 +99,12 @@ const AdminEducation = () => {
       <div className="space-y-4">
         {isAdding && (
           <div className="bg-card border border-primary p-6 space-y-4">
+            <div className="flex items-start gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-muted-foreground">Logo</label>
+                <LogoUpload currentLogo={formData.logo_url || null} onLogoChange={(url) => setFormData({ ...formData, logo_url: url })} />
+              </div>
+              <div className="flex-1 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" placeholder="Institution *" value={formData.institution || ""} onChange={(e) => setFormData({ ...formData, institution: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
               <input type="text" placeholder="Degree *" value={formData.degree || ""} onChange={(e) => setFormData({ ...formData, degree: e.target.value })} className="px-4 py-3 bg-background border border-border focus:border-primary focus:outline-none" />
