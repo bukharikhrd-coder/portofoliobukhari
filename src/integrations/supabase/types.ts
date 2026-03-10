@@ -808,6 +808,7 @@ export type Database = {
           is_current: boolean | null
           is_visible: boolean
           location: string | null
+          logo_url: string | null
           order_index: number | null
           position: string
           start_date: string
@@ -822,6 +823,7 @@ export type Database = {
           is_current?: boolean | null
           is_visible?: boolean
           location?: string | null
+          logo_url?: string | null
           order_index?: number | null
           position: string
           start_date: string
@@ -836,6 +838,7 @@ export type Database = {
           is_current?: boolean | null
           is_visible?: boolean
           location?: string | null
+          logo_url?: string | null
           order_index?: number | null
           position?: string
           start_date?: string
