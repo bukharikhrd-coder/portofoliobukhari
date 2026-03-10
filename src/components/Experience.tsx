@@ -56,7 +56,6 @@ const Experience = () => {
         </motion.div>
 
         <div className="relative">
-          {/* Timeline line */}
           <div className="absolute left-3 md:left-8 top-0 bottom-0 w-px bg-border" />
 
           <div className="space-y-8 md:space-y-12">
@@ -69,38 +68,44 @@ const Experience = () => {
                 viewport={{ once: true }}
                 className="relative pl-10 md:pl-20"
               >
-                {/* Timeline dot */}
                 <div className="absolute left-1 md:left-6 top-2 w-4 h-4 bg-primary rounded-full border-4 border-background" />
 
                 <div className="bg-card border border-border p-4 md:p-6 hover:border-primary/50 transition-colors duration-300">
-                  <div className="flex flex-col gap-2 mb-3 md:mb-4">
-                    <h3 className="text-lg md:text-xl font-semibold text-foreground">
-                      {exp.position}
-                    </h3>
-                    <span className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
-                      <Calendar size={14} />
-                      {exp.start_date} - {exp.is_current ? <TranslatedText>Present</TranslatedText> : exp.end_date}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground mb-3 md:mb-4">
-                    <span className="flex items-center gap-2">
-                      <Briefcase size={14} className="text-primary" />
-                      {exp.company_name}
-                    </span>
-                    {exp.location && (
-                      <span className="flex items-center gap-2">
-                        <MapPin size={14} className="text-primary" />
-                        {exp.location}
+                  <div className="flex items-start gap-3 md:gap-4">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {(exp as any).logo_url ? (
+                        <img src={(exp as any).logo_url} alt={exp.company_name} className="w-full h-full object-contain p-1.5" />
+                      ) : (
+                        <Briefcase size={22} className="text-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg md:text-xl font-semibold text-foreground">
+                        {exp.position}
+                      </h3>
+                      <span className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+                        <Calendar size={14} />
+                        {exp.start_date} - {exp.is_current ? <TranslatedText>Present</TranslatedText> : exp.end_date}
                       </span>
-                    )}
+                      <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground mt-2 mb-3">
+                        <span className="flex items-center gap-2">
+                          <Briefcase size={14} className="text-primary" />
+                          {exp.company_name}
+                        </span>
+                        {exp.location && (
+                          <span className="flex items-center gap-2">
+                            <MapPin size={14} className="text-primary" />
+                            {exp.location}
+                          </span>
+                        )}
+                      </div>
+                      {exp.description && (
+                        <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
+                          {exp.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
-
-                  {exp.description && (
-                    <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                      {exp.description}
-                    </p>
-                  )}
                 </div>
               </motion.div>
             ))}

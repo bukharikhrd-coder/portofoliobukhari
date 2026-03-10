@@ -13,7 +13,6 @@ const Trainings = () => {
         .select('*')
         .eq('is_visible', true)
         .order('order_index', { ascending: true });
-      
       if (error) throw error;
       return data;
     }
@@ -70,8 +69,12 @@ const Trainings = () => {
               className="group relative bg-card border border-border/50 rounded-2xl p-4 md:p-6 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
             >
               <div className="flex items-start gap-3 md:gap-4">
-                <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <Award className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors overflow-hidden">
+                  {(training as any).logo_url ? (
+                    <img src={(training as any).logo_url} alt={training.title} className="w-full h-full object-contain p-1.5" />
+                  ) : (
+                    <Award className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base md:text-lg font-semibold text-foreground mb-1 md:mb-2 group-hover:text-primary transition-colors">
