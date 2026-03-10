@@ -11,6 +11,7 @@ interface TechItem {
   name: string;
   category: string | null;
   icon_name: string | null;
+  logo_url: string | null;
   order_index: number | null;
 }
 
@@ -24,19 +25,15 @@ const TechStack = () => {
         .eq("is_visible", true)
         .order("category")
         .order("order_index");
-      
       if (error) throw error;
       return data as TechItem[];
     }
   });
 
-  // Translate categories - only when technologies are loaded
   const { items: translatedTech } = useTranslatedContent(
     technologies && technologies.length > 0 ? technologies : undefined, 
     ["category"]
   );
-
-  // Use translated tech if available, otherwise use original
   const displayTech = translatedTech.length > 0 ? translatedTech : (technologies || []);
 
   const getIcon = (iconName: string | null): LucideIcon => {
@@ -63,7 +60,6 @@ const TechStack = () => {
   return (
     <section id="tech" className="py-12 md:py-20">
       <div className="container mx-auto px-4 md:px-6 lg:px-12">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -82,10 +78,10 @@ const TechStack = () => {
           </p>
         </motion.div>
 
-        {/* Tech Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
           {displayTech.map((tech, index) => {
             const IconComponent = getIcon(tech.icon_name);
+            const logoUrl = (tech as any).logo_url;
             
             return (
               <motion.div
@@ -97,15 +93,19 @@ const TechStack = () => {
                 className="group"
               >
                 <div className="relative p-4 md:p-8 bg-card border border-border hover:border-primary transition-all duration-500 card-hover rounded-lg">
-                  {/* Icon */}
                   <div className="mb-4 md:mb-6">
-                    <IconComponent 
-                      size={28} 
-                      className="text-muted-foreground group-hover:text-primary transition-colors duration-300 md:w-10 md:h-10" 
-                    />
+                    <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center overflow-hidden">
+                      {logoUrl ? (
+                        <img src={logoUrl} alt={tech.name} className="w-full h-full object-contain p-1.5" />
+                      ) : (
+                        <IconComponent 
+                          size={28} 
+                          className="text-muted-foreground group-hover:text-primary transition-colors duration-300 md:w-8 md:h-8" 
+                        />
+                      )}
+                    </div>
                   </div>
                   
-                  {/* Content */}
                   <div className="space-y-1">
                     <h3 className="font-medium text-foreground group-hover:text-primary transition-colors duration-300 text-sm md:text-base">
                       {tech.name}
@@ -115,7 +115,6 @@ const TechStack = () => {
                     </p>
                   </div>
 
-                  {/* Decorative corner */}
                   <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] md:border-t-[40px] border-t-primary/0 border-l-[30px] md:border-l-[40px] border-l-transparent group-hover:border-t-primary/20 transition-all duration-500" />
                 </div>
               </motion.div>
@@ -123,7 +122,6 @@ const TechStack = () => {
           })}
         </div>
 
-        {/* Additional info */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}

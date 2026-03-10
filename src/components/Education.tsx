@@ -66,8 +66,12 @@ const Education = () => {
               className="bg-card border border-border p-4 md:p-6 hover:border-primary/50 transition-colors duration-300"
             >
               <div className="flex items-start gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <GraduationCap className="text-primary" size={20} />
+                <div className="w-12 h-12 md:w-14 md:h-14 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {(edu as any).logo_url ? (
+                    <img src={(edu as any).logo_url} alt={edu.institution} className="w-full h-full object-contain p-1.5" />
+                  ) : (
+                    <GraduationCap className="text-primary" size={22} />
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">

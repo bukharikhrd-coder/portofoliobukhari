@@ -10,6 +10,7 @@ interface ToolItem {
   id: string;
   name: string;
   icon_name: string | null;
+  logo_url: string | null;
   proficiency_level: string | null;
   order_index: number | null;
 }
@@ -28,13 +29,10 @@ const SoftwareTools = () => {
     },
   });
 
-  // Translate proficiency levels - only when tools are loaded
   const { items: translatedTools } = useTranslatedContent(
     tools && tools.length > 0 ? tools : undefined, 
     ["proficiency_level"]
   );
-
-  // Use translated tools if available, otherwise use original
   const displayTools = translatedTools.length > 0 ? translatedTools : (tools || []);
 
   const getIcon = (iconName: string | null): LucideIcon => {
@@ -48,35 +46,24 @@ const SoftwareTools = () => {
 
   const getProficiencyColor = (level: string | null) => {
     switch (level) {
-      case "Expert":
-        return "from-emerald-500/20 to-emerald-500/5 border-emerald-500/30";
-      case "Advanced":
-        return "from-blue-500/20 to-blue-500/5 border-blue-500/30";
-      case "Intermediate":
-        return "from-amber-500/20 to-amber-500/5 border-amber-500/30";
-      case "Beginner":
-        return "from-slate-500/20 to-slate-500/5 border-slate-500/30";
-      default:
-        return "from-primary/20 to-primary/5 border-primary/30";
+      case "Expert": return "from-emerald-500/20 to-emerald-500/5 border-emerald-500/30";
+      case "Advanced": return "from-blue-500/20 to-blue-500/5 border-blue-500/30";
+      case "Intermediate": return "from-amber-500/20 to-amber-500/5 border-amber-500/30";
+      case "Beginner": return "from-slate-500/20 to-slate-500/5 border-slate-500/30";
+      default: return "from-primary/20 to-primary/5 border-primary/30";
     }
   };
 
   const getProficiencyBadgeColor = (level: string | null) => {
     switch (level) {
-      case "Expert":
-        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
-      case "Advanced":
-        return "bg-blue-500/10 text-blue-500 border-blue-500/20";
-      case "Intermediate":
-        return "bg-amber-500/10 text-amber-500 border-amber-500/20";
-      case "Beginner":
-        return "bg-slate-500/10 text-slate-400 border-slate-500/20";
-      default:
-        return "bg-primary/10 text-primary border-primary/20";
+      case "Expert": return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+      case "Advanced": return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+      case "Intermediate": return "bg-amber-500/10 text-amber-500 border-amber-500/20";
+      case "Beginner": return "bg-slate-500/10 text-slate-400 border-slate-500/20";
+      default: return "bg-primary/10 text-primary border-primary/20";
     }
   };
 
-  // Find original proficiency to get correct color
   const getOriginalProficiency = (toolId: string) => {
     return tools?.find(t => t.id === toolId)?.proficiency_level || null;
   };
@@ -118,6 +105,7 @@ const SoftwareTools = () => {
           {displayTools.map((tool, index) => {
             const IconComponent = getIcon(tool.icon_name);
             const originalProficiency = getOriginalProficiency(tool.id);
+            const logoUrl = (tool as any).logo_url;
             
             return (
               <motion.div
@@ -129,17 +117,18 @@ const SoftwareTools = () => {
                 className="group"
               >
                 <div className={`relative bg-gradient-to-br ${getProficiencyColor(originalProficiency)} backdrop-blur-sm border rounded-xl p-4 md:p-6 text-center hover:scale-105 hover:shadow-lg transition-all duration-300`}>
-                  {/* Icon */}
-                  <div className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-background/80 rounded-xl flex items-center justify-center shadow-inner group-hover:shadow-md transition-all">
-                    <IconComponent className="text-foreground group-hover:text-primary transition-colors w-5 h-5 md:w-7 md:h-7" />
+                  <div className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-background/80 rounded-xl flex items-center justify-center shadow-inner group-hover:shadow-md transition-all overflow-hidden">
+                    {logoUrl ? (
+                      <img src={logoUrl} alt={tool.name} className="w-full h-full object-contain p-1.5" />
+                    ) : (
+                      <IconComponent className="text-foreground group-hover:text-primary transition-colors w-5 h-5 md:w-7 md:h-7" />
+                    )}
                   </div>
                   
-                  {/* Name */}
                   <h3 className="font-medium text-foreground mb-2 md:mb-3 group-hover:text-primary transition-colors text-sm md:text-base">
                     {tool.name}
                   </h3>
                   
-                  {/* Proficiency Badge */}
                   <span className={`inline-block px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium rounded-full border ${getProficiencyBadgeColor(originalProficiency)}`}>
                     {tool.proficiency_level}
                   </span>
